@@ -65,7 +65,7 @@ public class MedApplication {
         // Method org.postgresql.jdbc.PgConnection.createClob() is not yet implemented.
         // properties.put("hibernate.temp.use_jdbc_metadata_defaults",false);
         LocalSessionFactoryBean sessionFactoryBean = new LocalSessionFactoryBean();
-        sessionFactoryBean.setPackagesToScan("com.chemical.reagents.entity");
+        sessionFactoryBean.setPackagesToScan("org.ktfoms.med.entity");
         sessionFactoryBean.setDataSource(dataSource);
         sessionFactoryBean.setHibernateProperties(properties);
         sessionFactoryBean.afterPropertiesSet();
@@ -89,7 +89,7 @@ public class MedApplication {
                 env.getProperty("spring.jpa.properties.hibernate.current_session_context_class"));
 
         LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
-        factoryBean.setPackagesToScan("com.chemical.reagents.entity");
+        factoryBean.setPackagesToScan("org.ktfoms.med.entity");
         factoryBean.setDataSource(dataSource);
         factoryBean.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
         factoryBean.setJpaProperties(properties);

@@ -14,8 +14,8 @@ public class LpuService {
         this.lpuDao = lpuDao;
     }
 
-    public String getLpuById(Integer id){
-        return lpuDao.gettime();
+    public Lpu getLpuById(Integer id){
+        return lpuDao.getById(id);
     }
 
 }

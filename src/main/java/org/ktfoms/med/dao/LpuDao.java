@@ -21,17 +21,11 @@ public class LpuDao {
 
     @Transactional
     public Lpu getById(Integer id) {
-//        return sessionFactory.getCurrentSession().get(Lpu.class, id);
-        return sessionFactory.getCurrentSession().createQuery("select l from Lpu l where l.id = :id", Lpu.class)
-                .setParameter("id", id).getSingleResult();
+        return sessionFactory.getCurrentSession().get(Lpu.class, id);
+//        return sessionFactory.getCurrentSession().createQuery("select l from Lpu l where l.id = :id", Lpu.class)
+//                .setParameter("id", id).getSingleResult();
     }
 
 
-    public String gettime () {
-        String res = sessionFactory.getCurrentSession().createQuery("select 'NOW';", String.class)
-                .getSingleResult();
-        System.out.println(res);
-        return res;
-    }
 
 }

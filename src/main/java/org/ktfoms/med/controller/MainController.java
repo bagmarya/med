@@ -20,8 +20,7 @@ public class MainController {
 
     @RequestMapping(value = { "/", "/index" }, method = RequestMethod.GET)
     public String index(Model model) {
-        Test res = new Test(4, "testname");
-        System.out.println(res.getName() + "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + res.getId());
+        System.out.println("!!!!!!!!!!!!!!!сервер отвечает!!!!!!!!!!!!!!!!");
         model.addAttribute("today", Calendar.getInstance());
         return "index";
     }

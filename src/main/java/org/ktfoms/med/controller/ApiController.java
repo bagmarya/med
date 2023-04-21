@@ -21,7 +21,7 @@ public class ApiController {
     private LpuService lpuService;
 
     @GetMapping("/lpu")
-    public String  getChemistById() {
+    public Lpu  getChemistById() {
         return lpuService.getLpuById(4);
     }
 
