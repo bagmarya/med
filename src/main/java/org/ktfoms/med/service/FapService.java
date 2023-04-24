@@ -3,10 +3,13 @@ package org.ktfoms.med.service;
 import org.ktfoms.med.dao.FapDao;
 import org.ktfoms.med.dao.LpuDao;
 import org.ktfoms.med.dto.FapDto;
+import org.ktfoms.med.dto.FapFinDto;
 import org.ktfoms.med.entity.Fap;
 import org.ktfoms.med.entity.FapFin;
 import org.ktfoms.med.entity.Lpu;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class FapService {
@@ -26,6 +29,10 @@ public class FapService {
 
     public FapFin getFapFinById(Integer id){
         return fapDao.getFapFinById(id);
+    }
+
+    public List<FapFinDto> getFapFinDtoList(){
+        return fapDao.getFapFinDtoList();
     }
 
 }
