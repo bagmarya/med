@@ -17,8 +17,8 @@ import java.time.LocalDate;
 public class NewController {
     @Autowired
     private FapService fapService;
-    @RequestMapping(value="/ff" , method = RequestMethod.GET, produces=MediaType.APPLICATION_XML_VALUE, headers = { "Content-Type = application/xml" })
-//            , method = RequestMethod.GET, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_XML_VALUE)
+    @RequestMapping(value="/ff" , method = RequestMethod.GET, produces=MediaType.APPLICATION_XML_VALUE)
+//            , method = RequestMethod.GET, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_XML_VALUE), headers = { "Content-Type = application/xml" }
     @ResponseBody
     public Spfinfap returnsp() {
 

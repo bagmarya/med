@@ -11,17 +11,15 @@ package org.ktfoms.med.dto;
 //import jakarta.xml.bind.annotation.XmlRootElement;
 
 
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.xml.bind.Binder;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlRootElement;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -31,17 +29,17 @@ import java.util.List;
 @NoArgsConstructor
 @ToString
 
-//@XmlAccessorType(XmlAccessType.NONE)
-//@XmlType(propOrder={"version", "date", "FAP"})
-@XmlRootElement
-public class Spfinfap implements Serializable {
 
-    @XmlElement
+@JacksonXmlRootElement(localName = "spfinfap")
+public class Spfinfap {
+
+    @JacksonXmlProperty
     private String version;
-    @XmlElement
+
+    @JacksonXmlProperty
     private String date;
 
-    @XmlElementWrapper()
+    @JacksonXmlElementWrapper(useWrapping = false)
     private List<FapFinDto> FAP;
 
 

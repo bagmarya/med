@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 @RestController
 @RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -47,10 +49,10 @@ public class ApiController {
     }
 
     @GetMapping(value = "/sp_fin_fap", produces = "application/xml")
-//            , headers = "Accept=application/xml"), headers = { "Content-Type = application/xml" }
-    public Test getFapFById() {
-//        Spfinfap spr = new Spfinfap("1.0", LocalDate.now().toString(), fapService.getFapFinDtoList());
-        Test spr = new Test(8, "DDDD");
+
+    public Spfinfap getFapFById() {
+        LocalDate d = LocalDate.now();
+        Spfinfap spr = new Spfinfap("1.0", LocalDate.now().format(DateTimeFormatter.ofPattern("d.MM.uuuu")), fapService.getFapFinDtoList());
         return spr;
     }
 }

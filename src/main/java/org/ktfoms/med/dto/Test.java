@@ -1,16 +1,16 @@
 package org.ktfoms.med.dto;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+//import javax.xml.bind.annotation.XmlElement;
+//import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(
-        namespace = "http://spring.otus.ru",
-        name = "test-jaxb"
-)
+//@XmlRootElement(
+//        namespace = "http://spring.otus.ru",
+//        name = "test-jaxb"
+//)
 public class Test {
-    @XmlElement
+
     private Integer id;
-    @XmlElement
+//    @XmlElement
     private String name;
 
     public Test(Integer id, String name) {
@@ -34,3 +34,4 @@ public class Test {
         this.name = name;
     }
 }
+//            , headers = "Accept=application/xml"), headers = { "Content-Type = application/xml" }

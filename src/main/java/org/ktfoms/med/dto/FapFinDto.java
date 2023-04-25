@@ -1,5 +1,7 @@
 package org.ktfoms.med.dto;
 
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,73 +10,125 @@ import java.util.Date;
 
 @Getter
 @Setter
+@JacksonXmlRootElement(localName = "FAP")
 public class FapFinDto {
 
 
-
+    @JacksonXmlProperty(localName = "MKOD")
     private Integer mkod;
+    @JacksonXmlProperty(localName = "NAME_PODR")
     private String namePodr;
+    @JacksonXmlProperty(localName = "LPU")
     private String moLpu;
+    @JacksonXmlProperty(localName = "PODR")
     private String podr;
 
+    @JacksonXmlProperty(localName = "G_FIN1")
     private double gFin1;
+    @JacksonXmlProperty(localName = "K_YKOMP1")
     private double kYkomp1;
+    @JacksonXmlProperty(localName = "SUMM_ASTRA1")
     private double summAstra1;
+    @JacksonXmlProperty(localName = "SUMM_KAPIT1")
     private double summKapit1;
 
+    @JacksonXmlProperty(localName = "G_FIN2")
     private double gFin2;
+    @JacksonXmlProperty(localName = "K_YKOMP2")
     private double kYkomp2;
+    @JacksonXmlProperty(localName = "SUMM_ASTRA2")
     private double summAstra2;
+    @JacksonXmlProperty(localName = "SUMM_KAPIT2")
     private double summKapit2;
 
+    @JacksonXmlProperty(localName = "G_FIN3")
     private double gFin3;
+    @JacksonXmlProperty(localName = "K_YKOMP3")
     private double kYkomp3;
+    @JacksonXmlProperty(localName = "SUMM_ASTRA3")
     private double summAstra3;
+    @JacksonXmlProperty(localName = "SUMM_KAPIT3")
     private double summKapit3;
 
+    @JacksonXmlProperty(localName = "G_FIN4")
     private double gFin4;
+    @JacksonXmlProperty(localName = "K_YKOMP4")
     private double kYkomp4;
+    @JacksonXmlProperty(localName = "SUMM_ASTRA4")
     private double summAstra4;
+    @JacksonXmlProperty(localName = "SUMM_KAPIT4")
     private double summKapit4;
 
+    @JacksonXmlProperty(localName = "G_FIN5")
     private double gFin5;
+    @JacksonXmlProperty(localName = "K_YKOMP5")
     private double kYkomp5;
+    @JacksonXmlProperty(localName = "SUMM_ASTRA5")
     private double summAstra5;
+    @JacksonXmlProperty(localName = "SUMM_KAPIT5")
     private double summKapit5;
 
+    @JacksonXmlProperty(localName = "G_FIN6")
     private double gFin6;
+    @JacksonXmlProperty(localName = "K_YKOMP6")
     private double kYkomp6;
+    @JacksonXmlProperty(localName = "SUMM_ASTRA6")
     private double summAstra6;
+    @JacksonXmlProperty(localName = "SUMM_KAPIT6")
     private double summKapit6;
 
+    @JacksonXmlProperty(localName = "G_FIN7")
     private double gFin7;
+    @JacksonXmlProperty(localName = "K_YKOMP7")
     private double kYkomp7;
+    @JacksonXmlProperty(localName = "SUMM_ASTRA7")
     private double summAstra7;
+    @JacksonXmlProperty(localName = "SUMM_KAPIT7")
     private double summKapit7;
 
+    @JacksonXmlProperty(localName = "G_FIN8")
     private double gFin8;
+    @JacksonXmlProperty(localName = "K_YKOMP8")
     private double kYkomp8;
+    @JacksonXmlProperty(localName = "SUMM_ASTRA8")
     private double summAstra8;
+    @JacksonXmlProperty(localName = "SUMM_KAPIT8")
     private double summKapit8;
 
+    @JacksonXmlProperty(localName = "G_FIN9")
     private double gFin9;
+    @JacksonXmlProperty(localName = "K_YKOMP9")
     private double kYkomp9;
+    @JacksonXmlProperty(localName = "SUMM_ASTRA9")
     private double summAstra9;
+    @JacksonXmlProperty(localName = "SUMM_KAPIT9")
     private double summKapit9;
 
+    @JacksonXmlProperty(localName = "G_FIN10")
     private double gFin10;
+    @JacksonXmlProperty(localName = "K_YKOMP10")
     private double kYkomp10;
+    @JacksonXmlProperty(localName = "SUMM_ASTRA10")
     private double summAstra10;
+    @JacksonXmlProperty(localName = "SUMM_KAPIT10")
     private double summKapit10;
 
+    @JacksonXmlProperty(localName = "G_FIN11")
     private double gFin11;
+    @JacksonXmlProperty(localName = "K_YKOMP11")
     private double kYkomp11;
+    @JacksonXmlProperty(localName = "SUMM_ASTRA11")
     private double summAstra11;
+    @JacksonXmlProperty(localName = "SUMM_KAPIT11")
     private double summKapit11;
 
+    @JacksonXmlProperty(localName = "G_FIN12")
     private double gFin12;
+    @JacksonXmlProperty(localName = "K_YKOMP12")
     private double kYkomp12;
+    @JacksonXmlProperty(localName = "SUMM_ASTRA12")
     private double summAstra12;
+    @JacksonXmlProperty(localName = "SUMM_KAPIT12")
     private double summKapit12;
 
     public FapFinDto(Integer mkod, String namePodr, String moLpu, String podr,
