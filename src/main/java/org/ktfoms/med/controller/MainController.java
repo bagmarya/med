@@ -2,6 +2,7 @@ package org.ktfoms.med.controller;
 
 import org.ktfoms.med.dto.Test;
 import org.ktfoms.med.entity.Lpu;
+import org.ktfoms.med.service.FapService;
 import org.ktfoms.med.service.LpuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -18,7 +19,8 @@ public class MainController {
 
     @Autowired
     private LpuService lpuService;
-
+    @Autowired
+    private FapService fapService;
 
     @RequestMapping(value = { "/", "/index" }, method = RequestMethod.GET)
     public String index(Model model) {
@@ -27,5 +29,11 @@ public class MainController {
         return "index";
     }
 
+    @RequestMapping(value = { "/sp" }, method = RequestMethod.GET)
+    public String sp(Model model) {
+        System.out.println("!!!!!!!!!!!!!!!сервер отвечает!!!!!!!!!!!!!!!!");
+        model.addAttribute("fapfindtos", fapService.getFapFinDtoList().subList(1,5));
+        return "sp_fin_fap";
+    }
 
 }

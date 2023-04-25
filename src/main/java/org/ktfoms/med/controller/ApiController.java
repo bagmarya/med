@@ -61,7 +61,6 @@ public class ApiController {
     }
 
     @GetMapping(value = "/sp_fin_fap", produces = "application/xml")
-
     public Spfinfap getFapFById() throws IOException {
         LocalDate d = LocalDate.now();
         Spfinfap spr = new Spfinfap("1.0", LocalDate.now().format(DateTimeFormatter.ofPattern("d.MM.uuuu")), fapService.getFapFinDtoList().subList(1,5));
@@ -88,4 +87,5 @@ public class ApiController {
 
         return spr;
     }
+
 }

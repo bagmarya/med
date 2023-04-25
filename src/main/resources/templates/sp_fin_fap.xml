@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<spfinfap>
+    <version>1.0</version>
+    <date>28.03.2023</date>
+    <FAP th:each="fapfin:${fapfins}">
+        <MKOD th:text="${fapfin.getMkod}"></MKOD>
+        <NAME_PODR th:text="${fapfin.getNamePodr.toString()}"></NAME_PODR>
+    </FAP>
+</spfinfap>
+
+
+
+
