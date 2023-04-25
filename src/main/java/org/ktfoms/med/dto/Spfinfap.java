@@ -38,7 +38,7 @@ public class Spfinfap {
 
     @JacksonXmlProperty
     private String date;
-
+    @JacksonXmlProperty(localName = "FAP")
     @JacksonXmlElementWrapper(useWrapping = false)
     private List<FapFinDto> FAP;
 

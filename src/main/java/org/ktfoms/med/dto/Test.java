@@ -35,3 +35,4 @@ public class Test {
     }
 }
 //            , headers = "Accept=application/xml"), headers = { "Content-Type = application/xml" }
+//output.write(new String("АБВГДфбвгдё".getBytes(StandardCharsets.UTF_8), "windows-1251"));
