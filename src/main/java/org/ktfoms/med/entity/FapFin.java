@@ -9,6 +9,7 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
+
 @Getter
 @Setter
 @Entity
@@ -149,6 +150,81 @@ public class FapFin {
     private double summAstra12;
     @Column(name = "summ_kapit12")
     private double summKapit12;
+
+    public void fillMonth(int month) throws NoSuchFieldException {
+        if (month <2 | month > 12){
+            throw new NoSuchFieldException("The month number should be between 2 and 12");
+        }
+        switch(month){
+            case 2:
+                this.gFin2 = this.gFin1;
+                this.kYkomp2 = this.kYkomp1;
+                this.summAstra2 = this.summAstra1;
+                this.summKapit2 = this.summKapit1;
+                break;
+            case 3:
+                this.gFin3 = this.gFin2;
+                this.kYkomp3 = this.kYkomp2;
+                this.summAstra3 = this.summAstra2;
+                this.summKapit3 = this.summKapit2;
+                break;
+            case 4:
+                this.gFin4 = this.gFin3;
+                this.kYkomp4 = this.kYkomp3;
+                this.summAstra4 = this.summAstra3;
+                this.summKapit4 = this.summKapit3;
+                break;
+            case 5:
+                this.gFin5 = this.gFin4;
+                this.kYkomp5 = this.kYkomp4;
+                this.summAstra5 = this.summAstra4;
+                this.summKapit5 = this.summKapit4;
+                break;
+            case 6:
+                this.gFin6 = this.gFin5;
+                this.kYkomp6 = this.kYkomp5;
+                this.summAstra6 = this.summAstra5;
+                this.summKapit6 = this.summKapit5;
+                break;
+            case 7:
+                this.gFin7 = this.gFin6;
+                this.kYkomp7 = this.kYkomp6;
+                this.summAstra7 = this.summAstra6;
+                this.summKapit7 = this.summKapit6;
+                break;
+            case 8:
+                this.gFin8 = this.gFin7;
+                this.kYkomp8 = this.kYkomp7;
+                this.summAstra8 = this.summAstra7;
+                this.summKapit8 = this.summKapit7;
+                break;
+            case 9:
+                this.gFin9 = this.gFin8;
+                this.kYkomp9 = this.kYkomp8;
+                this.summAstra9 = this.summAstra8;
+                this.summKapit9 = this.summKapit8;
+                break;
+            case 10:
+                this.gFin10 = this.gFin9;
+                this.kYkomp10 = this.kYkomp9;
+                this.summAstra10 = this.summAstra9;
+                this.summKapit10 = this.summKapit9;
+                break;
+            case 11:
+                this.gFin11 = this.gFin10;
+                this.kYkomp11 = this.kYkomp10;
+                this.summAstra11 = this.summAstra10;
+                this.summKapit11 = this.summKapit10;
+                break;
+            case 12:
+                this.gFin12 = this.gFin11;
+                this.kYkomp12 = this.kYkomp11;
+                this.summAstra12 = this.summAstra11;
+                this.summKapit12 = this.summKapit11;
+                break;
+        }
+    }
+
 
 
 

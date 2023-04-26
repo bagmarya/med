@@ -15,8 +15,10 @@ import org.ktfoms.med.service.FapService;
 import org.ktfoms.med.service.LpuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,6 +36,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.SortedMap;
+
 
 @RestController
 @RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -69,7 +72,17 @@ public class ApiController {
         LocalDate d = LocalDate.now();
         Spfinfap spr = new Spfinfap("1.0", LocalDate.now().format(DateTimeFormatter.ofPattern("d.MM.uuuu")), fapService.getFapFinDtoList());
         fapService.getFileSpfinfap();
+//        fapService.fillNextMonth(6);
         return spr;
     }
 
+    @PostMapping(value = "/fillNextMonth/{month}")
+    public ResponseEntity fillNextMonth(@PathVariable("month") int month) {
+        try {
+            fapService.fillNextMonth(month);
+            return ResponseEntity.ok().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(400).build();
+        }
+    }
 }

@@ -67,4 +67,18 @@ public class FapDao {
                         "from Fap f join Lpu l on f.moLpu = l.kodSp join FapFin ff on f.podr = ff.podr", FapFinDto.class)
                 .getResultList();
     }
+
+    @Transactional
+    public List<FapFin> getFapFinEntityList() {
+        return sessionFactory.getCurrentSession().createQuery("select ff from FapFin ff", FapFin.class)
+                .getResultList();
+    }
+
+    @Transactional
+    public void save(Object object) {
+        if (object == null) {
+            return;
+        }
+        sessionFactory.getCurrentSession().saveOrUpdate(object);
+    }
 }
