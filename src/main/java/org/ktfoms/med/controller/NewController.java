@@ -19,7 +19,9 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+// "Этот класс написан исключительно для формирования xml  с помощью шаблонов
+// но при кодировании cp1251 выходят подстановочные последовательности вместо букв.
+// можно будет возобновить работу класса, если это будет приемлемо
 @RestController
 @RequestMapping("/sp")
 public class NewController {
@@ -29,20 +31,6 @@ public class NewController {
     @Autowired
     private FapService fapService;
 
-    @GetMapping(value ="test",produces = {MediaType.APPLICATION_XML_VALUE})
-    @ResponseBody
-    public String test(){
-        Map<String, String> pinfo = new HashMap<>();
-        Context context = new Context();
-        context.setVariable("pinfo", pinfo);
-        pinfo.put("lastname", "Jordan");
-        pinfo.put("firstname", "Michael");
-        pinfo.put("country", "USA");
-
-        String content = springTemplateEngine.process("person-details",context);
-        return content;
-
-    }
 
     @GetMapping(value ="finfap",produces = {MediaType.APPLICATION_XML_VALUE})
     @ResponseBody

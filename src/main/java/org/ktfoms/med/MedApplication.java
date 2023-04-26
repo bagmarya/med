@@ -108,25 +108,25 @@ public class MedApplication {
     }
 
 
-    @Bean
-    SpringResourceTemplateResolver xmlTemplateResolver(ApplicationContext appCtx) {
-        SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
-
-        templateResolver.setApplicationContext(appCtx);
-        templateResolver.setPrefix("classpath:/templates/");
-        templateResolver.setSuffix(".xml");
-        templateResolver.setTemplateMode("XML");
-        templateResolver.setCharacterEncoding("windows-1251");
-        templateResolver.setCacheable(false);
-
-        return templateResolver;
-    }
-
-    @Bean(name="springTemplateEngine")
-    SpringTemplateEngine templateEngine(ApplicationContext appCtx) {
-        SpringTemplateEngine templateEngine = new SpringTemplateEngine();
-        templateEngine.setTemplateResolver(xmlTemplateResolver(appCtx));
-        return templateEngine;
-    }
+//    @Bean
+//    SpringResourceTemplateResolver xmlTemplateResolver(ApplicationContext appCtx) {
+//        SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
+//
+//        templateResolver.setApplicationContext(appCtx);
+//        templateResolver.setPrefix("classpath:/templates/");
+//        templateResolver.setSuffix(".xml");
+//        templateResolver.setTemplateMode("XML");
+////        templateResolver.setCharacterEncoding("windows-1251");
+//        templateResolver.setCacheable(false);
+//
+//        return templateResolver;
+//    }
+//
+//    @Bean(name="springTemplateEngine")
+//    SpringTemplateEngine templateEngine(ApplicationContext appCtx) {
+//        SpringTemplateEngine templateEngine = new SpringTemplateEngine();
+//        templateEngine.setTemplateResolver(xmlTemplateResolver(appCtx));
+//        return templateEngine;
+//    }
 
 }

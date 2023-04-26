@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import org.ktfoms.med.dto.FapDto;
+import org.ktfoms.med.dto.FapFinDto;
 import org.ktfoms.med.dto.Spfinfap;
 import org.ktfoms.med.dto.Test;
 import org.ktfoms.med.entity.Fap;
@@ -25,11 +26,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.SortedMap;
 
 @RestController
 @RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -63,28 +67,8 @@ public class ApiController {
     @GetMapping(value = "/sp_fin_fap", produces = "application/xml")
     public Spfinfap getFapFById() throws IOException {
         LocalDate d = LocalDate.now();
-        Spfinfap spr = new Spfinfap("1.0", LocalDate.now().format(DateTimeFormatter.ofPattern("d.MM.uuuu")), fapService.getFapFinDtoList().subList(1,5));
-
-        XmlMapper xmlMapper = new XmlMapper();
-        xmlMapper.configure(ToXmlGenerator.Feature.WRITE_XML_DECLARATION, false);
-//        File file = new File("D:\\new.xml");
-//        xmlMapper.writeValue(file, spr);
-
-
-        String fileName = "D:\\new.xml";
-        String encoding = "windows-1251";
-
-        Writer output = new OutputStreamWriter(new FileOutputStream(fileName), encoding);
-
-        output.write("<?xml version=\"1.0\" encoding=\"" + encoding + "\" ?>\n");
-
-//        output.write("АБВГДфбвгдё");
-//        String s = xmlMapper.valueToTree(spr).toString();
-        xmlMapper.writeValue(output, spr);
-//        output.write(s);
-//        output.flush();
-//        output.close();
-
+        Spfinfap spr = new Spfinfap("1.0", LocalDate.now().format(DateTimeFormatter.ofPattern("d.MM.uuuu")), fapService.getFapFinDtoList());
+        fapService.getFileSpfinfap();
         return spr;
     }
 

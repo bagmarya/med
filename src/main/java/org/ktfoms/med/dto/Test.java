@@ -1,12 +1,5 @@
 package org.ktfoms.med.dto;
 
-//import javax.xml.bind.annotation.XmlElement;
-//import javax.xml.bind.annotation.XmlRootElement;
-
-//@XmlRootElement(
-//        namespace = "http://spring.otus.ru",
-//        name = "test-jaxb"
-//)
 public class Test {
 
     private Integer id;
@@ -36,3 +29,10 @@ public class Test {
 }
 //            , headers = "Accept=application/xml"), headers = { "Content-Type = application/xml" }
 //output.write(new String("АБВГДфбвгдё".getBytes(StandardCharsets.UTF_8), "windows-1251"));
+
+
+//        XmlMapper xmlMapper = new XmlMapper();
+//        xmlMapper.configure(ToXmlGenerator.Feature.WRITE_XML_DECLARATION, false);
+//        File file = new File("D:\\new.xml");
+//        xmlMapper.writeValue(file, spr);
+//        xmlMapper.writeValue(output, spr);
