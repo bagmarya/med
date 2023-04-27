@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
+import java.io.IOException;
 import java.util.Calendar;
 
 @Controller
@@ -28,12 +29,11 @@ public class MainController {
         model.addAttribute("today", Calendar.getInstance());
         return "index";
     }
-
-    @RequestMapping(value = { "/sp" }, method = RequestMethod.GET)
-    public String sp(Model model) {
-        System.out.println("!!!!!!!!!!!!!!!сервер отвечает!!!!!!!!!!!!!!!!");
-        model.addAttribute("fapfindtos", fapService.getFapFinDtoList().subList(1,5));
-        return "sp_fin_fap";
-    }
+//Вернет краказябры, даже если найдет шаблон в виндовой кодировке
+//    @RequestMapping(value = { "/sp" }, method = RequestMethod.GET, produces = "application/xml;charset=windows-1251")
+//    public String sp() throws IOException {
+//        fapService.getFileSpfinfap();
+//        return "sp_fin_fap.xml";
+//    }
 
 }

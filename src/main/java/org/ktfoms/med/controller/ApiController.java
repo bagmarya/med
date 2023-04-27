@@ -1,41 +1,28 @@
 package org.ktfoms.med.controller;
 
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import org.ktfoms.med.dto.FapDto;
-import org.ktfoms.med.dto.FapFinDto;
 import org.ktfoms.med.dto.Spfinfap;
-import org.ktfoms.med.dto.Test;
 import org.ktfoms.med.entity.Fap;
 import org.ktfoms.med.entity.FapFin;
 import org.ktfoms.med.entity.Lpu;
 import org.ktfoms.med.service.FapService;
 import org.ktfoms.med.service.LpuService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.DataOutput;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.io.Writer;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.SortedMap;
 
 
 @RestController
@@ -72,7 +59,6 @@ public class ApiController {
         LocalDate d = LocalDate.now();
         Spfinfap spr = new Spfinfap("1.0", LocalDate.now().format(DateTimeFormatter.ofPattern("d.MM.uuuu")), fapService.getFapFinDtoList());
         fapService.getFileSpfinfap();
-//        fapService.fillNextMonth(6);
         return spr;
     }
 
@@ -84,5 +70,12 @@ public class ApiController {
         } catch (RuntimeException e) {
             return ResponseEntity.status(400).build();
         }
+    }
+
+//TODO Шлет на фронт xml в cp1251 и сохраняет файл такой же xml в D:\data\javaprojects\med\target\classes\templates,
+// но нужно поменять чтобы запускалось скачивание файла, а сам файл никуда в ФС не сохранялся
+    @RequestMapping(value = { "/sp" }, method = RequestMethod.GET, produces = "application/xml;charset=windows-1251")
+    public ResponseEntity sp() throws IOException {
+        return new ResponseEntity(fapService.getFileSpfinfap(), HttpStatus.OK);
     }
 }

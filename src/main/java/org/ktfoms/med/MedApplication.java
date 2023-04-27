@@ -18,6 +18,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
@@ -106,7 +108,10 @@ public class MedApplication {
         return factoryBean.getNativeEntityManagerFactory();
 
     }
-
+    @Bean
+    public ResourceLoader createResourceLoader() {
+        return new DefaultResourceLoader();
+    }
 
 //    @Bean
 //    SpringResourceTemplateResolver xmlTemplateResolver(ApplicationContext appCtx) {
