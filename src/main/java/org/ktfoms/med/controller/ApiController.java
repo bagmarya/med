@@ -54,7 +54,9 @@ public class ApiController {
         return fapService.getFapFinById(id);
     }
 
-    @GetMapping(value = "/sp_fin_fap", produces = "application/xml")
+
+    //TODO Шлет на фронт xml в utf-8; если будет не нужен, совсем убрать
+    @GetMapping(value = "/sp_fin_fap_utf-8", produces = "application/xml")
     public Spfinfap getFapFById() throws IOException {
         LocalDate d = LocalDate.now();
         Spfinfap spr = new Spfinfap("1.0", LocalDate.now().format(DateTimeFormatter.ofPattern("d.MM.uuuu")), fapService.getFapFinDtoList());
@@ -74,8 +76,8 @@ public class ApiController {
 
 //TODO Шлет на фронт xml в cp1251 и сохраняет файл такой же xml в D:\data\javaprojects\med\target\classes\templates,
 // но нужно поменять чтобы запускалось скачивание файла, а сам файл никуда в ФС не сохранялся
-    @RequestMapping(value = { "/sp" }, method = RequestMethod.GET, produces = "application/xml;charset=windows-1251")
-    public ResponseEntity sp() throws IOException {
-        return new ResponseEntity(fapService.getFileSpfinfap(), HttpStatus.OK);
+    @RequestMapping(value = { "/sp_fin_fap" }, method = RequestMethod.GET, produces = "application/xml;charset=windows-1251")
+    public ResponseEntity<String> sp() throws IOException {
+        return new ResponseEntity<>(fapService.getFileSpfinfap(), HttpStatus.OK);
     }
 }
