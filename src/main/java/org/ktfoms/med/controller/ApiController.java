@@ -83,9 +83,10 @@ public class ApiController {
         return new ResponseEntity<>(fapService.getFileSpfinfap(), HttpStatus.OK);
     }
 
+    //todo: убрать заглушку на 2023г и сделать нормально
     @RequestMapping(value = { "/funding_calc/{month}" }, method = RequestMethod.GET)
     public void fundingCalculate(@PathVariable("month") int month) {
         System.out.println("!!!!!!!!!!!!!!!execute!!!!!!!!!!!!!!!!");
-        fapService.fundingCalc(month);
+        fapService.fundingCalc(month, 2023);
     }
 }

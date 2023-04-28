@@ -33,8 +33,6 @@ public class MainController {
     }
     @RequestMapping(value = { "/funding_fap" }, method = RequestMethod.GET)
     public String fundingFap(Model model) {
-        System.out.println("!!!!!!!!!!!!!!!сервер отвечает!!!!!!!!!!!!!!!!");
-        model.addAttribute("today", Calendar.getInstance());
         return "funding_fap";
     }
 
@@ -68,7 +66,7 @@ public class MainController {
 
         Integer month = monthForm.getMonth();
         Integer year = monthForm.getYear();
-        fapService.fundingCalc(month);
+        fapService.fundingCalc(month, year);
         return "funding_calc_done";
     }
 

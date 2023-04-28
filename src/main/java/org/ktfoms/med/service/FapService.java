@@ -8,6 +8,7 @@ import org.ktfoms.med.entity.Fap;
 import org.ktfoms.med.entity.FapFin;
 import org.ktfoms.med.entity.FundingNorma;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,7 @@ import java.io.Writer;
 import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -154,12 +156,16 @@ public class FapService {
         fapFinEntityList.stream().forEach(fapDao::save);
     }
 
-    //TODO: убрать заглушку 2023
+    //todo: убрать принты, когда станут не нужны.
+    //TODO: добавить проверку наличия  в базе норм подушевого финансирования на запрошенный месяц
+    //todo: добавить проверку наличия данных финансирования ФАП за запрошенный год
     @Transactional
-    public void fundingCalc(Integer month){
-        Map<String, FundingNorma> fundingNormaMap = lpuDao.getFundingNormaEntityList()
+    public void fundingCalc(Integer month, Integer year){
+        Date fundingDate = new Date(year-1900, month-1, 1);
+        System.out.println(fundingDate);
+        Map<String, FundingNorma> fundingNormaMap = lpuDao.getFundingNormaEntityList(fundingDate)
                 .stream().collect(Collectors.toMap(fn -> fn.getMoLpu(), fn -> fn));
-        List<FapFin> fapFinEntityList = fapDao.getFapFinEntityList(2023);
+        List<FapFin> fapFinEntityList = fapDao.getFapFinEntityList(year);
         for (FapFin ff: fapFinEntityList){
             String lpuKey = ff.getPodr().substring(0,30);
             System.out.println(lpuKey);
@@ -191,7 +197,30 @@ public class FapService {
                     ff.setSummAstra6(Math.round(ff.getGFin6() * ff.getKYkomp6() * rateAstra * 100 / 12) / 100.0);
                     ff.setSummKapit6((Math.round(ff.getGFin6() * ff.getKYkomp6() * 100 / 12) / 100.0) - ff.getSummAstra6());
                     break;
-
+                case 7:
+                    ff.setSummAstra7(Math.round(ff.getGFin7() * ff.getKYkomp7() * rateAstra * 100 / 12) / 100.0);
+                    ff.setSummKapit7((Math.round(ff.getGFin7() * ff.getKYkomp7() * 100 / 12) / 100.0) - ff.getSummAstra7());
+                    break;
+                case 8:
+                    ff.setSummAstra8(Math.round(ff.getGFin8() * ff.getKYkomp8() * rateAstra * 100 / 12) / 100.0);
+                    ff.setSummKapit8((Math.round(ff.getGFin8() * ff.getKYkomp8() * 100 / 12) / 100.0) - ff.getSummAstra8());
+                    break;
+                case 9:
+                    ff.setSummAstra9(Math.round(ff.getGFin9() * ff.getKYkomp9() * rateAstra * 100 / 12) / 100.0);
+                    ff.setSummKapit9((Math.round(ff.getGFin9() * ff.getKYkomp9() * 100 / 12) / 100.0) - ff.getSummAstra9());
+                    break;
+                case 10:
+                    ff.setSummAstra10(Math.round(ff.getGFin10() * ff.getKYkomp10() * rateAstra * 100 / 12) / 100.0);
+                    ff.setSummKapit10((Math.round(ff.getGFin10() * ff.getKYkomp10() * 100 / 12) / 100.0) - ff.getSummAstra10());
+                    break;
+                case 11:
+                    ff.setSummAstra11(Math.round(ff.getGFin11() * ff.getKYkomp11() * rateAstra * 100 / 12) / 100.0);
+                    ff.setSummKapit11((Math.round(ff.getGFin11() * ff.getKYkomp11() * 100 / 12) / 100.0) - ff.getSummAstra11());
+                    break;
+                case 12:
+                    ff.setSummAstra12(Math.round(ff.getGFin12() * ff.getKYkomp12() * rateAstra * 100 / 12) / 100.0);
+                    ff.setSummKapit12((Math.round(ff.getGFin12() * ff.getKYkomp12() * 100 / 12) / 100.0) - ff.getSummAstra12());
+                    break;
             }
         }
         fapFinEntityList.stream().forEach(fapDao::save);
