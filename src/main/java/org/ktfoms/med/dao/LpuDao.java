@@ -1,11 +1,15 @@
 package org.ktfoms.med.dao;
 
 import org.hibernate.SessionFactory;
+import org.ktfoms.med.entity.FapFin;
+import org.ktfoms.med.entity.FundingNorma;
 import org.ktfoms.med.entity.Lpu;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Repository
 @Transactional
@@ -24,6 +28,12 @@ public class LpuDao {
         return sessionFactory.getCurrentSession().get(Lpu.class, id);
 //        return sessionFactory.getCurrentSession().createQuery("select l from Lpu l where l.id = :id", Lpu.class)
 //                .setParameter("id", id).getSingleResult();
+    }
+
+    @Transactional
+    public List<FundingNorma> getFundingNormaEntityList() {
+        return sessionFactory.getCurrentSession().createQuery("select fn from FundingNorma fn", FundingNorma.class)
+            .getResultList();
     }
 
 

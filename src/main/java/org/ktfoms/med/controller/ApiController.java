@@ -64,7 +64,7 @@ public class ApiController {
         return spr;
     }
 
-    @PostMapping(value = "/fillNextMonth/{month}")
+    @PostMapping(value = "/fill_next_month/{month}")
     public ResponseEntity fillNextMonth(@PathVariable("month") int month) {
         try {
             fapService.fillNextMonth(month);
@@ -79,5 +79,11 @@ public class ApiController {
     @RequestMapping(value = { "/sp_fin_fap" }, method = RequestMethod.GET, produces = "application/xml;charset=windows-1251")
     public ResponseEntity<String> sp() throws IOException {
         return new ResponseEntity<>(fapService.getFileSpfinfap(), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = { "/exec/{month}" }, method = RequestMethod.GET)
+    public void exec(@PathVariable("month") int month) {
+        System.out.println("!!!!!!!!!!!!!!!execute!!!!!!!!!!!!!!!!");
+        fapService.fundingCalc(month);
     }
 }

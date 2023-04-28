@@ -29,6 +29,8 @@ public class MainController {
         model.addAttribute("today", Calendar.getInstance());
         return "index";
     }
+
+
 //Вернет краказябры, даже если найдет шаблон в виндовой кодировке
 //    @RequestMapping(value = { "/sp" }, method = RequestMethod.GET, produces = "application/xml;charset=windows-1251")
 //    public String sp() throws IOException {
