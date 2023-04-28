@@ -37,7 +37,7 @@ public class NewController {
     public String finfap(){
         Context context = new Context();
 
-        List<FapFinDto> fapfins = fapService.getFapFinDtoList().subList(1,5);
+        List<FapFinDto> fapfins = fapService.getFapFinDtoList(2023).subList(1,5);
         context.setVariable("fapfins", fapfins);
 
         Map<String, String> pinfo = new HashMap<>();
@@ -58,7 +58,7 @@ public class NewController {
     @ResponseBody
     public Spfinfap returnsp() {
 
-        Spfinfap spr = new Spfinfap("1.0", LocalDate.now().toString(), fapService.getFapFinDtoList());
+        Spfinfap spr = new Spfinfap("1.0", LocalDate.now().toString(), fapService.getFapFinDtoList(2023));
         return spr;
     }
 }

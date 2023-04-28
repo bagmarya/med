@@ -50,12 +50,12 @@ public class FapService {
         return fapDao.getFapFinById(id);
     }
 
-    public List<FapFinDto> getFapFinDtoList(){
-        return fapDao.getFapFinDtoList();
+    public List<FapFinDto> getFapFinDtoList(Integer year){
+        return fapDao.getFapFinDtoList(year);
     }
 
     // todo: переписать без использования ФС.
-    public String  getFileSpfinfap() throws IOException {
+    public String  getFileSpfinfap(Integer year) throws IOException {
 
         String fileName = "target/classes/templates/sp_fin_fap.xml";
         String encoding = "windows-1251";
@@ -64,7 +64,7 @@ public class FapService {
         output.write("<spfinfap>\n" +
                 "<version>1.0</version>\n" +
                 "<date>" + LocalDate.now().format(DateTimeFormatter.ofPattern("d.MM.uuuu")) + "</date>\n");
-        for (FapFinDto rec : getFapFinDtoList()) {
+        for (FapFinDto rec : getFapFinDtoList(year)) {
             output.write("<FAP>" +
                     "<MKOD>" + rec.getMkod() + "</MKOD>" +
                     "<NAME_PODR>" + rec.getNamePodr() + "</NAME_PODR>" +

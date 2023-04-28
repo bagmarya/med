@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.function.ServerRequest;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -54,13 +55,13 @@ public class ApiController {
         return fapService.getFapFinById(id);
     }
 
-
+    //todo: убрать заглушку на 2023г и сделать нормально
     //TODO Шлет на фронт xml в utf-8; если будет не нужен, совсем убрать
     @GetMapping(value = "/sp_fin_fap_utf-8", produces = "application/xml")
     public Spfinfap getFapFById() throws IOException {
         LocalDate d = LocalDate.now();
-        Spfinfap spr = new Spfinfap("1.0", LocalDate.now().format(DateTimeFormatter.ofPattern("d.MM.uuuu")), fapService.getFapFinDtoList());
-        fapService.getFileSpfinfap();
+        Spfinfap spr = new Spfinfap("1.0", LocalDate.now().format(DateTimeFormatter.ofPattern("d.MM.uuuu")), fapService.getFapFinDtoList(2023));
+//        fapService.getFileSpfinfap();
         return spr;
     }
 //todo: убрать заглушку на 2023г и сделать нормально
@@ -78,9 +79,11 @@ public class ApiController {
 
 //TODO Шлет на фронт xml в cp1251 и сохраняет файл такой же xml в D:\data\javaprojects\med\target\classes\templates,
 // но нужно поменять чтобы запускалось скачивание файла, а сам файл никуда в ФС не сохранялся
-    @RequestMapping(value = { "/sp_fin_fap" }, method = RequestMethod.GET, produces = "application/xml;charset=windows-1251")
-    public ResponseEntity<String> sp() throws IOException {
-        return new ResponseEntity<>(fapService.getFileSpfinfap(), HttpStatus.OK);
+    @RequestMapping(value = { "/{year}/sp_fin_fap" }, method = RequestMethod.GET, produces = "application/xml;charset=windows-1251")
+    public ResponseEntity<String> sp(@PathVariable("year") int year) throws IOException {
+        HttpHeaders h = new HttpHeaders();
+        h.set("Content-Disposition", "attachment; filename=\"sp_fin_fap.xml\"");
+        return new ResponseEntity<>(fapService.getFileSpfinfap(year),h, HttpStatus.OK);
     }
 
     //todo: убрать заглушку на 2023г и сделать нормально

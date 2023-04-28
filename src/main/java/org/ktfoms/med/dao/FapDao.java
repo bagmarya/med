@@ -49,7 +49,7 @@ public class FapDao {
 
 
     @Transactional
-    public List<FapFinDto> getFapFinDtoList() {
+    public List<FapFinDto> getFapFinDtoList(Integer year) {
         return sessionFactory.getCurrentSession().createQuery("select new org.ktfoms.med.dto.FapFinDto(" +
                         "l.mkod, f.namePodr, f.moLpu, f.podr, " +
                         "ff.gFin1, ff.kYkomp1, ff.summAstra1, ff.summKapit1," +
@@ -64,8 +64,8 @@ public class FapDao {
                         "ff.gFin10, ff.kYkomp10, ff.summAstra10, ff.summKapit10," +
                         "ff.gFin11, ff.kYkomp11, ff.summAstra11, ff.summKapit11," +
                         "ff.gFin12, ff.kYkomp12, ff.summAstra12, ff.summKapit12) " +
-                        "from Fap f join Lpu l on f.moLpu = l.kodSp join FapFin ff on f.podr = ff.podr", FapFinDto.class)
-                .getResultList();
+                        "from Fap f join Lpu l on f.moLpu = l.kodSp join FapFin ff on f.podr = ff.podr where ff.year = :year", FapFinDto.class)
+                .setParameter("year", year).getResultList();
     }
 
     @Transactional
