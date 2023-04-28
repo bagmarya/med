@@ -151,10 +151,12 @@ public class FapFin {
     @Column(name = "summ_kapit12")
     private double summKapit12;
 
-    public void fillMonth(int month) throws NoSuchFieldException {
-        if (month <2 | month > 12){
-            throw new NoSuchFieldException("The month number should be between 2 and 12");
-        }
+    @Column(name = "year")
+    private Integer year;
+
+
+    public void fillMonth(int month) {
+
         switch(month){
             case 2:
                 this.gFin2 = this.gFin1;

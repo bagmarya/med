@@ -63,13 +63,15 @@ public class ApiController {
         fapService.getFileSpfinfap();
         return spr;
     }
-
+//todo: убрать заглушку на 2023г и сделать нормально
     @PostMapping(value = "/fill_next_month/{month}")
     public ResponseEntity fillNextMonth(@PathVariable("month") int month) {
         try {
-            fapService.fillNextMonth(month);
+            fapService.fillNextMonth(month, 2023);
             return ResponseEntity.ok().build();
         } catch (RuntimeException e) {
+            return ResponseEntity.status(400).build();
+        } catch (NoSuchFieldException e) {
             return ResponseEntity.status(400).build();
         }
     }
@@ -81,8 +83,8 @@ public class ApiController {
         return new ResponseEntity<>(fapService.getFileSpfinfap(), HttpStatus.OK);
     }
 
-    @RequestMapping(value = { "/exec/{month}" }, method = RequestMethod.GET)
-    public void exec(@PathVariable("month") int month) {
+    @RequestMapping(value = { "/funding_calc/{month}" }, method = RequestMethod.GET)
+    public void fundingCalculate(@PathVariable("month") int month) {
         System.out.println("!!!!!!!!!!!!!!!execute!!!!!!!!!!!!!!!!");
         fapService.fundingCalc(month);
     }

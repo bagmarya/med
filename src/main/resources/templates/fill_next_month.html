@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Перенос данных из предыдущего месяца</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:insert="~{menu :: copy}">...</div>
+<h1>Перенос данных из предыдущего месяца</h1>
+
+<form th:action="@{/fill_next_month}" th:object="${monthForm}" method="POST">
+
+    Заполняемый месяц
+    <input type="text" th:field="*{month}" />
+    <br/>
+    Год
+    <input type="text" th:field="*{year}" />
+    <br/>
+    <input type="submit" value="Заполнить" />
+</form>
+</body>
+</html>

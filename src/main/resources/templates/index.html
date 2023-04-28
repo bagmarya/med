@@ -6,6 +6,7 @@
     <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
 </head>
 <body>
+<div th:insert="~{menu :: copy}">...</div>
 <h1>Добро пожаловать!</h1>
 <p>
     Сегодня: <span th:text="${#calendars.format(today,'dd MMMM yyyy')}">13 May 2011</span>

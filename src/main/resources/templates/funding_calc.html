@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Расчет месячного финансового обеспечения ФАП</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:insert="~{menu :: copy}">...</div>
+<h1>Расчет месячного финансового обеспечения ФАП</h1>
+<p>Укажите период для рассчета</p>
+<form th:action="@{/funding_calc}" th:object="${monthForm}" method="POST">
+
+    Месяц
+    <input type="text" th:field="*{month}" />
+    <br/>
+    Год
+    <input type="text" th:field="*{year}" />
+    <br/>
+    <input type="submit" value="Рассчитать" />
+</form>
+</body>
+</html>

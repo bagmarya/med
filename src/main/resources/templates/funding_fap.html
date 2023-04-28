@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Финансовое обеспечение ФАП</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:insert="~{menu :: copy}">...</div>
+<h1>Финансовое обеспечение ФАП</h1>
+
+<p><a th:href="@{/fill_next_month}">Перенос данных из предыдущего месяца</a></p>
+<p><a th:href="@{/funding_calc}">Расчет месячного финансового обеспечения ФАП</a></p>
+
+</body>
+</html>

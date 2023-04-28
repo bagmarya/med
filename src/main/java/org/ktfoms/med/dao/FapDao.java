@@ -69,9 +69,9 @@ public class FapDao {
     }
 
     @Transactional
-    public List<FapFin> getFapFinEntityList() {
-        return sessionFactory.getCurrentSession().createQuery("select ff from FapFin ff", FapFin.class)
-                .getResultList();
+    public List<FapFin> getFapFinEntityList(Integer year) {
+        return sessionFactory.getCurrentSession().createQuery("select ff from FapFin ff where ff.year = :year", FapFin.class)
+                .setParameter("year", year).getResultList();
     }
 
     @Transactional
