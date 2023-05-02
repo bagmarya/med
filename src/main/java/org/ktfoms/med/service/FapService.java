@@ -54,6 +54,7 @@ public class FapService {
         return fapDao.getFapFinDtoList(year);
     }
 
+
     // todo: переписать без использования ФС.
     public String  getFileSpfinfap(Integer year) throws IOException {
 
@@ -161,7 +162,8 @@ public class FapService {
     //todo: добавить проверку наличия данных финансирования ФАП за запрошенный год
     @Transactional
     public void fundingCalc(Integer month, Integer year){
-        Date fundingDate = new Date(year-1900, month-1, 1);
+//        Date fundingDate = new Date(year-1900, month-1, 1);
+        LocalDate fundingDate = LocalDate.of(year, month, 1);
         System.out.println(fundingDate);
         Map<String, FundingNorma> fundingNormaMap = lpuDao.getFundingNormaEntityList(fundingDate)
                 .stream().collect(Collectors.toMap(fn -> fn.getMoLpu(), fn -> fn));

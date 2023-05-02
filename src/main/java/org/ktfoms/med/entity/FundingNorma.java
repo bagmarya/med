@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Getter
@@ -34,7 +35,7 @@ public class FundingNorma {
     private String mNameF;
 
     @Column(name = "funding_date")
-    private Date fundingDate;
+    private LocalDate fundingDate;
 
     @Column(name = "quantity_in_Astr")
     private Integer quantityInAstr;

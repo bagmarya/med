@@ -1,6 +1,7 @@
 package org.ktfoms.med.controller;
 
 import org.ktfoms.med.dto.Test;
+import org.ktfoms.med.entity.FundingNorma;
 import org.ktfoms.med.entity.Lpu;
 import org.ktfoms.med.form.MonthForm;
 import org.ktfoms.med.service.FapService;
@@ -15,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Calendar;
+import java.util.List;
 
 @Controller
 public class MainController {
@@ -68,6 +71,13 @@ public class MainController {
         Integer year = monthForm.getYear();
         fapService.fundingCalc(month, year);
         return "funding_calc_done";
+    }
+
+    @RequestMapping(value = "/funding_norma", method = RequestMethod.GET)
+    public String showFundingNormaPage(Model model) {
+        List<FundingNorma> list = lpuService.getFundingNormaInfos();
+        model.addAttribute("fundingNormaInfos", list);
+        return "funding_norma_page";
     }
 
 //Вернет краказябры, даже если найдет шаблон в виндовой кодировке

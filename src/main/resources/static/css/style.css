@@ -1,0 +1,58 @@
+
+h1 {
+    font-family: 'Roboto', 'Helvetica Nue', sans-serif;
+    margin-top: 1.5em;
+    font-size: 32px;
+    color: darkgreen;
+}
+
+h2 {
+    font-family: 'Roboto', 'Helvetica Nue', sans-serif;
+    margin-top: 1.5em;
+}
+
+h3 {
+    font-family: 'Roboto', 'Helvetica Nue', sans-serif;
+    margin-top: 1.5em;
+}
+
+div.content {
+    width: 70vw;
+    margin: auto;
+
+}
+
+table {
+    border-collapse: collapse;
+    border: 1px solid black;
+}
+
+table th, table td {
+    padding: 5px;
+    border: 1px solid black;
+}
+
+figcaption {
+    font-style: italic;
+    display: table-caption;
+    caption-side: bottom;
+
+}
+
+figure {
+    display: table;
+    float: right;
+    text-align: center;
+}
+
+div.clear {
+    clear: both;
+}
+
+span.strong {
+    font-weight: 800;
+}
+
+form {
+
+}

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ru">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Справочник нормативов подушевого финансирования</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:insert="~{menu :: copy}">...</div>
+<h1>Справочник нормативов подушевого финансирования</h1>
+<table>
+  <tr>
+    <th>ID</th>
+    <th>ЛПУ</th>
+    <th>Дата начала</th>
+    <th>Численность прикрепленных по Астрамед</th>
+    <th>Численность прикрепленных по Капитал</th>
+    <th>Норматив подушевого</th>
+  </tr>
+  <tr th:each="fundingNormaInfo:${fundingNormaInfos}">
+    <td th:utext="${fundingNormaInfo.id}">..</td>
+    <td th:utext="${fundingNormaInfo.mNameF}">..</td>
+    <td th:utext="${fundingNormaInfo.fundingDate}">..</td>
+    <td th:utext="${fundingNormaInfo.quantityInAstr}">..</td>
+    <td th:utext="${fundingNormaInfo.quantityInKap}">..</td>
+    <td th:utext="${fundingNormaInfo.norma}">..</td>
+  </tr>
+</table>
+<!--<a href="addNomenclature">Добавить</a>-->
+</body>
+</html>

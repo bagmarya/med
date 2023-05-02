@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -31,11 +32,15 @@ public class LpuDao {
     }
 
     @Transactional
-    public List<FundingNorma> getFundingNormaEntityList(Date fundingDate) {
+    public List<FundingNorma> getFundingNormaEntityList(LocalDate fundingDate) {
         return sessionFactory.getCurrentSession().createQuery("select fn from FundingNorma fn where fn.fundingDate = :fundingDate", FundingNorma.class)
                 .setParameter("fundingDate", fundingDate).getResultList();
     }
 
-
+    @Transactional
+    public List<FundingNorma> getFundingNormaEntityList() {
+        return sessionFactory.getCurrentSession().createQuery("select fn from FundingNorma fn", FundingNorma.class)
+                .getResultList();
+    }
 
 }

@@ -78,7 +78,7 @@ public class ApiController {
     }
 
 //TODO Шлет на фронт xml в cp1251 и сохраняет файл такой же xml в D:\data\javaprojects\med\target\classes\templates,
-// но нужно поменять чтобы запускалось скачивание файла, а сам файл никуда в ФС не сохранялся
+// но нужно поменять чтобы сам файл никуда в ФС не сохранялся
     @RequestMapping(value = { "/{year}/sp_fin_fap" }, method = RequestMethod.GET, produces = "application/xml;charset=windows-1251")
     public ResponseEntity<String> sp(@PathVariable("year") int year) throws IOException {
         HttpHeaders h = new HttpHeaders();
@@ -92,4 +92,6 @@ public class ApiController {
         System.out.println("!!!!!!!!!!!!!!!execute!!!!!!!!!!!!!!!!");
         fapService.fundingCalc(month, 2023);
     }
+
+
 }
