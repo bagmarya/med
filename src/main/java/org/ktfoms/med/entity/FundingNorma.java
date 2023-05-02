@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 @Getter
@@ -45,5 +46,9 @@ public class FundingNorma {
 
     @Column(name = "norma")
     private double norma;
+
+    public String getFormatedFundingDate(){
+        return this.fundingDate.format(DateTimeFormatter.ofPattern("d.MM.uuuu"));
+    }
 
 }

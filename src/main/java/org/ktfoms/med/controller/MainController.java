@@ -17,6 +17,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupp
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.List;
 
@@ -77,6 +78,8 @@ public class MainController {
     public String showFundingNormaPage(Model model) {
         List<FundingNorma> list = lpuService.getFundingNormaInfos();
         model.addAttribute("fundingNormaInfos", list);
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("d.MM.uuuu");
+        model.addAttribute("dateTimeFormatter", dateTimeFormatter);
         return "funding_norma_page";
     }
 

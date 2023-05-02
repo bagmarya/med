@@ -21,12 +21,12 @@
   <tr th:each="fundingNormaInfo:${fundingNormaInfos}">
     <td th:utext="${fundingNormaInfo.id}">..</td>
     <td th:utext="${fundingNormaInfo.mNameF}">..</td>
-    <td th:utext="${fundingNormaInfo.fundingDate}">..</td>
+    <td th:utext="${fundingNormaInfo.FormatedFundingDate}">..</td>
     <td th:utext="${fundingNormaInfo.quantityInAstr}">..</td>
     <td th:utext="${fundingNormaInfo.quantityInKap}">..</td>
     <td th:utext="${fundingNormaInfo.norma}">..</td>
   </tr>
 </table>
-<!--<a href="addNomenclature">Добавить</a>-->
+<a href="addFundingNorma">Добавить</a>
 </body>
 </html>
