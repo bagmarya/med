@@ -89,6 +89,9 @@ public class MainController {
     public String editFundingNorma(Model model, @PathVariable("id") int id) {
         EditFundingNormaForm editFundingNormaForm = new EditFundingNormaForm();
         FundingNorma entity = lpuService.getFundingNormaById(id);
+        editFundingNormaForm.setQuantityInAstr(entity.getQuantityInAstr().toString());
+        editFundingNormaForm.setQuantityInKap(entity.getQuantityInKap().toString());
+        editFundingNormaForm.setNorma(String.valueOf(entity.getNorma()));
         model.addAttribute("editFundingNormaForm", editFundingNormaForm);
         model.addAttribute("id", id);
         model.addAttribute("lpu", entity);

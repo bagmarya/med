@@ -35,9 +35,15 @@ public class LpuService {
     @Transactional
     public void saveFundingNorma(int id, EditFundingNormaForm editFundingNormaForm) {
         FundingNorma fn = lpuDao.getFundingNormaById(id);
-        fn.setQuantityInAstr(Integer.parseInt(editFundingNormaForm.getQuantityInAstr()));
-        fn.setQuantityInKap(Integer.parseInt(editFundingNormaForm.getQuantityInKap()));
-        fn.setNorma(Double.parseDouble(editFundingNormaForm.getNorma()));
+        if (editFundingNormaForm.getQuantityInAstr() != "") {
+            fn.setQuantityInAstr(Integer.parseInt(editFundingNormaForm.getQuantityInAstr()));
+        }
+        if (editFundingNormaForm.getQuantityInKap() != "") {
+            fn.setQuantityInKap(Integer.parseInt(editFundingNormaForm.getQuantityInKap()));
+        }
+        if (editFundingNormaForm.getNorma() != "") {
+            fn.setNorma(Double.parseDouble(editFundingNormaForm.getNorma().replace(',', '.')));
+        }
         System.out.println(fn);
         lpuDao.save(fn);
     }
