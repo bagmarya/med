@@ -3,6 +3,7 @@ package org.ktfoms.med.service;
 import org.ktfoms.med.dao.LpuDao;
 import org.ktfoms.med.entity.FundingNorma;
 import org.ktfoms.med.entity.Lpu;
+import org.ktfoms.med.form.EditFundingNormaForm;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,4 +28,17 @@ public class LpuService {
 
     }
 
+    public FundingNorma getFundingNormaById(int id) {
+        return lpuDao.getFundingNormaById(id);
+    }
+
+    @Transactional
+    public void saveFundingNorma(int id, EditFundingNormaForm editFundingNormaForm) {
+        FundingNorma fn = lpuDao.getFundingNormaById(id);
+        fn.setQuantityInAstr(Integer.parseInt(editFundingNormaForm.getQuantityInAstr()));
+        fn.setQuantityInKap(Integer.parseInt(editFundingNormaForm.getQuantityInKap()));
+        fn.setNorma(Double.parseDouble(editFundingNormaForm.getNorma()));
+        System.out.println(fn);
+        lpuDao.save(fn);
+    }
 }

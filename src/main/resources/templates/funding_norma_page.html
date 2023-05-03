@@ -19,7 +19,7 @@
     <th>Норматив подушевого</th>
   </tr>
   <tr th:each="fundingNormaInfo:${fundingNormaInfos}">
-    <td th:utext="${fundingNormaInfo.id}">..</td>
+    <td><a th:href=@{edit_funding_norma/{id}(id=${fundingNormaInfo.id})}>Редактировать</a></td>
     <td th:utext="${fundingNormaInfo.mNameF}">..</td>
     <td th:utext="${fundingNormaInfo.FormatedFundingDate}">..</td>
     <td th:utext="${fundingNormaInfo.quantityInAstr}">..</td>
@@ -27,6 +27,6 @@
     <td th:utext="${fundingNormaInfo.norma}">..</td>
   </tr>
 </table>
-<a href="addFundingNorma">Добавить</a>
+<!--<a href="addFundingNorma">Добавить</a>-->
 </body>
 </html>

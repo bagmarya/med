@@ -3,6 +3,7 @@ package org.ktfoms.med.controller;
 import org.ktfoms.med.dto.Test;
 import org.ktfoms.med.entity.FundingNorma;
 import org.ktfoms.med.entity.Lpu;
+import org.ktfoms.med.form.EditFundingNormaForm;
 import org.ktfoms.med.form.MonthForm;
 import org.ktfoms.med.service.FapService;
 import org.ktfoms.med.service.LpuService;
@@ -11,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
@@ -81,6 +83,24 @@ public class MainController {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("d.MM.uuuu");
         model.addAttribute("dateTimeFormatter", dateTimeFormatter);
         return "funding_norma_page";
+    }
+
+    @RequestMapping(value = { "/edit_funding_norma/{id}" }, method = RequestMethod.GET)
+    public String editFundingNorma(Model model, @PathVariable("id") int id) {
+        EditFundingNormaForm editFundingNormaForm = new EditFundingNormaForm();
+        FundingNorma entity = lpuService.getFundingNormaById(id);
+        model.addAttribute("editFundingNormaForm", editFundingNormaForm);
+        model.addAttribute("id", id);
+        model.addAttribute("lpu", entity);
+        return "edit_funding_norma";
+    }
+
+    @RequestMapping(value = { "/edit_funding_norma/{id}" }, method = RequestMethod.POST)
+    public String saveFundingNorma(@PathVariable("id") int id,
+                                   EditFundingNormaForm editFundingNormaForm) {
+
+        lpuService.saveFundingNorma(id, editFundingNormaForm);
+        return "redirect:/funding_norma";
     }
 
 //Вернет краказябры, даже если найдет шаблон в виндовой кодировке

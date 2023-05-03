@@ -15,7 +15,13 @@ import java.util.List;
 @Repository
 @Transactional
 public class LpuDao {
-
+    @Transactional
+    public void save(Object object) {
+        if (object == null) {
+            return;
+        }
+        sessionFactory.getCurrentSession().saveOrUpdate(object);
+    }
     private static final Logger logger = LoggerFactory.getLogger(LpuDao.class);
 
     private SessionFactory sessionFactory;
@@ -39,8 +45,11 @@ public class LpuDao {
 
     @Transactional
     public List<FundingNorma> getFundingNormaEntityList() {
-        return sessionFactory.getCurrentSession().createQuery("select fn from FundingNorma fn", FundingNorma.class)
+        return sessionFactory.getCurrentSession().createQuery("select fn from FundingNorma fn order by fn.mNameF", FundingNorma.class)
                 .getResultList();
     }
 
+    public FundingNorma getFundingNormaById(int id) {
+        return sessionFactory.getCurrentSession().get(FundingNorma.class, id);
+    }
 }

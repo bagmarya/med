@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ru">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Редактировать норматив ПФ</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:insert="~{menu :: copy}">...</div>
+<h1>Редактировать норматив ПФ</h1>
+
+<form th:action="@{/edit_funding_norma/{id}(id=${id})}" th:object="${editFundingNormaForm}" method="POST">
+
+  <p th:utext="${lpu.mNameF}"></p>
+  <p th:utext="'Дата начала: ' + ${lpu.FormatedFundingDate}"></p>
+
+  Численность прикрепленных по Астрамед:
+  <input type="text" th:field="*{quantityInAstr}" />
+  <br/>
+  Численность прикрепленных по Капитал:
+  <input type="text" th:field="*{quantityInKap}" />
+  <br/>
+  Норматив подушевого финансирования:
+  <input type="text" th:field="*{norma}" />
+  <br/>
+  <input type="submit" value="Сохранить" />
+</form>
+</body>
+</html>
