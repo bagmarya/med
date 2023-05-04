@@ -49,12 +49,14 @@ public class MainController {
     @RequestMapping(value = { "/fill_next_month" }, method = RequestMethod.GET)
     public String fillNextMonth(Model model) {
         MonthForm monthForm = new MonthForm();
+        monthForm.setYear(LocalDate.now().getYear());
         model.addAttribute("monthForm", monthForm);
         return "fill_next_month";
     }
 
     //POST заполнить следующий период в СФОФ
     //todo: Реализовать перенос данных прошлого года на январь следующего
+    //todo: Сделать предупреждение на случай попытки заполнения непустого месяца
     @RequestMapping(value = {"/fill_next_month"}, method = RequestMethod.POST)
     public String execFillNextMonth (Model model,
                                     @ModelAttribute("monthForm") MonthForm monthForm) throws NoSuchFieldException {
@@ -74,10 +76,12 @@ public class MainController {
     @RequestMapping(value = { "/funding_calc" }, method = RequestMethod.GET)
     public String fundingСalc(Model model) {
         MonthForm monthForm = new MonthForm();
+        monthForm.setYear(LocalDate.now().getYear());
         model.addAttribute("monthForm", monthForm);
         return "funding_calc";
     }
 
+    //Процедура рассчета  финансирования ФАП за указанный месяц
     @RequestMapping(value = {"/funding_calc"}, method = RequestMethod.POST)
     public String execFundingСalc (Model model,
                                      @ModelAttribute("monthForm") MonthForm monthForm) {
@@ -88,6 +92,7 @@ public class MainController {
         return "funding_calc_done";
     }
 
+    //Справочник нормативов подушевого финансирования (СНПФ)
     @RequestMapping(value = "/funding_norma", method = RequestMethod.GET)
     public String showFundingNormaPage(Model model) {
         List<FundingNorma> list = lpuService.getFundingNormaInfos();
@@ -97,6 +102,7 @@ public class MainController {
         return "funding_norma_page";
     }
 
+    //Страница редактирования записи справочника СНПФ
     @RequestMapping(value = { "/edit_funding_norma/{id}" }, method = RequestMethod.GET)
     public String editFundingNorma(Model model, @PathVariable("id") int id) {
         EditFundingNormaForm editFundingNormaForm = new EditFundingNormaForm();
@@ -114,6 +120,7 @@ public class MainController {
         return "edit_funding_norma";
     }
 
+    //Сохранение записи справочника СНПФ
     @RequestMapping(value = { "/edit_funding_norma/{id}" }, method = RequestMethod.POST)
     public String saveFundingNorma(@PathVariable("id") int id,
                                    EditFundingNormaForm editFundingNormaForm) {
@@ -122,14 +129,16 @@ public class MainController {
         return "redirect:/funding_norma";
     }
 
-
+    //Страница формы для добавления записей справочника СНПФ для нового периода
     @RequestMapping(value = {"/add_period_funding_norma"}, method = RequestMethod.GET)
     public String addPeriodFundingNorma (Model model) {
         MonthForm monthForm = new MonthForm();
+        monthForm.setYear(LocalDate.now().getYear());
         model.addAttribute("monthForm", monthForm);
         return "add_period_funding_norma";
     }
 
+    //Добавит записи справочника СНПФ для нового периода
     @RequestMapping(value = {"/add_period_funding_norma"}, method = RequestMethod.POST)
     public String createPeriodFundingNorma (Model model,
                                             @ModelAttribute("monthForm") MonthForm monthForm) {

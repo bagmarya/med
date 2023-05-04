@@ -13,12 +13,20 @@
 <form th:action="@{/funding_calc}" th:object="${monthForm}" method="POST">
 
     Месяц
-    <input type="text" th:field="*{month}" />
+    <select th:field="*{month}">
+        <option th:each="monthname : ${monthForm.monthnames}"
+                th:value="${monthname}"
+                th:utext="${monthname}">
+
+        </option>
+    </select>
+<!--    <input type="text" th:field="*{month}" />-->
     <br/>
     Год
     <input type="text" th:field="*{year}" />
     <br/>
     <input type="submit" value="Рассчитать" />
+    <input type="button" value="Отмена" onClick='location.href="/funding_fap"'>
 </form>
 </body>
 </html>

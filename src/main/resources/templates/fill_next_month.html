@@ -12,13 +12,23 @@
 
 <form th:action="@{/fill_next_month}" th:object="${monthForm}" method="POST">
 
+    <p>Эта операция скопирует данные справочника финансового обеспечения ФАП для заданного месяца с пердыдущего.</p>
+    <p>Для заданного месяца будут заполнены поля "Годовая сумма", "Коэффициент", "Сумма по Астрамед", "Сумма по Капитал".</p>
+    <p>Будьте внимательны, чтобы не потерять данные</p>
     Заполняемый месяц
-    <input type="text" th:field="*{month}" />
+    <select th:field="*{month}">
+        <option th:each="monthname : ${monthForm.monthnames}"
+                th:value="${monthname}"
+                th:utext="${monthname}">
+
+        </option>
+    </select>
     <br/>
     Год
     <input type="text" th:field="*{year}" />
     <br/>
     <input type="submit" value="Заполнить" />
+    <input type="button" value="Отмена" onClick='location.href="/funding_fap"'>
 </form>
 </body>
 </html>

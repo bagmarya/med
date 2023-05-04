@@ -55,6 +55,23 @@ public class ApiController {
         return fapService.getFapFinById(id);
     }
 
+
+
+    //TODO Шлет на фронт xml в cp1251 и сохраняет файл такой же xml в D:\data\javaprojects\med\target\classes\templates,
+// но нужно поменять чтобы сам файл никуда в ФС не сохранялся
+    @RequestMapping(value = { "/{year}/sp_fin_fap" }, method = RequestMethod.GET, produces = "application/xml;charset=windows-1251")
+    public ResponseEntity<String> sp(@PathVariable("year") int year) throws IOException {
+        HttpHeaders h = new HttpHeaders();
+        h.set("Content-Disposition", "attachment; filename=\"sp_fin_fap.xml\"");
+        return new ResponseEntity<>(fapService.getFileSpfinfap(year),h, HttpStatus.OK);
+    }
+
+
+
+
+
+
+
     //todo: убрать заглушку на 2023г и сделать нормально
     //TODO Шлет на фронт xml в utf-8; если будет не нужен, совсем убрать
     @GetMapping(value = "/sp_fin_fap_utf-8", produces = "application/xml")
@@ -64,7 +81,7 @@ public class ApiController {
 //        fapService.getFileSpfinfap();
         return spr;
     }
-//todo: убрать заглушку на 2023г и сделать нормально
+//todo: убрать заглушку на 2023г и сделать нормально, но возможно придется убрать сам метод как неиспользуемый
     @PostMapping(value = "/fill_next_month/{month}")
     public ResponseEntity fillNextMonth(@PathVariable("month") int month) {
         try {
@@ -77,16 +94,8 @@ public class ApiController {
         }
     }
 
-//TODO Шлет на фронт xml в cp1251 и сохраняет файл такой же xml в D:\data\javaprojects\med\target\classes\templates,
-// но нужно поменять чтобы сам файл никуда в ФС не сохранялся
-    @RequestMapping(value = { "/{year}/sp_fin_fap" }, method = RequestMethod.GET, produces = "application/xml;charset=windows-1251")
-    public ResponseEntity<String> sp(@PathVariable("year") int year) throws IOException {
-        HttpHeaders h = new HttpHeaders();
-        h.set("Content-Disposition", "attachment; filename=\"sp_fin_fap.xml\"");
-        return new ResponseEntity<>(fapService.getFileSpfinfap(year),h, HttpStatus.OK);
-    }
 
-    //todo: убрать заглушку на 2023г и сделать нормально
+    //todo: убрать заглушку на 2023г и сделать нормально, но возможно придется убрать сам метод как неиспользуемый
     @RequestMapping(value = { "/funding_calc/{month}" }, method = RequestMethod.GET)
     public void fundingCalculate(@PathVariable("month") int month) {
         System.out.println("!!!!!!!!!!!!!!!execute!!!!!!!!!!!!!!!!");

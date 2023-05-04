@@ -14,7 +14,12 @@
 <form th:action="@{/add_period_funding_norma}" th:object="${monthForm}" method="POST">
 
     Месяц
-    <input type="text" th:field="*{month}" />
+    <select th:field="*{month}">
+        <option th:each="monthname : ${monthForm.monthnames}"
+                th:value="${monthname}"
+                th:utext="${monthname}">
+        </option>
+    </select>
     <br/>
     Год
     <input type="text" th:field="*{year}" />
