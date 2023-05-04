@@ -85,11 +85,16 @@ public class MainController {
     @RequestMapping(value = {"/funding_calc"}, method = RequestMethod.POST)
     public String execFundingСalc (Model model,
                                      @ModelAttribute("monthForm") MonthForm monthForm) {
+        try {
+            Integer month = monthForm.getMonth();
+            Integer year = monthForm.getYear();
+            fapService.fundingCalc(month, year);
+            return "funding_calc_done";
+        }catch (Exception e) {
+            model.addAttribute("message", e.getMessage());
+            return "error";
+        }
 
-        Integer month = monthForm.getMonth();
-        Integer year = monthForm.getYear();
-        fapService.fundingCalc(month, year);
-        return "funding_calc_done";
     }
 
     //Справочник нормативов подушевого финансирования (СНПФ)

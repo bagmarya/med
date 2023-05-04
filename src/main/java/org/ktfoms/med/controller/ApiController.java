@@ -97,7 +97,7 @@ public class ApiController {
 
     //todo: убрать заглушку на 2023г и сделать нормально, но возможно придется убрать сам метод как неиспользуемый
     @RequestMapping(value = { "/funding_calc/{month}" }, method = RequestMethod.GET)
-    public void fundingCalculate(@PathVariable("month") int month) {
+    public void fundingCalculate(@PathVariable("month") int month) throws NoSuchFieldException {
         System.out.println("!!!!!!!!!!!!!!!execute!!!!!!!!!!!!!!!!");
         fapService.fundingCalc(month, 2023);
     }

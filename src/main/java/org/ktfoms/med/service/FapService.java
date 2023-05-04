@@ -22,6 +22,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.Objects;
 
 
 @Service
@@ -139,7 +140,7 @@ public class FapService {
 
     }
 
-    //todo: добавить проверку наличия данных за запрошенный год
+
     @Transactional
     public void fillNextMonth(Integer month, Integer year) throws NoSuchFieldException {
         if (month <1 | month > 12){
@@ -149,21 +150,31 @@ public class FapService {
             throw new NoSuchFieldException("the method for transferring data from the previous year" +
                     " has not yet been implemented");
         }
+
         List<FapFin> fapFinEntityList = fapDao.getFapFinEntityList(year);
+        if (fapFinEntityList.isEmpty()){
+            throw  new NoSuchFieldException("No entries for this year (FapFin)");
+        }
 //        fapFinEntityList.stream().map(FapFin::getPodr).forEach(System.out::println);//todo: убрать принты
         fapFinEntityList.stream().forEach(s -> s.fillMonth(month));
         fapFinEntityList.stream().forEach(fapDao::save);
     }
 
 
-    //todo: добавить проверку наличия данных финансирования ФАП за запрошенный год
     @Transactional
-    public void fundingCalc(Integer month, Integer year){
+    public void fundingCalc(Integer month, Integer year) throws NoSuchFieldException {
+        List<FapFin> fapFinEntityList = fapDao.getFapFinEntityList(year);
+        if (fapFinEntityList.isEmpty()){
+            throw  new NoSuchFieldException("No entries for this year (FapFin)");
+        }
         LocalDate fundingDate = LocalDate.of(year, month, 1);
 //        System.out.println(fundingDate);//todo: убрать принты
         Map<String, FundingNorma> fundingNormaMap = lpuDao.getFundingNormaEntityList(fundingDate)
                 .stream().collect(Collectors.toMap(fn -> fn.getMoLpu(), fn -> fn));
-        List<FapFin> fapFinEntityList = fapDao.getFapFinEntityList(year);
+        if (fundingNormaMap.isEmpty()){
+            throw  new NoSuchFieldException("No entries for this period (FundingNorma)");
+        }
+
         for (FapFin ff: fapFinEntityList){
             String lpuKey = ff.getPodr().substring(0,30);
 //            System.out.println(lpuKey);//todo: убрать принты
