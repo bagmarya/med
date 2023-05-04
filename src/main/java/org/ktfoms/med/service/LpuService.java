@@ -53,7 +53,7 @@ public class LpuService {
 
     public void addPeriodFundingNorma(Integer month, Integer year) {
         LocalDate fundingDate = LocalDate.of(year, month, 1);
-        System.out.println(fundingDate);
+        System.out.println(fundingDate);//todo: убрать принты
         List<String> oldList = lpuDao.getFundingNormaEntityList(fundingDate)
                 .stream()
                 .map(FundingNorma::getMoLpu)

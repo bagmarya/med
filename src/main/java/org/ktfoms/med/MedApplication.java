@@ -2,7 +2,7 @@ package org.ktfoms.med;
 
 import jakarta.persistence.EntityManagerFactory;
 
-import java.util.List;
+
 import java.util.Properties;
 import javax.sql.DataSource;
 import org.hibernate.SessionFactory;
@@ -15,23 +15,18 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerA
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
-import org.thymeleaf.spring6.SpringTemplateEngine;
-import org.thymeleaf.spring6.templateresolver.SpringResourceTemplateResolver;
 
-//@EnableWebMvc
+
+
 @SpringBootApplication (scanBasePackages = "org.ktfoms.med")
 @EnableAutoConfiguration(exclude = { //
         DataSourceAutoConfiguration.class, //
@@ -113,25 +108,5 @@ public class MedApplication {
         return new DefaultResourceLoader();
     }
 
-//    @Bean
-//    SpringResourceTemplateResolver xmlTemplateResolver(ApplicationContext appCtx) {
-//        SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
-//
-//        templateResolver.setApplicationContext(appCtx);
-//        templateResolver.setPrefix("classpath:/templates/");
-//        templateResolver.setSuffix(".xml");
-//        templateResolver.setTemplateMode("XML");
-////        templateResolver.setCharacterEncoding("windows-1251");
-//        templateResolver.setCacheable(false);
-//
-//        return templateResolver;
-//    }
-//
-//    @Bean(name="springTemplateEngine")
-//    SpringTemplateEngine templateEngine(ApplicationContext appCtx) {
-//        SpringTemplateEngine templateEngine = new SpringTemplateEngine();
-//        templateEngine.setTemplateResolver(xmlTemplateResolver(appCtx));
-//        return templateEngine;
-//    }
 
 }

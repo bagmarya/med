@@ -27,8 +27,6 @@ public class FapDao {
     @Transactional
     public Fap getById(int id) {
         return sessionFactory.getCurrentSession().get(Fap.class, id);
-//        return sessionFactory.getCurrentSession().createQuery("select l from Lpu l where l.id = :id", Lpu.class)
-//                .setParameter("id", id).getSingleResult();
     }
 
 

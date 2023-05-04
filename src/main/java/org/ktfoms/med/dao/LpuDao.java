@@ -32,8 +32,6 @@ public class LpuDao {
     @Transactional
     public Lpu getById(Integer id) {
         return sessionFactory.getCurrentSession().get(Lpu.class, id);
-//        return sessionFactory.getCurrentSession().createQuery("select l from Lpu l where l.id = :id", Lpu.class)
-//                .setParameter("id", id).getSingleResult();
     }
 
     @Transactional
