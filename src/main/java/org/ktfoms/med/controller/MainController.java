@@ -22,6 +22,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 
 @Controller
 public class MainController {
@@ -33,32 +34,43 @@ public class MainController {
 
     @RequestMapping(value = { "/", "/index" }, method = RequestMethod.GET)
     public String index(Model model) {
-        System.out.println("!!!!!!!!!!!!!!!сервер отвечает!!!!!!!!!!!!!!!!");
+//        System.out.println("!!!!!!!!!!!!!!!сервер отвечает!!!!!!!!!!!!!!!!");
         model.addAttribute("today", Calendar.getInstance());
         return "index";
     }
+
+    //Страница (основная) для справочника финансового обеспечения ФАП (СФОФ)
     @RequestMapping(value = { "/funding_fap" }, method = RequestMethod.GET)
     public String fundingFap(Model model) {
         return "funding_fap";
     }
 
+    //Здесь можно заполнить следующий период в СФОФ
     @RequestMapping(value = { "/fill_next_month" }, method = RequestMethod.GET)
     public String fillNextMonth(Model model) {
         MonthForm monthForm = new MonthForm();
         model.addAttribute("monthForm", monthForm);
         return "fill_next_month";
     }
-    //todo: добавить обработку ошибки
+
+    //POST заполнить следующий период в СФОФ
+    //todo: Реализовать перенос данных прошлого года на январь следующего
     @RequestMapping(value = {"/fill_next_month"}, method = RequestMethod.POST)
     public String execFillNextMonth (Model model,
                                     @ModelAttribute("monthForm") MonthForm monthForm) throws NoSuchFieldException {
 
-        Integer month = monthForm.getMonth();
-        Integer year = monthForm.getYear();
-        fapService.fillNextMonth(month, year);
+        try {
+            Integer month = monthForm.getMonth();
+            Integer year = monthForm.getYear();
+            fapService.fillNextMonth(month, year);
+        }catch (Exception e) {
+            model.addAttribute("message", e.getMessage());
+            return "error";
+        }
         return "fill_next_month_done";
     }
 
+    //Страница запуска рассчета финансирования ФАП за указанный месяц
     @RequestMapping(value = { "/funding_calc" }, method = RequestMethod.GET)
     public String fundingСalc(Model model) {
         MonthForm monthForm = new MonthForm();
@@ -89,9 +101,13 @@ public class MainController {
     public String editFundingNorma(Model model, @PathVariable("id") int id) {
         EditFundingNormaForm editFundingNormaForm = new EditFundingNormaForm();
         FundingNorma entity = lpuService.getFundingNormaById(id);
-        editFundingNormaForm.setQuantityInAstr(entity.getQuantityInAstr().toString());
-        editFundingNormaForm.setQuantityInKap(entity.getQuantityInKap().toString());
+        if (!Objects.isNull(entity.getQuantityInAstr())){
+        editFundingNormaForm.setQuantityInAstr(entity.getQuantityInAstr().toString());}
+        if (!Objects.isNull(entity.getQuantityInKap())){
+        editFundingNormaForm.setQuantityInKap(entity.getQuantityInKap().toString());}
+        if (!Objects.isNull(entity.getNorma())){
         editFundingNormaForm.setNorma(String.valueOf(entity.getNorma()));
+        }
         model.addAttribute("editFundingNormaForm", editFundingNormaForm);
         model.addAttribute("id", id);
         model.addAttribute("lpu", entity);
@@ -106,11 +122,22 @@ public class MainController {
         return "redirect:/funding_norma";
     }
 
-//Вернет краказябры, даже если найдет шаблон в виндовой кодировке
-//    @RequestMapping(value = { "/sp" }, method = RequestMethod.GET, produces = "application/xml;charset=windows-1251")
-//    public String sp() throws IOException {
-//        fapService.getFileSpfinfap();
-//        return "sp_fin_fap.xml";
-//    }
+
+    @RequestMapping(value = {"/add_period_funding_norma"}, method = RequestMethod.GET)
+    public String addPeriodFundingNorma (Model model) {
+        MonthForm monthForm = new MonthForm();
+        model.addAttribute("monthForm", monthForm);
+        return "add_period_funding_norma";
+    }
+
+    @RequestMapping(value = {"/add_period_funding_norma"}, method = RequestMethod.POST)
+    public String createPeriodFundingNorma (Model model,
+                                            @ModelAttribute("monthForm") MonthForm monthForm) {
+        Integer month = monthForm.getMonth();
+        Integer year = monthForm.getYear();
+        lpuService.addPeriodFundingNorma(month, year);
+        return "redirect:/funding_norma";
+    }
+
 
 }

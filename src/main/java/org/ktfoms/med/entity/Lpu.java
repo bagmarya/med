@@ -83,6 +83,9 @@ public class Lpu {
     @Column(name = "kod_sp")
     private  String kodSp;
 
+    @Column(name = "funded")
+    private boolean funded;
+
     public Lpu() {
     }
 

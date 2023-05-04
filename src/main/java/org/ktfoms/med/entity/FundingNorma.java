@@ -47,7 +47,7 @@ public class FundingNorma {
     private Integer quantityInKap;
 
     @Column(name = "norma")
-    private double norma;
+    private Double norma;
 
     public String getFormatedFundingDate(){
         return this.fundingDate.format(DateTimeFormatter.ofPattern("d.MM.uuuu"));

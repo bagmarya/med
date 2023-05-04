@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -45,11 +44,16 @@ public class LpuDao {
 
     @Transactional
     public List<FundingNorma> getFundingNormaEntityList() {
-        return sessionFactory.getCurrentSession().createQuery("select fn from FundingNorma fn order by fn.mNameF", FundingNorma.class)
+        return sessionFactory.getCurrentSession().createQuery("select fn from FundingNorma fn order by fn.fundingDate,fn.mNameF", FundingNorma.class)
                 .getResultList();
     }
 
     public FundingNorma getFundingNormaById(int id) {
         return sessionFactory.getCurrentSession().get(FundingNorma.class, id);
+    }
+
+    public List<Lpu> getFundedLpuList() {
+        return sessionFactory.getCurrentSession().createQuery("select l from Lpu l where l.funded = true", Lpu.class)
+                .getResultList();
     }
 }

@@ -7,7 +7,9 @@ import org.ktfoms.med.form.EditFundingNormaForm;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class LpuService {
@@ -46,5 +48,28 @@ public class LpuService {
         }
         System.out.println(fn);
         lpuDao.save(fn);
+    }
+
+
+    public void addPeriodFundingNorma(Integer month, Integer year) {
+        LocalDate fundingDate = LocalDate.of(year, month, 1);
+        System.out.println(fundingDate);
+        List<String> oldList = lpuDao.getFundingNormaEntityList(fundingDate)
+                .stream()
+                .map(FundingNorma::getMoLpu)
+                .collect(Collectors.toList());
+        List<Lpu> lpuList = lpuDao.getFundedLpuList();
+        for (Lpu lpu:lpuList){
+            if (!oldList.contains(lpu.getKodSp())){
+                FundingNorma newFN = new FundingNorma();
+                newFN.setLpuId(lpu.getId());
+                newFN.setMoLpu(lpu.getKodSp());
+                newFN.setFundingDate(fundingDate);
+                newFN.setMNameF(lpu.getMNameF());
+                lpuDao.save(newFN);
+            }
+
+        }
+
     }
 }
