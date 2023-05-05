@@ -54,4 +54,9 @@ public class LpuDao {
         return sessionFactory.getCurrentSession().createQuery("select l from Lpu l where l.funded = true", Lpu.class)
                 .getResultList();
     }
+
+    public Lpu getLpuByOid(String oid) {
+        return sessionFactory.getCurrentSession().createQuery("select l from Lpu l where l.kodSp = :oid", Lpu.class)
+                .setParameter("oid", oid).getSingleResult();
+    }
 }

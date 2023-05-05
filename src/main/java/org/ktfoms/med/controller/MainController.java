@@ -5,6 +5,7 @@ import org.ktfoms.med.entity.FundingNorma;
 import org.ktfoms.med.entity.Lpu;
 import org.ktfoms.med.form.EditFundingNormaForm;
 import org.ktfoms.med.form.MonthForm;
+import org.ktfoms.med.form.YearForm;
 import org.ktfoms.med.service.FapService;
 import org.ktfoms.med.service.LpuService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,21 @@ public class MainController {
     //Страница (основная) для справочника финансового обеспечения ФАП (СФОФ)
     @RequestMapping(value = { "/funding_fap" }, method = RequestMethod.GET)
     public String fundingFap(Model model) {
+        model.addAttribute("lpuList", fapService.getLpuFapCountDtoList());
+        model.addAttribute("year", LocalDate.now().getYear());
+
         return "funding_fap";
+    }
+
+    //Страница (вложенная) для справочника финансового обеспечения ФАП (СФОФ)
+    @RequestMapping(value = { "/funding_fap/{lpu}/{year}" }, method = RequestMethod.GET)
+    public String fundingFapByLpu(Model model,
+                                  @PathVariable("lpu") String lpu,
+                                  @PathVariable("year") String year) {
+        model.addAttribute("lpu", lpuService.getLpuByOid(lpu));
+        model.addAttribute("finFapDtos", fapService.getFapFinDtoListByLpu(Integer.parseInt(year),lpu));
+        model.addAttribute("year", year);
+        return "funding_fap_by_lpu";
     }
 
     //Здесь можно заполнить следующий период в СФОФ
@@ -70,7 +85,7 @@ public class MainController {
             }
         } catch (Exception e) {
             model.addAttribute("message", e.getMessage());
-            return "error";
+            return "error_catch";
         }
     }
 
@@ -85,7 +100,7 @@ public class MainController {
             fapService.fillNextMonth(month, year);
         }catch (Exception e) {
             model.addAttribute("message", e.getMessage());
-            return "error";
+            return "error_catch";
         }
         return "fill_next_month_done";
     }
@@ -110,7 +125,7 @@ public class MainController {
             return "funding_calc_done";
         }catch (Exception e) {
             model.addAttribute("message", e.getMessage());
-            return "error";
+            return "error_catch";
         }
 
     }

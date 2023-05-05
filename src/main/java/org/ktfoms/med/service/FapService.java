@@ -4,6 +4,7 @@ import org.ktfoms.med.dao.FapDao;
 import org.ktfoms.med.dao.LpuDao;
 import org.ktfoms.med.dto.FapDto;
 import org.ktfoms.med.dto.FapFinDto;
+import org.ktfoms.med.dto.LpuFapCountDto;
 import org.ktfoms.med.entity.Fap;
 import org.ktfoms.med.entity.FapFin;
 import org.ktfoms.med.entity.FundingNorma;
@@ -22,7 +23,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.Objects;
 
 
 @Service
@@ -303,5 +303,14 @@ public class FapService {
             }
         }
         return false;
+    }
+
+    public List<LpuFapCountDto> getLpuFapCountDtoList(){
+        return fapDao.getLpuFapCountDtoList();
+
+    }
+
+    public Object getFapFinDtoListByLpu(Integer year, String lpu) {
+        return fapDao.getFapFinDtoListByLpu(year, lpu);
     }
 }

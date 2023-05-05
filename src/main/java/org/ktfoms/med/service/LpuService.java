@@ -72,4 +72,8 @@ public class LpuService {
         }
 
     }
+
+    public Lpu getLpuByOid(String oid) {
+            return lpuDao.getLpuByOid(oid);
+    }
 }
