@@ -235,4 +235,73 @@ public class FapService {
         fapFinEntityList.stream().forEach(fapDao::save);
     }
 
+    public boolean isFieldsAreFilled(Integer month, Integer year) throws Exception {
+        List<FapFin> fapFinEntityList = fapDao.getFapFinEntityList(year);
+        for (FapFin ff: fapFinEntityList){
+
+            switch(month){
+                case 1:
+                    if (ff.getSummAstra1() > 0 | ff.getSummKapit1() > 0 | ff.getKYkomp1() > 0 | ff.getGFin1() > 0) {
+                        return true;
+                    }
+                    break;
+                case 2:
+                    if (ff.getSummAstra2() > 0 | ff.getSummKapit2() > 0 | ff.getKYkomp2() > 0 | ff.getGFin2() > 0) {
+                        return true;
+                }
+                    break;
+                case 3:
+                    if (ff.getSummAstra3() > 0 | ff.getSummKapit3() > 0 | ff.getKYkomp3() > 0 | ff.getGFin3() > 0) {
+                        return true;
+                    }
+                    break;
+                case 4:
+                    if (ff.getSummAstra4() > 0 | ff.getSummKapit4() > 0 | ff.getKYkomp4() > 0 | ff.getGFin4() > 0) {
+                        return true;
+                    }
+                    break;
+                case 5:
+                    if (ff.getSummAstra5() > 0 | ff.getSummKapit5() > 0 | ff.getKYkomp5() > 0 | ff.getGFin5() > 0) {
+                        return true;
+                    }
+                    break;
+                case 6:
+                    if (ff.getSummAstra6() > 0 | ff.getSummKapit6() > 0 | ff.getKYkomp6() > 0 | ff.getGFin6() > 0) {
+                        return true;
+                    }
+                    break;
+                case 7:
+                    if (ff.getSummAstra7() > 0 | ff.getSummKapit7() > 0 | ff.getKYkomp7() > 0 | ff.getGFin7() > 0) {
+                        return true;
+                    }
+                    break;
+                case 8:
+                    if (ff.getSummAstra8() > 0 | ff.getSummKapit8() > 0 | ff.getKYkomp8() > 0 | ff.getGFin8() > 0) {
+                        return true;
+                    }
+                    break;
+                case 9:
+                    if (ff.getSummAstra9() > 0 | ff.getSummKapit9() > 0 | ff.getKYkomp9() > 0 | ff.getGFin9() > 0) {
+                        return true;
+                    }
+                    break;
+                case 10:
+                    if (ff.getSummAstra10() > 0 | ff.getSummKapit10() > 0 | ff.getKYkomp10() > 0 | ff.getGFin10() > 0) {
+                        return true;
+                    }
+                    break;
+                case 11:
+                    if (ff.getSummAstra11() > 0 | ff.getSummKapit11() > 0 | ff.getKYkomp11() > 0 | ff.getGFin11() > 0) {
+                        return true;
+                    }
+                    break;
+                case 12:
+                    if (ff.getSummAstra12() > 0 | ff.getSummKapit12() > 0 | ff.getKYkomp12() > 0 | ff.getGFin12() > 0) {
+                        return true;
+                    }
+                    break;
+            }
+        }
+        return false;
+    }
 }

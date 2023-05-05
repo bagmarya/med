@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ru">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Перенос данных из предыдущего месяца</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:insert="~{menu :: copy}">...</div>
+<h1>Перенос данных из предыдущего месяца</h1>
+<h3>Внимание! В ячейках за указанный месяц уже присутствуют данные!</h3>
+<p>Эта операция скопирует данные справочника финансового обеспечения ФАП для заданного месяца с пердыдущего.</p>
+<p>Будут заполнены поля "Годовая сумма", "Коэффициент", "Сумма по Астрамед", "Сумма по Капитал".</p>
+<p>Будьте внимательны, чтобы не потерять данные.</p>
+
+
+<form th:action="@{/fill_next_month/{year}/{month}(year=${monthForm.year}, month=${monthForm.month})}" th:object="${monthForm}" method="POST">
+    <input type="submit" value="Все равно заполнить" />
+    <input type="button" value="Отмена" onClick='location.href="/funding_fap"'>
+</form>
+</body>
+</html>

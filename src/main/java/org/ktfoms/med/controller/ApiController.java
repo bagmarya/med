@@ -81,15 +81,13 @@ public class ApiController {
 //        fapService.getFileSpfinfap();
         return spr;
     }
-//todo: убрать заглушку на 2023г и сделать нормально, но возможно придется убрать сам метод как неиспользуемый
-    @PostMapping(value = "/fill_next_month/{month}")
-    public ResponseEntity fillNextMonth(@PathVariable("month") int month) {
+//метод заполнит указанный месяц в справочнике СФОФ по данным предыдущего, дублируется в главном контроллере /fill_next_month/{year}/{month}
+    @PostMapping(value = "/fill_next_month/{year}/{month}")
+    public ResponseEntity fillNextMonth(@PathVariable("year") int year, @PathVariable("month") int month) {
         try {
-            fapService.fillNextMonth(month, 2023);
-            return ResponseEntity.ok().build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(400).build();
-        } catch (NoSuchFieldException e) {
+            fapService.fillNextMonth(month, year);
+            return ResponseEntity.ok("Отработало");
+        } catch (RuntimeException | NoSuchFieldException e) {
             return ResponseEntity.status(400).build();
         }
     }

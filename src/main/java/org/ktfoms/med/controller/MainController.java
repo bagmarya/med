@@ -54,16 +54,34 @@ public class MainController {
         return "fill_next_month";
     }
 
+    ////POST заполнить следующий период в СФОФ, но выведет предупреждение если данные за этот период уже есть.
+    @RequestMapping(value = {"/fill_next_month_warning"}, method = RequestMethod.POST)
+    public String execFillNextMonthWarning (Model model,
+                                     @ModelAttribute("monthForm") MonthForm monthForm) throws NoSuchFieldException {
+        Integer month = monthForm.getMonth();
+        Integer year = monthForm.getYear();
+        try {
+            if (fapService.isFieldsAreFilled(month, year)){
+                model.addAttribute("monthForm", monthForm);
+                return "fill_next_month_warning";
+            }else {
+                fapService.fillNextMonth(month, year);
+                return "fill_next_month_done";
+            }
+        } catch (Exception e) {
+            model.addAttribute("message", e.getMessage());
+            return "error";
+        }
+    }
+
+
     //POST заполнить следующий период в СФОФ
     //todo: Реализовать перенос данных прошлого года на январь следующего
-    //todo: Сделать предупреждение на случай попытки заполнения непустого месяца
-    @RequestMapping(value = {"/fill_next_month"}, method = RequestMethod.POST)
+    @RequestMapping(value = {"/fill_next_month/{year}/{month}"}, method = RequestMethod.POST)
     public String execFillNextMonth (Model model,
-                                    @ModelAttribute("monthForm") MonthForm monthForm) throws NoSuchFieldException {
-
+                                     @PathVariable("year") int year,
+                                     @PathVariable("month") int month) {
         try {
-            Integer month = monthForm.getMonth();
-            Integer year = monthForm.getYear();
             fapService.fillNextMonth(month, year);
         }catch (Exception e) {
             model.addAttribute("message", e.getMessage());
