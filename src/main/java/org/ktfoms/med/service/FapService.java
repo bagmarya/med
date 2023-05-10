@@ -8,6 +8,7 @@ import org.ktfoms.med.dto.LpuFapCountDto;
 import org.ktfoms.med.entity.Fap;
 import org.ktfoms.med.entity.FapFin;
 import org.ktfoms.med.entity.FundingNorma;
+import org.ktfoms.med.form.EditFundingFapForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
@@ -313,4 +314,16 @@ public class FapService {
     public Object getFapFinDtoListByLpu(Integer year, String lpu) {
         return fapDao.getFapFinDtoListByLpu(year, lpu);
     }
+
+    public FapFinDto getFapFinDtoByPodrYear(String podr, String year) {
+        return fapDao.getFapFinDtoByPodrYear(podr, year);
+    }
+
+    public void saveFapFin(String podr, Integer year, EditFundingFapForm editFundingFapForm) {
+        FapFin ff = fapDao.getFapFinByPodrYear(podr, year);
+        ff.editByForm(editFundingFapForm);
+        fapDao.save(ff);
+    }
+
+
 }

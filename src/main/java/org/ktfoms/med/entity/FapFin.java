@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import org.ktfoms.med.form.EditFundingFapForm;
 
 
 @Getter
@@ -228,7 +229,66 @@ public class FapFin {
     }
 
 
+    public void editByForm(EditFundingFapForm form) {
+        setGFin1(Double.parseDouble(form.getGFin1().replace(',', '.')));
+        setKYkomp1(Double.parseDouble(form.getKYkomp1().replace(',', '.')));
+        setSummAstra1(Double.parseDouble(form.getSummAstra1().replace(',', '.')));
+        setSummKapit1(Double.parseDouble(form.getSummKapit1().replace(',', '.')));
 
+        setGFin2(Double.parseDouble(form.getGFin2().replace(',', '.')));
+        setKYkomp2(Double.parseDouble(form.getKYkomp2().replace(',', '.')));
+        setSummAstra2(Double.parseDouble(form.getSummAstra2().replace(',', '.')));
+        setSummKapit2(Double.parseDouble(form.getSummKapit2().replace(',', '.')));
 
+        setGFin3(Double.parseDouble(form.getGFin3().replace(',', '.')));
+        setKYkomp3(Double.parseDouble(form.getKYkomp3().replace(',', '.')));
+        setSummAstra3(Double.parseDouble(form.getSummAstra3().replace(',', '.')));
+        setSummKapit3(Double.parseDouble(form.getSummKapit3().replace(',', '.')));
 
+        setGFin4(Double.parseDouble(form.getGFin4().replace(',', '.')));
+        setKYkomp4(Double.parseDouble(form.getKYkomp4().replace(',', '.')));
+        setSummAstra4(Double.parseDouble(form.getSummAstra4().replace(',', '.')));
+        setSummKapit4(Double.parseDouble(form.getSummKapit4().replace(',', '.')));
+
+        setGFin5(Double.parseDouble(form.getGFin5().replace(',', '.')));
+        setKYkomp5(Double.parseDouble(form.getKYkomp5().replace(',', '.')));
+        setSummAstra5(Double.parseDouble(form.getSummAstra5().replace(',', '.')));
+        setSummKapit5(Double.parseDouble(form.getSummKapit5().replace(',', '.')));
+
+        setGFin6(Double.parseDouble(form.getGFin6().replace(',', '.')));
+        setKYkomp6(Double.parseDouble(form.getKYkomp6().replace(',', '.')));
+        setSummAstra6(Double.parseDouble(form.getSummAstra6().replace(',', '.')));
+        setSummKapit6(Double.parseDouble(form.getSummKapit6().replace(',', '.')));
+
+        setGFin7(Double.parseDouble(form.getGFin7().replace(',', '.')));
+        setKYkomp7(Double.parseDouble(form.getKYkomp7().replace(',', '.')));
+        setSummAstra7(Double.parseDouble(form.getSummAstra7().replace(',', '.')));
+        setSummKapit7(Double.parseDouble(form.getSummKapit7().replace(',', '.')));
+
+        setGFin8(Double.parseDouble(form.getGFin8().replace(',', '.')));
+        setKYkomp8(Double.parseDouble(form.getKYkomp8().replace(',', '.')));
+        setSummAstra8(Double.parseDouble(form.getSummAstra8().replace(',', '.')));
+        setSummKapit8(Double.parseDouble(form.getSummKapit8().replace(',', '.')));
+
+        setGFin9(Double.parseDouble(form.getGFin9().replace(',', '.')));
+        setKYkomp9(Double.parseDouble(form.getKYkomp9().replace(',', '.')));
+        setSummAstra9(Double.parseDouble(form.getSummAstra9().replace(',', '.')));
+        setSummKapit9(Double.parseDouble(form.getSummKapit9().replace(',', '.')));
+
+        setGFin10(Double.parseDouble(form.getGFin10().replace(',', '.')));
+        setKYkomp10(Double.parseDouble(form.getKYkomp10().replace(',', '.')));
+        setSummAstra10(Double.parseDouble(form.getSummAstra10().replace(',', '.')));
+        setSummKapit10(Double.parseDouble(form.getSummKapit10().replace(',', '.')));
+
+        setGFin11(Double.parseDouble(form.getGFin11().replace(',', '.')));
+        setKYkomp11(Double.parseDouble(form.getKYkomp11().replace(',', '.')));
+        setSummAstra11(Double.parseDouble(form.getSummAstra11().replace(',', '.')));
+        setSummKapit11(Double.parseDouble(form.getSummKapit11().replace(',', '.')));
+
+        setGFin12(Double.parseDouble(form.getGFin12().replace(',', '.')));
+        setKYkomp12(Double.parseDouble(form.getKYkomp12().replace(',', '.')));
+        setSummAstra12(Double.parseDouble(form.getSummAstra12().replace(',', '.')));
+        setSummKapit12(Double.parseDouble(form.getSummKapit12().replace(',', '.')));
+
+    }
 }

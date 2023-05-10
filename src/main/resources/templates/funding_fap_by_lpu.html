@@ -40,7 +40,7 @@
   <table>
   <tbody th:each="ffd:${finFapDtos}">
   <tr>
-    <th rowspan = 4><a th:href="@{/funding_fap/{podr}/{year}(podr=${ffd.podr}, year=${year})}" th:utext="${ffd.namePodr}" style="word-wrap: break-word">..</a></th>
+    <th rowspan = 4><a th:href="@{/edit_funding_fap/{podr}/{year}(podr=${ffd.podr}, year=${year})}" th:utext="${ffd.namePodr}" style="word-wrap: break-word">..</a></th>
     <td>Годовое</td>
     <td th:utext="${ffd.gFin1}"></td>
     <td th:utext="${ffd.gFin2}"></td>

@@ -12,9 +12,10 @@
 
 <p><a th:href="@{/fill_next_month}">Перенос данных из предыдущего месяца</a></p>
 <p><a th:href="@{/funding_calc}">Расчет месячного финансового обеспечения ФАП</a></p>
-<p><a th:href="@{/api/2023/sp_fin_fap}">Выгрузить справочник финансового обеспечения ФАП за 2023г</a></p>
-<p><a th:href="@{/funding_fap}">Редактировать справочник финансового обеспечения ФАП</a></p>
-
+<p><a th:href="@{/api/sp_fin_fap/{year}(year=${year})}" th:utext= "'Выгрузить справочник финансового обеспечения ФАП за ' + ${year} + 'год'"></a></p>
+<p><a th:href="@{/api/sp_fin_fap/{year}(year=${year} + 1)}"
+      th:utext= "'Выгрузить справочник финансового обеспечения ФАП за ' + (${year} + 1) + 'год'"
+      th:if="${isDecember}"></a></p>
 
 <table>
   <tr>
@@ -22,15 +23,14 @@
     <th>ЛПУ</th>
     <th>ФАП</th>
     <th th:utext=" 'За ' + ${year} + ' год'"></th>
-    <th th:utext=" 'За ' + (${year} + 1) + ' год'"></th>
-
+    <th th:utext=" 'За ' + (${year} + 1) + ' год'"  th:if="${isDecember}"></th>
   </tr>
   <tr th:each="lpu:${lpuList}">
     <td th:utext="${lpu.moLpu}">..</td>
     <td th:utext="${lpu.nameS}">..</td>
     <td th:utext="${lpu.fapCount}">..</td>
     <td><a th:href="@{funding_fap/{lpu}/{year}(lpu=${lpu.moLpu}, year=${year})}">Редактировать</a></td>
-    <td><a th:href="@{funding_fap/{lpu}/{year}(lpu=${lpu.moLpu}, year=${year}+1)}">Редактировать</a></td>
+    <td th:if="${isDecember}"><a th:href="@{funding_fap/{lpu}/{year}(lpu=${lpu.moLpu}, year=${year}+1)}">Редактировать</a></td>
   </tr>
 </table>
 

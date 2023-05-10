@@ -1,24 +1,20 @@
 package org.ktfoms.med.controller;
 
-import org.ktfoms.med.dto.Test;
+import org.ktfoms.med.dto.FapFinDto;
 import org.ktfoms.med.entity.FundingNorma;
-import org.ktfoms.med.entity.Lpu;
+import org.ktfoms.med.form.EditFundingFapForm;
 import org.ktfoms.med.form.EditFundingNormaForm;
 import org.ktfoms.med.form.MonthForm;
-import org.ktfoms.med.form.YearForm;
 import org.ktfoms.med.service.FapService;
 import org.ktfoms.med.service.LpuService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
@@ -45,6 +41,7 @@ public class MainController {
     public String fundingFap(Model model) {
         model.addAttribute("lpuList", fapService.getLpuFapCountDtoList());
         model.addAttribute("year", LocalDate.now().getYear());
+        model.addAttribute("isDecember", LocalDate.now().getMonthValue() == 12);
 
         return "funding_fap";
     }
@@ -59,6 +56,33 @@ public class MainController {
         model.addAttribute("year", year);
         return "funding_fap_by_lpu";
     }
+
+
+    //Страница с формой редактирования для СФОФ
+    @RequestMapping(value = { "/edit_funding_fap/{podr}/{year}" }, method = RequestMethod.GET)
+    public String editFundingFap(Model model,
+                                   @PathVariable("podr") String podr,
+                                 @PathVariable("year") String year) {
+
+        FapFinDto dto = fapService.getFapFinDtoByPodrYear(podr, year);
+        EditFundingFapForm editFundingFapForm = new EditFundingFapForm(dto);
+        model.addAttribute("editFundingFapForm", editFundingFapForm);
+        model.addAttribute("dto", dto);
+        model.addAttribute("podr", podr);
+        model.addAttribute("year", year);
+        return "edit_funding_fap";
+    }
+
+    //Сохранение записи справочника СФОФ
+    @RequestMapping(value = { "/edit_funding_fap/{podr}/{year}" }, method = RequestMethod.POST)
+    public String saveFundingFap(@PathVariable("podr") String podr,
+                                 @PathVariable("year") String year,
+                                 EditFundingFapForm editFundingFapForm) {
+
+        fapService.saveFapFin(podr, Integer.parseInt(year), editFundingFapForm);
+        return "redirect:/funding_fap/" + podr.substring(0, 30) + "/" + year;
+    }
+
 
     //Здесь можно заполнить следующий период в СФОФ
     @RequestMapping(value = { "/fill_next_month" }, method = RequestMethod.GET)

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ru">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Редактирование справочника финaинансирования ФАП</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:insert="~{menu :: copy}">...</div>
+<h1>Редактирование справочника финaинансирования ФАП</h1>
+<h2 th:utext="${dto.namePodr}"></h2>
+<p th:utext="'За ' + ${year} + 'год'"></p>
+
+
+<form th:action="@{/edit_funding_fap/{podr}/{year}(podr=${podr}, year=${year})}" th:object="${editFundingFapForm}" method="POST">
+
+
+  <input type="submit" value="Сохранить" />
+  <input type="button" value="Отмена" onClick='location.href="/funding_fap"' th:onClick="'location.href = \'' + @{/funding_fap/{lpu}/{year}(lpu=${dto.moLpu}, year=${year})} + '\''">
+
+<p>Январь</p>
+  Годовая сумма:
+  <input type="text" th:field="*{gFin1}" />
+  <br/>
+  Коэффициент:
+  <input type="text" th:field="*{kYkomp1}" />
+  <br/>
+  Сумма Астрамед:
+  <input type="text" th:field="*{summAstra1}" />
+  <br/>
+  Сумма Капитал:
+  <input type="text" th:field="*{summKapit1}" />
+  <br/>
+  <p>Февраль</p>
+  Годовая сумма:
+  <input type="text" th:field="*{gFin2}" />
+  <br/>
+  Коэффициент:
+  <input type="text" th:field="*{kYkomp2}" />
+  <br/>
+  Сумма Астрамед:
+  <input type="text" th:field="*{summAstra2}" />
+  <br/>
+  Сумма Капитал:
+  <input type="text" th:field="*{summKapit2}" />
+  <br/>
+
+  <p>Март</p>
+  Годовая сумма:
+  <input type="text" th:field="*{gFin3}" />
+  <br/>
+  Коэффициент:
+  <input type="text" th:field="*{kYkomp3}" />
+  <br/>
+  Сумма Астрамед:
+  <input type="text" th:field="*{summAstra3}" />
+  <br/>
+  Сумма Капитал:
+  <input type="text" th:field="*{summKapit3}" />
+  <br/>
+
+  <p>Апрель</p>
+  Годовая сумма:
+  <input type="text" th:field="*{gFin4}" />
+  <br/>
+  Коэффициент:
+  <input type="text" th:field="*{kYkomp4}" />
+  <br/>
+  Сумма Астрамед:
+  <input type="text" th:field="*{summAstra4}" />
+  <br/>
+  Сумма Капитал:
+  <input type="text" th:field="*{summKapit4}" />
+  <br/>
+
+
+  <p>Май</p>
+  Годовая сумма:
+  <input type="text" th:field="*{gFin5}" />
+  <br/>
+  Коэффициент:
+  <input type="text" th:field="*{kYkomp5}" />
+  <br/>
+  Сумма Астрамед:
+  <input type="text" th:field="*{summAstra5}" />
+  <br/>
+  Сумма Капитал:
+  <input type="text" th:field="*{summKapit5}" />
+  <br/>
+
+  <p>Июнь</p>
+  Годовая сумма:
+  <input type="text" th:field="*{gFin6}" />
+  <br/>
+  Коэффициент:
+  <input type="text" th:field="*{kYkomp6}" />
+  <br/>
+  Сумма Астрамед:
+  <input type="text" th:field="*{summAstra6}" />
+  <br/>
+  Сумма Капитал:
+  <input type="text" th:field="*{summKapit6}" />
+  <br/>
+
+
+  <p>Июль</p>
+  Годовая сумма:
+  <input type="text" th:field="*{gFin7}" />
+  <br/>
+  Коэффициент:
+  <input type="text" th:field="*{kYkomp7}" />
+  <br/>
+  Сумма Астрамед:
+  <input type="text" th:field="*{summAstra7}" />
+  <br/>
+  Сумма Капитал:
+  <input type="text" th:field="*{summKapit7}" />
+  <br/>
+
+
+  <p>Август</p>
+  Годовая сумма:
+  <input type="text" th:field="*{gFin8}" />
+  <br/>
+  Коэффициент:
+  <input type="text" th:field="*{kYkomp8}" />
+  <br/>
+  Сумма Астрамед:
+  <input type="text" th:field="*{summAstra8}" />
+  <br/>
+  Сумма Капитал:
+  <input type="text" th:field="*{summKapit8}" />
+  <br/>
+
+  <p>Сентябрь</p>
+  Годовая сумма:
+  <input type="text" th:field="*{gFin9}" />
+  <br/>
+  Коэффициент:
+  <input type="text" th:field="*{kYkomp9}" />
+  <br/>
+  Сумма Астрамед:
+  <input type="text" th:field="*{summAstra9}" />
+  <br/>
+  Сумма Капитал:
+  <input type="text" th:field="*{summKapit9}" />
+  <br/>
+
+
+  <p>Октябрь</p>
+  Годовая сумма:
+  <input type="text" th:field="*{gFin10}" />
+  <br/>
+  Коэффициент:
+  <input type="text" th:field="*{kYkomp10}" />
+  <br/>
+  Сумма Астрамед:
+  <input type="text" th:field="*{summAstra10}" />
+  <br/>
+  Сумма Капитал:
+  <input type="text" th:field="*{summKapit10}" />
+  <br/>
+
+
+  <p>Ноябрь</p>
+  Годовая сумма:
+  <input type="text" th:field="*{gFin11}" />
+  <br/>
+  Коэффициент:
+  <input type="text" th:field="*{kYkomp11}" />
+  <br/>
+  Сумма Астрамед:
+  <input type="text" th:field="*{summAstra11}" />
+  <br/>
+  Сумма Капитал:
+  <input type="text" th:field="*{summKapit11}" />
+  <br/>
+
+  <p>Декабрь</p>
+  Годовая сумма:
+  <input type="text" th:field="*{gFin12}" />
+  <br/>
+  Коэффициент:
+  <input type="text" th:field="*{kYkomp12}" />
+  <br/>
+  Сумма Астрамед:
+  <input type="text" th:field="*{summAstra12}" />
+  <br/>
+  Сумма Капитал:
+  <input type="text" th:field="*{summKapit12}" />
+  <br/>
+
+</form>
+</body>
+</html>
