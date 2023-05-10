@@ -14,93 +14,96 @@
 
 <input type="button" value="Назад" onClick='location.href="/funding_fap"'>
 </br></br>
-
+<div  class="scroll-table">
 <table>
   <thead>
   <tr>
     <th>Наименование ФАП</th>
     <th>Финансирование</th>
-    <th>Январь</th>
-    <th>Февраль</th>
-    <th>Март</th>
-    <th>Апрель</th>
-    <th>Май</th>
-    <th>Июнь</th>
-    <th>Июль</th>
-    <th>Август</th>
+    <th>Январь  </th>
+    <th>Февраль </th>
+    <th>Март    </th>
+    <th>Апрель  </th>
+    <th>Май     </th>
+    <th>Июнь    </th>
+    <th>Июль    </th>
+    <th>Август  </th>
     <th>Сентябрь</th>
-    <th>Октябрь</th>
-    <th>Ноябрь</th>
-    <th>Декабрь</th>
-
+    <th>Октябрь </th>
+    <th>Ноябрь  </th>
+    <th>Декабрь </th>
   </tr>
   </thead>
+</table>
 
+<div class="scroll-table-body">
+  <table>
   <tbody th:each="ffd:${finFapDtos}">
   <tr>
-    <th rowspan = 4><a th:href="@{/funding_fap/{podr}/{year}(podr=${ffd.podr}, year=${year})}" th:utext="${ffd.namePodr}">..</a></th>
+    <th rowspan = 4><a th:href="@{/funding_fap/{podr}/{year}(podr=${ffd.podr}, year=${year})}" th:utext="${ffd.namePodr}" style="word-wrap: break-word">..</a></th>
     <td>Годовое</td>
     <td th:utext="${ffd.gFin1}"></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
+    <td th:utext="${ffd.gFin2}"></td>
+    <td th:utext="${ffd.gFin3}"></td>
+    <td th:utext="${ffd.gFin4}"></td>
+    <td th:utext="${ffd.gFin5}"></td>
+    <td th:utext="${ffd.gFin6}"></td>
+    <td th:utext="${ffd.gFin7}"></td>
+    <td th:utext="${ffd.gFin8}"></td>
+    <td th:utext="${ffd.gFin9}"></td>
+    <td th:utext="${ffd.gFin10}"></td>
+    <td th:utext="${ffd.gFin11}"></td>
+    <td th:utext="${ffd.gFin12}"></td>
   </tr>
-  <tr style="background-color: yellow">
-    <td>К-т</td>
+  <tr style="background-color: #faf8b6">
+    <td>Коэффициент</td>
     <td th:utext="${ffd.kYkomp1}"></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
+    <td th:utext="${ffd.kYkomp2}"></td>
+    <td th:utext="${ffd.kYkomp3}"></td>
+    <td th:utext="${ffd.kYkomp4}"></td>
+    <td th:utext="${ffd.kYkomp5}"></td>
+    <td th:utext="${ffd.kYkomp6}"></td>
+    <td th:utext="${ffd.kYkomp7}"></td>
+    <td th:utext="${ffd.kYkomp8}"></td>
+    <td th:utext="${ffd.kYkomp9}"></td>
+    <td th:utext="${ffd.kYkomp10}"></td>
+    <td th:utext="${ffd.kYkomp11}"></td>
+    <td th:utext="${ffd.kYkomp12}"></td>
   </tr>
-  <tr>
+  <tr style="background-color: #cee5eb">
     <td>Астрамед</td>
     <td th:utext="${ffd.summAstra1}"></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
+    <td th:utext="${ffd.summAstra2}"></td>
+    <td th:utext="${ffd.summAstra3}"></td>
+    <td th:utext="${ffd.summAstra4}"></td>
+    <td th:utext="${ffd.summAstra5}"></td>
+    <td th:utext="${ffd.summAstra6}"></td>
+    <td th:utext="${ffd.summAstra7}"></td>
+    <td th:utext="${ffd.summAstra8}"></td>
+    <td th:utext="${ffd.summAstra9}"></td>
+    <td th:utext="${ffd.summAstra10}"></td>
+    <td th:utext="${ffd.summAstra11}"></td>
+    <td th:utext="${ffd.summAstra12}"></td>
   </tr>
-  <tr>
+  <tr style="background-color: #cee5eb">
     <td>Капитал</td>
     <td th:utext="${ffd.summKapit1}"></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
+    <td th:utext="${ffd.summKapit2}"></td>
+    <td th:utext="${ffd.summKapit3}"></td>
+    <td th:utext="${ffd.summKapit4}"></td>
+    <td th:utext="${ffd.summKapit5}"></td>
+    <td th:utext="${ffd.summKapit6}"></td>
+    <td th:utext="${ffd.summKapit7}"></td>
+    <td th:utext="${ffd.summKapit8}"></td>
+    <td th:utext="${ffd.summKapit9}"></td>
+    <td th:utext="${ffd.summKapit10}"></td>
+    <td th:utext="${ffd.summKapit11}"></td>
+    <td th:utext="${ffd.summKapit12}"></td>
   </tr>
   </tbody>
 </table>
-
+</div>
+</div>
 
 </body>
 </html>
