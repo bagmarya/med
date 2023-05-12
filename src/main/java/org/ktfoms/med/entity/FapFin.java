@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import org.ktfoms.med.dto.FapFinDto;
 import org.ktfoms.med.form.EditFundingFapForm;
 
 
@@ -291,4 +292,68 @@ public class FapFin {
         setSummKapit12(Double.parseDouble(form.getSummKapit12().replace(',', '.')));
 
     }
+
+    public void editByDto(FapFinDto dto) {
+        setGFin1(dto.getGFin1());
+        setKYkomp1(dto.getKYkomp1());
+        setSummAstra1(dto.getSummAstra1());
+        setSummKapit1(dto.getSummKapit1());
+
+        setGFin2(dto.getGFin2());
+        setKYkomp2(dto.getKYkomp2());
+        setSummAstra2(dto.getSummAstra2());
+        setSummKapit2(dto.getSummKapit2());
+
+        setGFin3(dto.getGFin3());
+        setKYkomp3(dto.getKYkomp3());
+        setSummAstra3(dto.getSummAstra3());
+        setSummKapit3(dto.getSummKapit3());
+
+        setGFin4(dto.getGFin4());
+        setKYkomp4(dto.getKYkomp4());
+        setSummAstra4(dto.getSummAstra4());
+        setSummKapit4(dto.getSummKapit4());
+
+        setGFin5(dto.getGFin5());
+        setKYkomp5(dto.getKYkomp5());
+        setSummAstra5(dto.getSummAstra5());
+        setSummKapit5(dto.getSummKapit5());
+
+        setGFin6(dto.getGFin6());
+        setKYkomp6(dto.getKYkomp6());
+        setSummAstra6(dto.getSummAstra6());
+        setSummKapit6(dto.getSummKapit6());
+
+        setGFin7(dto.getGFin7());
+        setKYkomp7(dto.getKYkomp7());
+        setSummAstra7(dto.getSummAstra7());
+        setSummKapit7(dto.getSummKapit7());
+
+        setGFin8(dto.getGFin8());
+        setKYkomp8(dto.getKYkomp8());
+        setSummAstra8(dto.getSummAstra8());
+        setSummKapit8(dto.getSummKapit8());
+
+        setGFin9(dto.getGFin9());
+        setKYkomp9(dto.getKYkomp9());
+        setSummAstra9(dto.getSummAstra9());
+        setSummKapit9(dto.getSummKapit9());
+
+        setGFin10(dto.getGFin10());
+        setKYkomp10(dto.getKYkomp10());
+        setSummAstra10(dto.getSummAstra10());
+        setSummKapit10(dto.getSummKapit10());
+
+        setGFin11(dto.getGFin11());
+        setKYkomp11(dto.getKYkomp11());
+        setSummAstra11(dto.getSummAstra11());
+        setSummKapit11(dto.getSummKapit11());
+
+        setGFin12(dto.getGFin12());
+        setKYkomp12(dto.getKYkomp12());
+        setSummAstra12(dto.getSummAstra12());
+        setSummKapit12(dto.getSummKapit12());
+
+    }
+
 }

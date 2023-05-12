@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.function.ServerRequest;
+//import org.springframework.web.servlet.function.ServerRequest;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -100,5 +100,9 @@ public class ApiController {
         fapService.fundingCalc(month, 2023);
     }
 
+    @RequestMapping(value = { "/parse" }, method = RequestMethod.GET)
+    public void parseSpfinfap() throws IOException {
+        fapService.parseSpfinfap();
+    }
 
 }

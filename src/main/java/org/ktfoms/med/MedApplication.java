@@ -5,6 +5,8 @@ import jakarta.persistence.EntityManagerFactory;
 
 import java.util.Properties;
 import javax.sql.DataSource;
+import javax.sql.XAConnection;
+
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +26,8 @@ import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
-
+import org.springframework.web.servlet.view.ResourceBundleViewResolver;
+import org.springframework.web.servlet.view.XmlViewResolver;
 
 
 @SpringBootApplication (scanBasePackages = "org.ktfoms.med")
@@ -107,6 +110,15 @@ public class MedApplication {
     public ResourceLoader createResourceLoader() {
         return new DefaultResourceLoader();
     }
+
+
+//    @Bean
+//    ResourceBundleViewResolver viewResolver1() {
+//        ResourceBundleViewResolver res = new ResourceBundleViewResolver();
+//        res.setOrder(1);
+//        res.setBasename("views");
+//        return res;
+//    }
 
 
 }

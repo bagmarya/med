@@ -1,10 +1,13 @@
 package org.ktfoms.med.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.ktfoms.med.dao.FapDao;
 import org.ktfoms.med.dao.LpuDao;
 import org.ktfoms.med.dto.FapDto;
 import org.ktfoms.med.dto.FapFinDto;
 import org.ktfoms.med.dto.LpuFapCountDto;
+import org.ktfoms.med.dto.Spfinfap;
 import org.ktfoms.med.entity.Fap;
 import org.ktfoms.med.entity.FapFin;
 import org.ktfoms.med.entity.FundingNorma;
@@ -323,6 +326,30 @@ public class FapService {
         FapFin ff = fapDao.getFapFinByPodrYear(podr, year);
         ff.editByForm(editFundingFapForm);
         fapDao.save(ff);
+    }
+//Метод, предположительно, одноразовый, для того,
+// чтобы загнать актуальные данные на момент начала использования программы,
+// поэтому код закоментирован
+    public void parseSpfinfap() throws IOException {
+//        ObjectMapper objectMapper = new XmlMapper();
+//        Spfinfap spfinfap = objectMapper.readValue(
+//                resourceLoader.getResource("file:sp_fin_fap.xml").getContentAsString(Charset.forName("windows-1251")),
+//                Spfinfap.class);
+//        Map<String, FapFinDto> fapFinDtoMap = spfinfap.getFAP().stream().collect(Collectors.toMap(ffd -> ffd.getPodr(), ffd -> ffd));
+//        List<FapFin> fapFinEntityList = fapDao.getFapFinEntityList(2023);
+//        for (FapFin ff: fapFinEntityList) {
+//            String podrKey = ff.getPodr();
+//            FapFinDto ffd = fapFinDtoMap.get(podrKey);
+//            System.out.println(podrKey);
+//            System.out.println(ffd);
+//            System.out.println(ff);
+//            ff.editByDto(ffd);
+//            fapDao.save(ff);
+        }
+
+
+
+
     }
 
 
