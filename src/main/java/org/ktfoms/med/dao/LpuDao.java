@@ -34,6 +34,12 @@ public class LpuDao {
         return sessionFactory.getCurrentSession().get(Lpu.class, id);
     }
 
+
+    @Transactional
+    public List<Lpu> getLpuEntityList() {
+        return sessionFactory.getCurrentSession().createQuery("select l from Lpu l", Lpu.class)
+                .getResultList();
+    }
     @Transactional
     public List<FundingNorma> getFundingNormaEntityList(LocalDate fundingDate) {
         return sessionFactory.getCurrentSession().createQuery("select fn from FundingNorma fn where fn.fundingDate = :fundingDate", FundingNorma.class)

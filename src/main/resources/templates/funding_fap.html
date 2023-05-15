@@ -17,6 +17,11 @@
       th:utext= "'Выгрузить справочник финансового обеспечения ФАП за ' + (${year} + 1) + 'год'"
       th:if="${isDecember}"></a></p>
 
+<p><a th:href="@{/api/excel/sp_fin_fap/{year}(year=${year})}" th:utext= "'Выгрузить справочник финансового обеспечения ФАП за ' + ${year} + 'год в формате excel'"></a></p>
+<p><a th:href="@{/api/excel/sp_fin_fap/{year}(year=${year} + 1)}"
+      th:utext= "'Выгрузить справочник финансового обеспечения ФАП за ' + (${year} + 1) + 'год в формате excel'"
+      th:if="${isDecember}"></a></p>
+
 <table>
   <tr>
     <th>OID</th>

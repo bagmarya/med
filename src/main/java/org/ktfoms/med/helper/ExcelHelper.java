@@ -1,0 +1,584 @@
+package org.ktfoms.med.helper;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.ss.usermodel.Font;
+
+//В случае .xls использовать:
+//import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+
+
+import org.ktfoms.med.dto.FapFinDto;
+import org.ktfoms.med.entity.Lpu;
+
+public class ExcelHelper {
+    public static String TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+    static String[] HEADERs = { "№ п/п", "Наименование ЦРБ", "Наименование ФАП"
+            , "Годовая сумма финанасового обеспечения, руб.", "К-т укомплектованности"
+            , "Сумма финансового обеспечения на месяц, Астрамед, руб.", "Сумма финансового обеспечения на месяц, Капитал, руб."
+            , "Годовая сумма финанасового обеспечения, руб.", "К-т укомплектованности"
+            , "Сумма финансового обеспечения на месяц, Астрамед, руб.", "Сумма финансового обеспечения на месяц, Капитал, руб."
+            , "Годовая сумма финанасового обеспечения, руб.", "К-т укомплектованности"
+            , "Сумма финансового обеспечения на месяц, Астрамед, руб.", "Сумма финансового обеспечения на месяц, Капитал, руб."
+            , "Годовая сумма финанасового обеспечения, руб.", "К-т укомплектованности"
+            , "Сумма финансового обеспечения на месяц, Астрамед, руб.", "Сумма финансового обеспечения на месяц, Капитал, руб."
+            , "Годовая сумма финанасового обеспечения, руб.", "К-т укомплектованности"
+            , "Сумма финансового обеспечения на месяц, Астрамед, руб.", "Сумма финансового обеспечения на месяц, Капитал, руб."
+            , "Годовая сумма финанасового обеспечения, руб.", "К-т укомплектованности"
+            , "Сумма финансового обеспечения на месяц, Астрамед, руб.", "Сумма финансового обеспечения на месяц, Капитал, руб."
+            , "Годовая сумма финанасового обеспечения, руб.", "К-т укомплектованности"
+            , "Сумма финансового обеспечения на месяц, Астрамед, руб.", "Сумма финансового обеспечения на месяц, Капитал, руб."
+            , "Годовая сумма финанасового обеспечения, руб.", "К-т укомплектованности"
+            , "Сумма финансового обеспечения на месяц, Астрамед, руб.", "Сумма финансового обеспечения на месяц, Капитал, руб."
+            , "Годовая сумма финанасового обеспечения, руб.", "К-т укомплектованности"
+            , "Сумма финансового обеспечения на месяц, Астрамед, руб.", "Сумма финансового обеспечения на месяц, Капитал, руб."
+            , "Годовая сумма финанасового обеспечения, руб.", "К-т укомплектованности"
+            , "Сумма финансового обеспечения на месяц, Астрамед, руб.", "Сумма финансового обеспечения на месяц, Капитал, руб."
+            , "Годовая сумма финанасового обеспечения, руб.", "К-т укомплектованности"
+            , "Сумма финансового обеспечения на месяц, Астрамед, руб.", "Сумма финансового обеспечения на месяц, Капитал, руб."
+            , "Годовая сумма финанасового обеспечения, руб.", "К-т укомплектованности"
+            , "Сумма финансового обеспечения на месяц, Астрамед, руб.", "Сумма финансового обеспечения на месяц, Капитал, руб."
+
+    };
+    static String[] MONTH = { "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
+            "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь" };
+    static String SHEET = "sheet1";
+
+    public static ByteArrayInputStream fapFinDtosToExcel(List<FapFinDto> fapFinDtoList, List<Lpu> lpuEntityList) {
+
+        Map<Integer, Lpu> lpuByMkod = lpuEntityList.stream().collect(Collectors.toMap(Lpu::getMkod, l -> l));
+
+        HashMap<Integer, List<FapFinDto>> fapFinDtosByMkod = new HashMap<Integer, List<FapFinDto>>();
+        fapFinDtoList.forEach(ffd -> {
+                    if (fapFinDtosByMkod.containsKey(ffd.getMkod())){
+                        fapFinDtosByMkod.get(ffd.getMkod()).add(ffd);
+                    }else {
+                        fapFinDtosByMkod.put(ffd.getMkod(), new ArrayList<>());
+                        fapFinDtosByMkod.get(ffd.getMkod()).add(ffd);
+                    }
+                });
+
+        try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream();) {
+            Sheet sheet = workbook.createSheet(SHEET);
+            sheet.setColumnWidth(0, 1000);
+            sheet.setColumnWidth(1, 10000);
+            sheet.setColumnWidth(2, 10000);
+
+            XSSFCellStyle styleHeader = (XSSFCellStyle) workbook.createCellStyle();
+            styleHeader.setBorderBottom(BorderStyle.MEDIUM);
+            styleHeader.setBorderLeft(BorderStyle.MEDIUM);
+            styleHeader.setBorderRight(BorderStyle.MEDIUM);
+            styleHeader.setBorderTop(BorderStyle.MEDIUM);
+            styleHeader.setWrapText(true);
+//            styleHeader.setShrinkToFit(true);
+            XSSFCellStyle styleBody = (XSSFCellStyle) workbook.createCellStyle();
+            styleBody.setBorderBottom(BorderStyle.THIN);
+            styleBody.setBorderLeft(BorderStyle.THIN);
+            styleBody.setBorderRight(BorderStyle.THIN);
+            styleBody.setBorderTop(BorderStyle.THIN);
+            styleBody.setWrapText(true);
+//            styleBody.setShrinkToFit(true);
+
+
+            Row nameRow = sheet.createRow(0);
+
+            nameRow.createCell(1).setCellValue("Справочник тарифов на финансовое обеспечение ФАПов на дату " +
+                    LocalDate.now().format(DateTimeFormatter.ofPattern("d.MM.uuuu")));
+
+
+//            for (int col = 1; col <= MONTH.length; col++) {
+//
+//            }
+
+            Row headerMonthRow = sheet.createRow(1);
+            for (int col = 1; col <= MONTH.length; col++) {
+                sheet.addMergedRegion(new CellRangeAddress(1, 1, col*4-1, col*4+2));
+                Cell cellMonth = headerMonthRow.createCell(col*4-1);
+                cellMonth.setCellValue(MONTH[col-1]);
+                cellMonth.setCellStyle(styleHeader);
+                headerMonthRow.createCell(col*4).setCellStyle(styleHeader);
+                headerMonthRow.createCell(col*4+1).setCellStyle(styleHeader);
+                headerMonthRow.createCell(col*4+2).setCellStyle(styleHeader);
+            }
+
+
+            // Header
+            Row headerRow = sheet.createRow(2);
+
+            for (int col = 0; col < HEADERs.length; col++) {
+                Cell cell = headerRow.createCell(col);
+                cell.setCellValue(HEADERs[col]);
+                cell.setCellStyle(styleHeader);
+            }
+
+
+// Заполняем заглавную строку для ЛПУ
+            int rowIdx = 3;
+            int counter = 1;
+            for (Map.Entry<Integer, List<FapFinDto>> entry : fapFinDtosByMkod.entrySet()) {
+                List<FapFinDto> fapFinDtos = entry.getValue();
+                String lpuName = lpuByMkod.get(entry.getKey()).getMNameF();
+
+                Row row = sheet.createRow(rowIdx++);
+                Cell cell = row.createCell(0);
+                cell.setCellStyle(styleBody);
+
+                cell = row.createCell(1);
+                cell.setCellValue(lpuName);
+                cell.setCellStyle(styleBody);
+
+//Заполняем строки по фап
+                for (FapFinDto ffd : fapFinDtos) {
+                    Row subrow = sheet.createRow(rowIdx++);
+
+                    cell = subrow.createCell(0);
+                    cell.setCellValue(counter++);
+                    cell.setCellStyle(styleBody);
+
+                    subrow.createCell(1).setCellStyle(styleBody);
+
+                    cell = subrow.createCell(2);
+                    cell.setCellValue(ffd.getNamePodr());
+                    cell.setCellStyle(styleBody);
+
+                    cell = subrow.createCell(3);
+                    cell.setCellValue(ffd.getGFin1());
+                    cell.setCellStyle(styleBody);
+
+                    cell = subrow.createCell(4);
+                    cell.setCellValue(ffd.getKYkomp1());
+                    cell.setCellStyle(styleBody);
+
+                    cell = subrow.createCell(5);
+                    cell.setCellValue(ffd.getSummAstra1());
+                    cell.setCellStyle(styleBody);
+
+                    cell = subrow.createCell(6);
+                    cell.setCellValue(ffd.getSummKapit1());
+                    cell.setCellStyle(styleBody);
+
+                    //block 2
+                    cell = subrow.createCell(7);
+                    cell.setCellValue(ffd.getGFin2());
+                    cell.setCellStyle(styleBody);
+
+                    cell = subrow.createCell(8);
+                    cell.setCellValue(ffd.getKYkomp2());
+                    cell.setCellStyle(styleBody);
+
+                    cell = subrow.createCell(9);
+                    cell.setCellValue(ffd.getSummAstra2());
+                    cell.setCellStyle(styleBody);
+
+                    cell = subrow.createCell(10);
+                    cell.setCellValue(ffd.getSummKapit2());
+                    cell.setCellStyle(styleBody);
+
+//block 3
+                    cell = subrow.createCell(11);
+                    cell.setCellValue(ffd.getGFin3());
+                    cell.setCellStyle(styleBody);
+
+                    cell = subrow.createCell(12);
+                    cell.setCellValue(ffd.getKYkomp3());
+                    cell.setCellStyle(styleBody);
+
+                    cell = subrow.createCell(13);
+                    cell.setCellValue(ffd.getSummAstra3());
+                    cell.setCellStyle(styleBody);
+
+                    cell = subrow.createCell(14);
+                    cell.setCellValue(ffd.getSummKapit3());
+                    cell.setCellStyle(styleBody);
+
+
+//block 4
+                    cell = subrow.createCell(15);
+                    cell.setCellValue(ffd.getGFin4());
+                    cell.setCellStyle(styleBody);
+
+                    cell = subrow.createCell(16);
+                    cell.setCellValue(ffd.getKYkomp4());
+                    cell.setCellStyle(styleBody);
+
+                    cell = subrow.createCell(17);
+                    cell.setCellValue(ffd.getSummAstra4());
+                    cell.setCellStyle(styleBody);
+
+                    cell = subrow.createCell(18);
+                    cell.setCellValue(ffd.getSummKapit4());
+                    cell.setCellStyle(styleBody);
+
+
+//block 5
+                    cell = subrow.createCell(19);
+                    cell.setCellValue(ffd.getGFin5());
+                    cell.setCellStyle(styleBody);
+
+                    cell = subrow.createCell(20);
+                    cell.setCellValue(ffd.getKYkomp5());
+                    cell.setCellStyle(styleBody);
+
+                    cell = subrow.createCell(21);
+                    cell.setCellValue(ffd.getSummAstra5());
+                    cell.setCellStyle(styleBody);
+
+                    cell = subrow.createCell(22);
+                    cell.setCellValue(ffd.getSummKapit5());
+                    cell.setCellStyle(styleBody);
+
+
+//block 6
+                    cell = subrow.createCell(23);
+                    cell.setCellValue(ffd.getGFin6());
+                    cell.setCellStyle(styleBody);
+
+                    cell = subrow.createCell(24);
+                    cell.setCellValue(ffd.getKYkomp6());
+                    cell.setCellStyle(styleBody);
+
+                    cell = subrow.createCell(25);
+                    cell.setCellValue(ffd.getSummAstra6());
+                    cell.setCellStyle(styleBody);
+
+                    cell = subrow.createCell(26);
+                    cell.setCellValue(ffd.getSummKapit6());
+                    cell.setCellStyle(styleBody);
+
+
+//block 7
+                    cell = subrow.createCell(27);
+                    cell.setCellValue(ffd.getGFin7());
+                    cell.setCellStyle(styleBody);
+
+                    cell = subrow.createCell(28);
+                    cell.setCellValue(ffd.getKYkomp7());
+                    cell.setCellStyle(styleBody);
+
+                    cell = subrow.createCell(29);
+                    cell.setCellValue(ffd.getSummAstra7());
+                    cell.setCellStyle(styleBody);
+
+                    cell = subrow.createCell(30);
+                    cell.setCellValue(ffd.getSummKapit7());
+                    cell.setCellStyle(styleBody);
+
+
+//block 8
+                    cell = subrow.createCell(31);
+                    cell.setCellValue(ffd.getGFin8());
+                    cell.setCellStyle(styleBody);
+
+                    cell = subrow.createCell(32);
+                    cell.setCellValue(ffd.getKYkomp8());
+                    cell.setCellStyle(styleBody);
+
+                    cell = subrow.createCell(33);
+                    cell.setCellValue(ffd.getSummAstra8());
+                    cell.setCellStyle(styleBody);
+
+                    cell = subrow.createCell(34);
+                    cell.setCellValue(ffd.getSummKapit8());
+                    cell.setCellStyle(styleBody);
+
+
+//block 9
+                    cell = subrow.createCell(35);
+                    cell.setCellValue(ffd.getGFin9());
+                    cell.setCellStyle(styleBody);
+
+                    cell = subrow.createCell(36);
+                    cell.setCellValue(ffd.getKYkomp9());
+                    cell.setCellStyle(styleBody);
+
+                    cell = subrow.createCell(37);
+                    cell.setCellValue(ffd.getSummAstra9());
+                    cell.setCellStyle(styleBody);
+
+                    cell = subrow.createCell(38);
+                    cell.setCellValue(ffd.getSummKapit9());
+                    cell.setCellStyle(styleBody);
+
+
+//block 10
+                    cell = subrow.createCell(39);
+                    cell.setCellValue(ffd.getGFin10());
+                    cell.setCellStyle(styleBody);
+
+                    cell = subrow.createCell(40);
+                    cell.setCellValue(ffd.getKYkomp10());
+                    cell.setCellStyle(styleBody);
+
+                    cell = subrow.createCell(41);
+                    cell.setCellValue(ffd.getSummAstra10());
+                    cell.setCellStyle(styleBody);
+
+                    cell = subrow.createCell(42);
+                    cell.setCellValue(ffd.getSummKapit10());
+                    cell.setCellStyle(styleBody);
+
+
+//block 11
+                    cell = subrow.createCell(43);
+                    cell.setCellValue(ffd.getGFin11());
+                    cell.setCellStyle(styleBody);
+
+                    cell = subrow.createCell(44);
+                    cell.setCellValue(ffd.getKYkomp11());
+                    cell.setCellStyle(styleBody);
+
+                    cell = subrow.createCell(45);
+                    cell.setCellValue(ffd.getSummAstra11());
+                    cell.setCellStyle(styleBody);
+
+                    cell = subrow.createCell(46);
+                    cell.setCellValue(ffd.getSummKapit11());
+                    cell.setCellStyle(styleBody);
+
+
+//block 12
+                    cell = subrow.createCell(47);
+                    cell.setCellValue(ffd.getGFin12());
+                    cell.setCellStyle(styleBody);
+
+                    cell = subrow.createCell(48);
+                    cell.setCellValue(ffd.getKYkomp12());
+                    cell.setCellStyle(styleBody);
+
+                    cell = subrow.createCell(49);
+                    cell.setCellValue(ffd.getSummAstra12());
+                    cell.setCellStyle(styleBody);
+
+                    cell = subrow.createCell(50);
+                    cell.setCellValue(ffd.getSummKapit12());
+                    cell.setCellStyle(styleBody);
+
+
+                }
+
+                Row totalrow = sheet.createRow(rowIdx++);
+
+                totalrow.createCell(0).setCellStyle(styleBody);;
+
+                cell = totalrow.createCell(1);
+                cell.setCellValue("Итого по " + lpuName);
+                cell.setCellStyle(styleBody);
+
+                cell = totalrow.createCell(2);
+                cell.setCellValue(fapFinDtos.size());
+                cell.setCellStyle(styleBody);
+
+// Заполняем суммы по ЛПУ
+
+                {
+                cell = totalrow.createCell(3);
+                cell.setCellValue(fapFinDtos.stream().map(FapFinDto::getGFin1).mapToDouble(Double::doubleValue).sum());
+                cell.setCellStyle(styleBody);
+
+                totalrow.createCell(4).setCellStyle(styleBody);;
+
+                cell = totalrow.createCell(5);
+                cell.setCellValue(fapFinDtos.stream().map(FapFinDto::getSummAstra1).mapToDouble(Double::doubleValue).sum());
+                cell.setCellStyle(styleBody);
+
+                cell = totalrow.createCell(6);
+                cell.setCellValue(fapFinDtos.stream().map(FapFinDto::getSummKapit1).mapToDouble(Double::doubleValue).sum());
+                cell.setCellStyle(styleBody);
+
+//Block 2
+                    cell = totalrow.createCell(7);
+                    cell.setCellValue(fapFinDtos.stream().map(FapFinDto::getGFin2).mapToDouble(Double::doubleValue).sum());
+                    cell.setCellStyle(styleBody);
+
+                    totalrow.createCell(8).setCellStyle(styleBody);;
+
+                    cell = totalrow.createCell(9);
+                    cell.setCellValue(fapFinDtos.stream().map(FapFinDto::getSummAstra2).mapToDouble(Double::doubleValue).sum());
+                    cell.setCellStyle(styleBody);
+
+                    cell = totalrow.createCell(10);
+                    cell.setCellValue(fapFinDtos.stream().map(FapFinDto::getSummKapit2).mapToDouble(Double::doubleValue).sum());
+                    cell.setCellStyle(styleBody);
+
+//Block 3
+                    cell = totalrow.createCell(11);
+                    cell.setCellValue(fapFinDtos.stream().map(FapFinDto::getGFin3).mapToDouble(Double::doubleValue).sum());
+                    cell.setCellStyle(styleBody);
+
+                    totalrow.createCell(12).setCellStyle(styleBody);;
+
+                    cell = totalrow.createCell(13);
+                    cell.setCellValue(fapFinDtos.stream().map(FapFinDto::getSummAstra3).mapToDouble(Double::doubleValue).sum());
+                    cell.setCellStyle(styleBody);
+
+                    cell = totalrow.createCell(14);
+                    cell.setCellValue(fapFinDtos.stream().map(FapFinDto::getSummKapit3).mapToDouble(Double::doubleValue).sum());
+                    cell.setCellStyle(styleBody);
+
+//Block 4
+                    cell = totalrow.createCell(15);
+                    cell.setCellValue(fapFinDtos.stream().map(FapFinDto::getGFin4).mapToDouble(Double::doubleValue).sum());
+                    cell.setCellStyle(styleBody);
+
+                    totalrow.createCell(16).setCellStyle(styleBody);;
+
+                    cell = totalrow.createCell(17);
+                    cell.setCellValue(fapFinDtos.stream().map(FapFinDto::getSummAstra4).mapToDouble(Double::doubleValue).sum());
+                    cell.setCellStyle(styleBody);
+
+                    cell = totalrow.createCell(18);
+                    cell.setCellValue(fapFinDtos.stream().map(FapFinDto::getSummKapit4).mapToDouble(Double::doubleValue).sum());
+                    cell.setCellStyle(styleBody);
+
+//Block 5
+                    cell = totalrow.createCell(19);
+                    cell.setCellValue(fapFinDtos.stream().map(FapFinDto::getGFin5).mapToDouble(Double::doubleValue).sum());
+                    cell.setCellStyle(styleBody);
+
+                    totalrow.createCell(20).setCellStyle(styleBody);;
+
+                    cell = totalrow.createCell(21);
+                    cell.setCellValue(fapFinDtos.stream().map(FapFinDto::getSummAstra5).mapToDouble(Double::doubleValue).sum());
+                    cell.setCellStyle(styleBody);
+
+                    cell = totalrow.createCell(22);
+                    cell.setCellValue(fapFinDtos.stream().map(FapFinDto::getSummKapit5).mapToDouble(Double::doubleValue).sum());
+                    cell.setCellStyle(styleBody);
+
+//Block 6
+                    cell = totalrow.createCell(23);
+                    cell.setCellValue(fapFinDtos.stream().map(FapFinDto::getGFin6).mapToDouble(Double::doubleValue).sum());
+                    cell.setCellStyle(styleBody);
+
+                    totalrow.createCell(24).setCellStyle(styleBody);;
+
+                    cell = totalrow.createCell(25);
+                    cell.setCellValue(fapFinDtos.stream().map(FapFinDto::getSummAstra6).mapToDouble(Double::doubleValue).sum());
+                    cell.setCellStyle(styleBody);
+
+                    cell = totalrow.createCell(26);
+                    cell.setCellValue(fapFinDtos.stream().map(FapFinDto::getSummKapit6).mapToDouble(Double::doubleValue).sum());
+                    cell.setCellStyle(styleBody);
+
+//Block 7
+                    cell = totalrow.createCell(27);
+                    cell.setCellValue(fapFinDtos.stream().map(FapFinDto::getGFin7).mapToDouble(Double::doubleValue).sum());
+                    cell.setCellStyle(styleBody);
+
+                    totalrow.createCell(28).setCellStyle(styleBody);;
+
+                    cell = totalrow.createCell(29);
+                    cell.setCellValue(fapFinDtos.stream().map(FapFinDto::getSummAstra7).mapToDouble(Double::doubleValue).sum());
+                    cell.setCellStyle(styleBody);
+
+                    cell = totalrow.createCell(30);
+                    cell.setCellValue(fapFinDtos.stream().map(FapFinDto::getSummKapit7).mapToDouble(Double::doubleValue).sum());
+                    cell.setCellStyle(styleBody);
+
+//Block 8
+                    cell = totalrow.createCell(31);
+                    cell.setCellValue(fapFinDtos.stream().map(FapFinDto::getGFin8).mapToDouble(Double::doubleValue).sum());
+                    cell.setCellStyle(styleBody);
+
+                    totalrow.createCell(32).setCellStyle(styleBody);;
+
+                    cell = totalrow.createCell(33);
+                    cell.setCellValue(fapFinDtos.stream().map(FapFinDto::getSummAstra8).mapToDouble(Double::doubleValue).sum());
+                    cell.setCellStyle(styleBody);
+
+                    cell = totalrow.createCell(34);
+                    cell.setCellValue(fapFinDtos.stream().map(FapFinDto::getSummKapit8).mapToDouble(Double::doubleValue).sum());
+                    cell.setCellStyle(styleBody);
+
+//Block 9
+                    cell = totalrow.createCell(35);
+                    cell.setCellValue(fapFinDtos.stream().map(FapFinDto::getGFin9).mapToDouble(Double::doubleValue).sum());
+                    cell.setCellStyle(styleBody);
+
+                    totalrow.createCell(36).setCellStyle(styleBody);;
+
+                    cell = totalrow.createCell(37);
+                    cell.setCellValue(fapFinDtos.stream().map(FapFinDto::getSummAstra9).mapToDouble(Double::doubleValue).sum());
+                    cell.setCellStyle(styleBody);
+
+                    cell = totalrow.createCell(38);
+                    cell.setCellValue(fapFinDtos.stream().map(FapFinDto::getSummKapit9).mapToDouble(Double::doubleValue).sum());
+                    cell.setCellStyle(styleBody);
+
+//Block 10
+                    cell = totalrow.createCell(39);
+                    cell.setCellValue(fapFinDtos.stream().map(FapFinDto::getGFin10).mapToDouble(Double::doubleValue).sum());
+                    cell.setCellStyle(styleBody);
+
+                    totalrow.createCell(40).setCellStyle(styleBody);;
+
+                    cell = totalrow.createCell(41);
+                    cell.setCellValue(fapFinDtos.stream().map(FapFinDto::getSummAstra10).mapToDouble(Double::doubleValue).sum());
+                    cell.setCellStyle(styleBody);
+
+                    cell = totalrow.createCell(42);
+                    cell.setCellValue(fapFinDtos.stream().map(FapFinDto::getSummKapit10).mapToDouble(Double::doubleValue).sum());
+                    cell.setCellStyle(styleBody);
+
+//Block 11
+                    cell = totalrow.createCell(43);
+                    cell.setCellValue(fapFinDtos.stream().map(FapFinDto::getGFin11).mapToDouble(Double::doubleValue).sum());
+                    cell.setCellStyle(styleBody);
+
+                    totalrow.createCell(44).setCellStyle(styleBody);;
+
+                    cell = totalrow.createCell(45);
+                    cell.setCellValue(fapFinDtos.stream().map(FapFinDto::getSummAstra11).mapToDouble(Double::doubleValue).sum());
+                    cell.setCellStyle(styleBody);
+
+                    cell = totalrow.createCell(46);
+                    cell.setCellValue(fapFinDtos.stream().map(FapFinDto::getSummKapit11).mapToDouble(Double::doubleValue).sum());
+                    cell.setCellStyle(styleBody);
+
+//Block 12
+                    cell = totalrow.createCell(47);
+                    cell.setCellValue(fapFinDtos.stream().map(FapFinDto::getGFin12).mapToDouble(Double::doubleValue).sum());
+                    cell.setCellStyle(styleBody);
+
+                    totalrow.createCell(48).setCellStyle(styleBody);;
+
+                    cell = totalrow.createCell(49);
+                    cell.setCellValue(fapFinDtos.stream().map(FapFinDto::getSummAstra12).mapToDouble(Double::doubleValue).sum());
+                    cell.setCellStyle(styleBody);
+
+                    cell = totalrow.createCell(50);
+                    cell.setCellValue(fapFinDtos.stream().map(FapFinDto::getSummKapit12).mapToDouble(Double::doubleValue).sum());
+                    cell.setCellStyle(styleBody);
+
+
+                }
+
+            }
+
+
+            workbook.write(out);
+            return new ByteArrayInputStream(out.toByteArray());
+        } catch (IOException e) {
+            throw new RuntimeException("fail to import data to Excel file: " + e.getMessage());
+        }
+    }
+
+}
