@@ -152,13 +152,13 @@ public class FapService {
             throw new NoSuchFieldException("The month number should be between 1 and 12");
         }
         if (month == 1){
-            throw new NoSuchFieldException("the method for transferring data from the previous year" +
-                    " has not yet been implemented");
+            throw new NoSuchFieldException("метод для переноса данных с предыдущего года" +
+                    " не был реализован");
         }
 
         List<FapFin> fapFinEntityList = fapDao.getFapFinEntityList(year);
         if (fapFinEntityList.isEmpty()){
-            throw  new NoSuchFieldException("No entries for this year (FapFin)");
+            throw  new NoSuchFieldException("Для финансирования ФАП нет данных за этот год");
         }
 //        fapFinEntityList.stream().map(FapFin::getPodr).forEach(System.out::println);//todo: убрать принты
         fapFinEntityList.stream().forEach(s -> s.fillMonth(month));
@@ -170,22 +170,20 @@ public class FapService {
     public void fundingCalc(Integer month, Integer year) throws NoSuchFieldException {
         List<FapFin> fapFinEntityList = fapDao.getFapFinEntityList(year);
         if (fapFinEntityList.isEmpty()){
-            throw  new NoSuchFieldException("No entries for this year (FapFin)");
+            throw  new NoSuchFieldException("Для финансирования ФАП нет данных за этот год");
         }
         LocalDate fundingDate = LocalDate.of(year, month, 1);
 //        System.out.println(fundingDate);//todo: убрать принты
         Map<String, FundingNorma> fundingNormaMap = lpuDao.getFundingNormaEntityList(fundingDate)
                 .stream().collect(Collectors.toMap(fn -> fn.getMoLpu(), fn -> fn));
         if (fundingNormaMap.isEmpty()){
-            throw  new NoSuchFieldException("No entries for this period (FundingNorma)");
+            throw  new NoSuchFieldException("Нет данных по подушевому финансированию за этот период");
         }
 
         for (FapFin ff: fapFinEntityList){
             String lpuKey = ff.getPodr().substring(0,30);
-//            System.out.println(lpuKey);//todo: убрать принты
             FundingNorma fn = fundingNormaMap.get(lpuKey);
             double rateAstra = (fn.getQuantityInAstr() * 100 / (fn.getQuantityInAstr() + fn.getQuantityInKap()))/100.0;
-//            System.out.println(rateAstra);//todo: убрать принты
             switch(month){
                 case 1:
                     ff.setSummAstra1(Math.round(ff.getGFin1() * ff.getKYkomp1() * rateAstra * 100 / 12) / 100.0);

@@ -79,15 +79,15 @@ public class MainController {
     @RequestMapping(value = { "/edit_fap/{id}" }, method = RequestMethod.POST)
     public String saveFap(Model model,
                           @PathVariable("id") int id,
-                          EditFapForm editFapForm) throws Exception {
-//        try {
+                          EditFapForm editFapForm) {
+        try {
             fapService.saveFap(id, editFapForm);
             return "redirect:/fap";
-//        }
-//        catch (Exception e) {
-//            model.addAttribute("message", e.getMessage());
-//        return "error_catch";
-//        }
+        }
+        catch (Exception e) {
+            model.addAttribute("message", e.getMessage());
+        return "error_catch";
+        }
     }
 
 
@@ -151,7 +151,7 @@ public class MainController {
     ////POST заполнить следующий период в СФОФ, но выведет предупреждение если данные за этот период уже есть.
     @RequestMapping(value = {"/fill_next_month_warning"}, method = RequestMethod.POST)
     public String execFillNextMonthWarning (Model model,
-                                     @ModelAttribute("monthForm") MonthForm monthForm) throws NoSuchFieldException {
+                                     @ModelAttribute("monthForm") MonthForm monthForm) {
         Integer month = monthForm.getMonth();
         Integer year = monthForm.getYear();
         try {
