@@ -54,6 +54,14 @@ public class MainController {
         return "fap";
     }
 
+    //Страница по ЛПУ (вложенная) для справочника ФАП
+    @RequestMapping(value = { "/fap_by_lpu/{lpu}" }, method = RequestMethod.GET)
+    public String fapByLpu(Model model, @PathVariable("lpu") String lpu) {
+        model.addAttribute("lpu", lpuService.getLpuByOid(lpu));
+        model.addAttribute("fapList", fapService.getFapEntityListByLpu(lpu));
+        return "fap_by_lpu";
+    }
+
     //Страница редактирования ФАП
     @RequestMapping(value = { "/edit_fap/{id}" }, method = RequestMethod.GET)
     public String editFap(Model model, @PathVariable("id") int id) {

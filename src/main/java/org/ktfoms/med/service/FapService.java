@@ -366,4 +366,9 @@ public class FapService {
         fap.editByForm(editFapForm);
         fapDao.save(fap);
     }
+
+
+    public List<Fap> getFapEntityListByLpu(String lpu) {
+        return fapDao.getFapEntityListByLpu(lpu);
+    }
 }

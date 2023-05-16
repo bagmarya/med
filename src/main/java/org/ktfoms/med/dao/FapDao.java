@@ -46,6 +46,11 @@ public class FapDao {
                 .getResultList();
     }
 
+    public List<Fap> getFapEntityListByLpu(String lpu) {
+        return sessionFactory.getCurrentSession().createQuery("select f from Fap f where f.moLpu =:lpu order by f.podr", Fap.class)
+                .setParameter("lpu", lpu).getResultList();
+    }
+
     @Transactional
     public FapFin getFapFinById(int id) {
         return sessionFactory.getCurrentSession().get(FapFin.class, id);
@@ -151,4 +156,6 @@ public class FapDao {
                 .setParameter("podr", podr)
                 .getSingleResult();
     }
+
+
 }

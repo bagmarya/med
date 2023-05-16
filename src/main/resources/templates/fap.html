@@ -18,7 +18,7 @@
   <tr th:each="lpu:${lpuList}">
     <td th:utext="${lpu.moLpu}">..</td>
     <td th:utext="${lpu.nameS}">..</td>
-    <td><a th:href="@{fap/{lpu}(lpu=${lpu.moLpu})}" th:utext="${lpu.fapCount}">..</a></td>
+    <td><a th:href="@{fap_by_lpu/{lpu}(lpu=${lpu.moLpu})}" th:utext="${lpu.fapCount}">..</a></td>
   </tr>
 </table>
 
