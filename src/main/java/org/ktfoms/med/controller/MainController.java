@@ -1,7 +1,9 @@
 package org.ktfoms.med.controller;
 
 import org.ktfoms.med.dto.FapFinDto;
+import org.ktfoms.med.entity.Fap;
 import org.ktfoms.med.entity.FundingNorma;
+import org.ktfoms.med.form.EditFapForm;
 import org.ktfoms.med.form.EditFundingFapForm;
 import org.ktfoms.med.form.EditFundingNormaForm;
 import org.ktfoms.med.form.MonthForm;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -35,6 +38,50 @@ public class MainController {
         model.addAttribute("today", Calendar.getInstance());
         return "index";
     }
+
+    //Страница для справочника ЛПУ
+    @RequestMapping(value = { "/lpu" }, method = RequestMethod.GET)
+    public String lpu(Model model) {
+        model.addAttribute("lpuList", lpuService.getLpuEntityList());
+        return "lpu";
+    }
+
+    //Страница (основная) для справочника ФАП
+    @RequestMapping(value = { "/fap" }, method = RequestMethod.GET)
+    public String fap(Model model) {
+        model.addAttribute("lpuList", fapService.getLpuFapCountDtoList());
+        model.addAttribute("fapList", fapService.getFapEntityList());
+        return "fap";
+    }
+
+    //Страница редактирования ФАП
+    @RequestMapping(value = { "/edit_fap/{id}" }, method = RequestMethod.GET)
+    public String editFap(Model model, @PathVariable("id") int id) {
+
+        Fap entity = fapService.getFapById(id);
+        EditFapForm editFapForm = new EditFapForm(entity);
+        
+        model.addAttribute("editFapForm", editFapForm);
+        model.addAttribute("id", id);
+        model.addAttribute("fap", entity);
+        return "edit_fap";
+    }
+
+    //Сохранение записи ФАП
+    @RequestMapping(value = { "/edit_fap/{id}" }, method = RequestMethod.POST)
+    public String saveFap(Model model,
+                          @PathVariable("id") int id,
+                          EditFapForm editFapForm) throws Exception {
+//        try {
+            fapService.saveFap(id, editFapForm);
+            return "redirect:/fap";
+//        }
+//        catch (Exception e) {
+//            model.addAttribute("message", e.getMessage());
+//        return "error_catch";
+//        }
+    }
+
 
     //Страница (основная) для справочника финансового обеспечения ФАП (СФОФ)
     @RequestMapping(value = { "/funding_fap" }, method = RequestMethod.GET)

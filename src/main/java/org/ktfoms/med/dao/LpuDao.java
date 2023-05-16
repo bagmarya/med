@@ -37,7 +37,7 @@ public class LpuDao {
 
     @Transactional
     public List<Lpu> getLpuEntityList() {
-        return sessionFactory.getCurrentSession().createQuery("select l from Lpu l", Lpu.class)
+        return sessionFactory.getCurrentSession().createQuery("select l from Lpu l order by l.mkod", Lpu.class)
                 .getResultList();
     }
     @Transactional

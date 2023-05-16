@@ -76,4 +76,8 @@ public class LpuService {
     public Lpu getLpuByOid(String oid) {
             return lpuDao.getLpuByOid(oid);
     }
+
+    public List<Lpu> getLpuEntityList() {
+        return lpuDao.getLpuEntityList();
+    }
 }

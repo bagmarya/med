@@ -6,6 +6,7 @@ import org.ktfoms.med.dto.FapFinDto;
 import org.ktfoms.med.dto.LpuFapCountDto;
 import org.ktfoms.med.entity.Fap;
 import org.ktfoms.med.entity.FapFin;
+import org.ktfoms.med.entity.Lpu;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -37,6 +38,12 @@ public class FapDao {
                         " f.kodVidPodr, f.nameVidPodr, l.mkod) " +
                         "from Fap f join Lpu l on f.moLpu = l.kodSp where f.id = :id", FapDto.class)
                 .setParameter("id", id).getSingleResult();
+    }
+
+    @Transactional
+    public List<Fap> getFapEntityList() {
+        return sessionFactory.getCurrentSession().createQuery("select f from Fap f order by f.podr", Fap.class)
+                .getResultList();
     }
 
     @Transactional

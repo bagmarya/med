@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ru">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Редактировать ФАП</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:insert="~{menu :: copy}">...</div>
+<h1>Редактировать ФАП</h1>
+
+<form th:action="@{/edit_fap/{id}(id=${id})}" th:object="${editFapForm}" method="POST">
+
+  <p></p>
+  <p></p>
+
+  <p>Код ЛПУ:</p>
+  <input type="text" th:field="*{moLpu}" />
+  <br/>
+  <p>Код подразделения:</p>
+  <input type="text" th:field="*{podr}" />
+  <br/>
+  <p>Наименование ФАП:</p>
+  <input type="text" th:field="*{namePodr}" />
+  <br/>
+  <p>Дата начала работы:</p>
+  <input type="date" th:field="*{dateN}" />
+  <br/>
+  <p>Дата ликвидации:</p>
+  <input type="date" th:field="*{dateLik}" />
+  <br/>
+  <p>Дата начала лицензии:</p>
+  <input type="date" th:field="*{dnLicen}" />
+  <br/>
+  <p>Дата конца лицензии:</p>
+  <input type="date" th:field="*{dkLicen}" />
+  <br/>
+  <p>Тип подразделения:</p>
+  <select th:field="*{nameTipePodr}">
+    <option th:each="name : ${editFapForm.namesTipePodr}"
+            th:value="${name}"
+            th:utext="${name}">
+    </option>
+  </select>
+  <br/>
+  <p>Вид подразделения:</p>
+  <select th:field="*{nameVidPodr}">
+    <option th:each="name : ${editFapForm.namesVidPodr}"
+            th:value="${name}"
+            th:utext="${name}">
+    </option>
+  </select>
+  <br/>
+  <p><input type="submit" value="Сохранить" />
+  <input type="button" value="Отмена" onClick='location.href="/fap"'></p>
+</form>
+</body>
+</html>

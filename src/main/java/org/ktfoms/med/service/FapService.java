@@ -11,6 +11,7 @@ import org.ktfoms.med.dto.Spfinfap;
 import org.ktfoms.med.entity.Fap;
 import org.ktfoms.med.entity.FapFin;
 import org.ktfoms.med.entity.FundingNorma;
+import org.ktfoms.med.form.EditFapForm;
 import org.ktfoms.med.form.EditFundingFapForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
@@ -353,4 +354,16 @@ public class FapService {
     }
 
 
+    public List<Fap> getFapEntityList() {
+        return fapDao.getFapEntityList();
+    }
+
+    public void saveFap(int id, EditFapForm editFapForm) throws Exception {
+
+        System.out.println(id);
+        System.out.println(editFapForm);
+        Fap fap = getFapById(id);
+        fap.editByForm(editFapForm);
+        fapDao.save(fap);
+    }
 }
