@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Cправочник медицинских услуг</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:insert="~{menu :: copy}">...</div>
+<h1>Cправочник медицинских услуг</h1>
+
+
+<form method="post" th:action="@{/fys/upload_fys_xls}" enctype="multipart/form-data">
+  <input type="submit" value="Загрузить cправочник из excel" />
+  <label for="fys_upload">!!!!!!!</label>
+  <input id="fys_upload" type="file" name="file" accept=".xls"/>
+</form>
+
+<form method="post" th:action="@{/fys/upload_fys_xls_empty_price}" enctype="multipart/form-data">
+  <input type="submit" value="Загрузить cправочник из excel без стоимости" />
+  <label for="fys_upload_empty_price">!!!!!!!</label>
+  <input id="fys_upload_empty_price" type="file" name="file" accept=".xls"/>
+</form>
+
+
+</body>
+</html>

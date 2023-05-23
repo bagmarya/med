@@ -1,68 +1,74 @@
 package org.ktfoms.med.helper;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.apache.poi.ss.usermodel.Font;
 
 //В случае .xls использовать:
 //import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 
 import org.ktfoms.med.dto.FapFinDto;
+import org.ktfoms.med.entity.Fys;
 import org.ktfoms.med.entity.Lpu;
+import org.ktfoms.med.entity.Price;
 
 public class ExcelHelper {
-    public static String TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-    static String[] HEADERs = { "№ п/п", "Наименование ЦРБ", "Наименование ФАП"
-            , "Годовая сумма финанасового обеспечения, руб.", "К-т укомплектованности"
-            , "Сумма финансового обеспечения на месяц, Астрамед, руб.", "Сумма финансового обеспечения на месяц, Капитал, руб."
-            , "Годовая сумма финанасового обеспечения, руб.", "К-т укомплектованности"
-            , "Сумма финансового обеспечения на месяц, Астрамед, руб.", "Сумма финансового обеспечения на месяц, Капитал, руб."
-            , "Годовая сумма финанасового обеспечения, руб.", "К-т укомплектованности"
-            , "Сумма финансового обеспечения на месяц, Астрамед, руб.", "Сумма финансового обеспечения на месяц, Капитал, руб."
-            , "Годовая сумма финанасового обеспечения, руб.", "К-т укомплектованности"
-            , "Сумма финансового обеспечения на месяц, Астрамед, руб.", "Сумма финансового обеспечения на месяц, Капитал, руб."
-            , "Годовая сумма финанасового обеспечения, руб.", "К-т укомплектованности"
-            , "Сумма финансового обеспечения на месяц, Астрамед, руб.", "Сумма финансового обеспечения на месяц, Капитал, руб."
-            , "Годовая сумма финанасового обеспечения, руб.", "К-т укомплектованности"
-            , "Сумма финансового обеспечения на месяц, Астрамед, руб.", "Сумма финансового обеспечения на месяц, Капитал, руб."
-            , "Годовая сумма финанасового обеспечения, руб.", "К-т укомплектованности"
-            , "Сумма финансового обеспечения на месяц, Астрамед, руб.", "Сумма финансового обеспечения на месяц, Капитал, руб."
-            , "Годовая сумма финанасового обеспечения, руб.", "К-т укомплектованности"
-            , "Сумма финансового обеспечения на месяц, Астрамед, руб.", "Сумма финансового обеспечения на месяц, Капитал, руб."
-            , "Годовая сумма финанасового обеспечения, руб.", "К-т укомплектованности"
-            , "Сумма финансового обеспечения на месяц, Астрамед, руб.", "Сумма финансового обеспечения на месяц, Капитал, руб."
-            , "Годовая сумма финанасового обеспечения, руб.", "К-т укомплектованности"
-            , "Сумма финансового обеспечения на месяц, Астрамед, руб.", "Сумма финансового обеспечения на месяц, Капитал, руб."
-            , "Годовая сумма финанасового обеспечения, руб.", "К-т укомплектованности"
-            , "Сумма финансового обеспечения на месяц, Астрамед, руб.", "Сумма финансового обеспечения на месяц, Капитал, руб."
-            , "Годовая сумма финанасового обеспечения, руб.", "К-т укомплектованности"
-            , "Сумма финансового обеспечения на месяц, Астрамед, руб.", "Сумма финансового обеспечения на месяц, Капитал, руб."
-
-    };
-    static String[] MONTH = { "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
-            "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь" };
-    static String SHEET = "sheet1";
+//    public static String TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+//    static String SHEET = "sheet1";
 
     public static ByteArrayInputStream fapFinDtosToExcel(List<FapFinDto> fapFinDtoList, List<Lpu> lpuEntityList) {
+
+        String[] headers = { "№ п/п", "Наименование ЦРБ", "Наименование ФАП"
+                , "Годовая сумма финанасового обеспечения, руб.", "К-т укомплектованности"
+                , "Сумма финансового обеспечения на месяц, Астрамед, руб.", "Сумма финансового обеспечения на месяц, Капитал, руб."
+                , "Годовая сумма финанасового обеспечения, руб.", "К-т укомплектованности"
+                , "Сумма финансового обеспечения на месяц, Астрамед, руб.", "Сумма финансового обеспечения на месяц, Капитал, руб."
+                , "Годовая сумма финанасового обеспечения, руб.", "К-т укомплектованности"
+                , "Сумма финансового обеспечения на месяц, Астрамед, руб.", "Сумма финансового обеспечения на месяц, Капитал, руб."
+                , "Годовая сумма финанасового обеспечения, руб.", "К-т укомплектованности"
+                , "Сумма финансового обеспечения на месяц, Астрамед, руб.", "Сумма финансового обеспечения на месяц, Капитал, руб."
+                , "Годовая сумма финанасового обеспечения, руб.", "К-т укомплектованности"
+                , "Сумма финансового обеспечения на месяц, Астрамед, руб.", "Сумма финансового обеспечения на месяц, Капитал, руб."
+                , "Годовая сумма финанасового обеспечения, руб.", "К-т укомплектованности"
+                , "Сумма финансового обеспечения на месяц, Астрамед, руб.", "Сумма финансового обеспечения на месяц, Капитал, руб."
+                , "Годовая сумма финанасового обеспечения, руб.", "К-т укомплектованности"
+                , "Сумма финансового обеспечения на месяц, Астрамед, руб.", "Сумма финансового обеспечения на месяц, Капитал, руб."
+                , "Годовая сумма финанасового обеспечения, руб.", "К-т укомплектованности"
+                , "Сумма финансового обеспечения на месяц, Астрамед, руб.", "Сумма финансового обеспечения на месяц, Капитал, руб."
+                , "Годовая сумма финанасового обеспечения, руб.", "К-т укомплектованности"
+                , "Сумма финансового обеспечения на месяц, Астрамед, руб.", "Сумма финансового обеспечения на месяц, Капитал, руб."
+                , "Годовая сумма финанасового обеспечения, руб.", "К-т укомплектованности"
+                , "Сумма финансового обеспечения на месяц, Астрамед, руб.", "Сумма финансового обеспечения на месяц, Капитал, руб."
+                , "Годовая сумма финанасового обеспечения, руб.", "К-т укомплектованности"
+                , "Сумма финансового обеспечения на месяц, Астрамед, руб.", "Сумма финансового обеспечения на месяц, Капитал, руб."
+                , "Годовая сумма финанасового обеспечения, руб.", "К-т укомплектованности"
+                , "Сумма финансового обеспечения на месяц, Астрамед, руб.", "Сумма финансового обеспечения на месяц, Капитал, руб."
+
+        };
+
+        String[] month = { "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
+                "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь" };
 
         Map<Integer, Lpu> lpuByMkod = lpuEntityList.stream().collect(Collectors.toMap(Lpu::getMkod, l -> l));
 
@@ -77,7 +83,7 @@ public class ExcelHelper {
                 });
 
         try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream();) {
-            Sheet sheet = workbook.createSheet(SHEET);
+            Sheet sheet = workbook.createSheet("sheet1");
             sheet.setColumnWidth(0, 1000);
             sheet.setColumnWidth(1, 10000);
             sheet.setColumnWidth(2, 10000);
@@ -109,10 +115,10 @@ public class ExcelHelper {
 //            }
 
             Row headerMonthRow = sheet.createRow(1);
-            for (int col = 1; col <= MONTH.length; col++) {
+            for (int col = 1; col <= month.length; col++) {
                 sheet.addMergedRegion(new CellRangeAddress(1, 1, col*4-1, col*4+2));
                 Cell cellMonth = headerMonthRow.createCell(col*4-1);
-                cellMonth.setCellValue(MONTH[col-1]);
+                cellMonth.setCellValue(month[col-1]);
                 cellMonth.setCellStyle(styleHeader);
                 headerMonthRow.createCell(col*4).setCellStyle(styleHeader);
                 headerMonthRow.createCell(col*4+1).setCellStyle(styleHeader);
@@ -123,9 +129,9 @@ public class ExcelHelper {
             // Header
             Row headerRow = sheet.createRow(2);
 
-            for (int col = 0; col < HEADERs.length; col++) {
+            for (int col = 0; col < headers.length; col++) {
                 Cell cell = headerRow.createCell(col);
-                cell.setCellValue(HEADERs[col]);
+                cell.setCellValue(headers[col]);
                 cell.setCellStyle(styleHeader);
             }
 
@@ -581,4 +587,133 @@ public class ExcelHelper {
         }
     }
 
+    public static String valueAsString (Cell cell) {
+        if (cell == null) {return null;}
+        if (cell.getCellType() == null) {return null;}
+        CellType cellType = cell.getCellType();
+        //перебираем возможные типы ячеек
+        switch (cellType) {
+            case STRING:
+                return cell.getStringCellValue();
+            case NUMERIC:
+                return String.valueOf(cell.getNumericCellValue());
+            default:
+                return null;
+        }
+
+    }
+
+    public static Double valueAsNum (Cell cell) {
+        if (cell == null) {return null;}
+        if (cell.getCellType() == null) {return null;}
+        CellType cellType = cell.getCellType();
+        switch (cellType) {
+            case NUMERIC:
+                return cell.getNumericCellValue();
+            default:
+                return Double.valueOf(0);
+        }
+
+    }
+
+    public static List<Fys> parseFysXls(String fileName, boolean parsePrice) {
+        List<Fys> fysList = new ArrayList<>();
+        InputStream inputStream = null;
+        HSSFWorkbook workBook = null;
+        try {
+            inputStream = new FileInputStream(fileName);
+            workBook = new HSSFWorkbook(inputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //разбираем первый лист входного файла на объектную модель
+        Sheet sheet = workBook.getSheetAt(0);
+        Iterator<Row> it = sheet.iterator();
+        //пропускаем строку с заголовком таблицы
+        it.next();
+
+
+        //проходим по всему листу
+        while (it.hasNext()) {
+            Row row = it.next();
+
+            Fys fys = new Fys();
+            if (row.getCell(0) == null) {break;}
+            fys.setKodSp(ExcelHelper.valueAsString(row.getCell(0)));
+            fys.setNameYsl(ExcelHelper.valueAsString(row.getCell(1)));
+            fys.setKodUslMz(ExcelHelper.valueAsString(row.getCell(3)));
+            fys.setRz(ExcelHelper.valueAsString(row.getCell(4)));
+            fys.setTyp(ExcelHelper.valueAsString(row.getCell(5)));
+            fys.setKlas(ExcelHelper.valueAsString(row.getCell(6)));
+            fys.setVid(ExcelHelper.valueAsString(row.getCell(7)));
+            fys.setPvid(ExcelHelper.valueAsString(row.getCell(8)));
+            fys.setOms(ExcelHelper.valueAsString(row.getCell(9)).equals("+"));
+            fys.setPos(ExcelHelper.valueAsString(row.getCell(10)).equals("+"));
+            fys.setMkr(ExcelHelper.valueAsString(row.getCell(11)));
+            fys.setVrvr(ExcelHelper.valueAsNum(row.getCell(12)));
+            fys.setVrss(ExcelHelper.valueAsNum(row.getCell(13)));
+
+            if (parsePrice){
+                fys.setGd(ExcelHelper.valueAsNum(row.getCell(18)));
+                fys.setGv(ExcelHelper.valueAsNum(row.getCell(19)));
+                fys.setGdi(ExcelHelper.valueAsNum(row.getCell(20)));
+                fys.setGvi(ExcelHelper.valueAsNum(row.getCell(21)));
+                fys.setRd(ExcelHelper.valueAsNum(row.getCell(22)));
+                fys.setRv(ExcelHelper.valueAsNum(row.getCell(23)));
+                fys.setRdi(ExcelHelper.valueAsNum(row.getCell(24)));
+                fys.setRvi(ExcelHelper.valueAsNum(row.getCell(25)));
+            } else {
+                fys.setGd((double) 0);
+                fys.setGv((double) 0);
+                fys.setGdi((double) 0);
+                fys.setGvi((double) 0);
+                fys.setRd((double) 0);
+                fys.setRv((double) 0);
+                fys.setRdi((double) 0);
+                fys.setRvi((double) 0);
+            }
+
+            fys.setV021D(ExcelHelper.valueAsString(row.getCell(38)));
+            fys.setV021V(ExcelHelper.valueAsString(row.getCell(39)));
+            fys.setDiagN(ExcelHelper.valueAsString(row.getCell(40)));
+            fys.setDiagK(ExcelHelper.valueAsString(row.getCell(41)));
+
+            fysList.add(fys);
+        }
+        return fysList;
+    }
+
+
+    public static List<Price> parsePriceXls(String fileName){
+        List<Price> priceList = new ArrayList<>();
+        InputStream inputStream = null;
+        HSSFWorkbook workBook = null;
+        try {
+            inputStream = new FileInputStream(fileName);
+            workBook = new HSSFWorkbook(inputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Sheet sheet = workBook.getSheetAt(0);
+        Iterator<Row> it = sheet.iterator();
+
+        //пропускаем строку с заголовком таблицы
+        it.next();
+
+        //проходим по всему листу
+        while (it.hasNext()) {
+            Row row = it.next();
+            if (row.getCell(0) == null) {break;}
+            Price p = new Price();
+            p.setKod(ExcelHelper.valueAsString(row.getCell(0)));
+            p.setSpez(ExcelHelper.valueAsString(row.getCell(1)));
+            p.setMkr(ExcelHelper.valueAsString(row.getCell(2)));
+            p.setGd(ExcelHelper.valueAsNum(row.getCell(5)));
+            p.setGv(ExcelHelper.valueAsNum(row.getCell(6)));
+            p.setRd(ExcelHelper.valueAsNum(row.getCell(7)));
+            p.setRv(ExcelHelper.valueAsNum(row.getCell(8)));
+            priceList.add(p);
+        }
+        return priceList;
+    }
 }

@@ -1,5 +1,6 @@
 package org.ktfoms.med.controller;
 
+import org.ktfoms.med.service.FysService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.ktfoms.med.service.ExcelService;
 
-@CrossOrigin("http://localhost:8081")
+//@CrossOrigin("http://localhost:8081")
 @Controller
 @RequestMapping("/api/excel")
 public class ExcelController {
