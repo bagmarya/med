@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.poifs.filesystem.NotOLE2FileException;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
@@ -684,6 +685,75 @@ public class ExcelHelper {
     }
 
 
+    public static List<Fys> parseFysXls(InputStream in, boolean parsePrice) throws Exception {
+        List<Fys> fysList = new ArrayList<>();
+        HSSFWorkbook workBook = null;
+        try {
+            workBook = new HSSFWorkbook(in);
+        } catch (NotOLE2FileException e) {
+            e.printStackTrace();
+            throw new Exception("Файл невыбран или неверный формат файла");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //разбираем первый лист входного файла на объектную модель
+        Sheet sheet = workBook.getSheetAt(0);
+        Iterator<Row> it = sheet.iterator();
+        //пропускаем строку с заголовком таблицы
+        it.next();
+
+
+        //проходим по всему листу
+        while (it.hasNext()) {
+            Row row = it.next();
+
+            Fys fys = new Fys();
+            if (row.getCell(0) == null) {break;}
+            fys.setKodSp(ExcelHelper.valueAsString(row.getCell(0)));
+            fys.setNameYsl(ExcelHelper.valueAsString(row.getCell(1)));
+            fys.setKodUslMz(ExcelHelper.valueAsString(row.getCell(3)));
+            fys.setRz(ExcelHelper.valueAsString(row.getCell(4)));
+            fys.setTyp(ExcelHelper.valueAsString(row.getCell(5)));
+            fys.setKlas(ExcelHelper.valueAsString(row.getCell(6)));
+            fys.setVid(ExcelHelper.valueAsString(row.getCell(7)));
+            fys.setPvid(ExcelHelper.valueAsString(row.getCell(8)));
+            fys.setOms(ExcelHelper.valueAsString(row.getCell(9)).equals("+"));
+            fys.setPos(ExcelHelper.valueAsString(row.getCell(10)).equals("+"));
+            fys.setMkr(ExcelHelper.valueAsString(row.getCell(11)));
+            fys.setVrvr(ExcelHelper.valueAsNum(row.getCell(12)));
+            fys.setVrss(ExcelHelper.valueAsNum(row.getCell(13)));
+
+            if (parsePrice){
+                fys.setGd(ExcelHelper.valueAsNum(row.getCell(18)));
+                fys.setGv(ExcelHelper.valueAsNum(row.getCell(19)));
+                fys.setGdi(ExcelHelper.valueAsNum(row.getCell(20)));
+                fys.setGvi(ExcelHelper.valueAsNum(row.getCell(21)));
+                fys.setRd(ExcelHelper.valueAsNum(row.getCell(22)));
+                fys.setRv(ExcelHelper.valueAsNum(row.getCell(23)));
+                fys.setRdi(ExcelHelper.valueAsNum(row.getCell(24)));
+                fys.setRvi(ExcelHelper.valueAsNum(row.getCell(25)));
+            } else {
+                fys.setGd((double) 0);
+                fys.setGv((double) 0);
+                fys.setGdi((double) 0);
+                fys.setGvi((double) 0);
+                fys.setRd((double) 0);
+                fys.setRv((double) 0);
+                fys.setRdi((double) 0);
+                fys.setRvi((double) 0);
+            }
+
+            fys.setV021D(ExcelHelper.valueAsString(row.getCell(38)));
+            fys.setV021V(ExcelHelper.valueAsString(row.getCell(39)));
+            fys.setDiagN(ExcelHelper.valueAsString(row.getCell(40)));
+            fys.setDiagK(ExcelHelper.valueAsString(row.getCell(41)));
+
+            fysList.add(fys);
+        }
+        return fysList;
+    }
+
+
     public static List<Price> parsePriceXls(String fileName){
         List<Price> priceList = new ArrayList<>();
         InputStream inputStream = null;
@@ -716,4 +786,44 @@ public class ExcelHelper {
         }
         return priceList;
     }
+
+    public static List<Price> parsePriceXls (InputStream in) throws Exception {
+        List<Price> priceList = new ArrayList<>();
+        HSSFWorkbook workBook = null;
+        try {
+            workBook = new HSSFWorkbook(in);
+        } catch (NotOLE2FileException e) {
+            e.printStackTrace();
+            throw new Exception("Файл невыбран или неверный формат файла");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+            Sheet sheet = workBook.getSheetAt(0);
+            Iterator<Row> it = sheet.iterator();
+
+            //пропускаем строку с заголовком таблицы
+            it.next();
+
+            //проходим по всему листу
+            while (it.hasNext()) {
+                Row row = it.next();
+                if (row.getCell(0) == null) {
+                    break;
+                }
+                Price p = new Price();
+                p.setKod(ExcelHelper.valueAsString(row.getCell(0)));
+                p.setSpez(ExcelHelper.valueAsString(row.getCell(1)));
+                p.setMkr(ExcelHelper.valueAsString(row.getCell(2)));
+                p.setGd(ExcelHelper.valueAsNum(row.getCell(5)));
+                p.setGv(ExcelHelper.valueAsNum(row.getCell(6)));
+                p.setRd(ExcelHelper.valueAsNum(row.getCell(7)));
+                p.setRv(ExcelHelper.valueAsNum(row.getCell(8)));
+                priceList.add(p);
+            }
+            return priceList;
+        }
+
+
+
 }

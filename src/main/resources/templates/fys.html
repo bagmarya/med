@@ -10,18 +10,89 @@
 <div th:insert="~{menu :: copy}">...</div>
 <h1>Cправочник медицинских услуг</h1>
 
+<div  th:if="${message != null}" role="alert">
+  [[${message}]]
+</div>
 
+<div>
+  <p>Загрузка cправочника FYS из excel:</p>
 <form method="post" th:action="@{/fys/upload_fys_xls}" enctype="multipart/form-data">
-  <input type="submit" value="Загрузить cправочник из excel" />
-  <label for="fys_upload">!!!!!!!</label>
-  <input id="fys_upload" type="file" name="file" accept=".xls"/>
-</form>
 
-<form method="post" th:action="@{/fys/upload_fys_xls_empty_price}" enctype="multipart/form-data">
-  <input type="submit" value="Загрузить cправочник из excel без стоимости" />
-  <label for="fys_upload_empty_price">!!!!!!!</label>
-  <input id="fys_upload_empty_price" type="file" name="file" accept=".xls"/>
+  <label class="input-file">
+    <span class="input-file-text" type="text"></span>
+    <input type="file" name="file" accept=".xls">
+    <span class="input-file-btn">Выберите файл</span>
+  </label>
+
+  <input class="input-file-submit" type="submit" value="Загрузить" />
+
 </form>
+<!--  <script src="https://snipp.ru/cdn/jquery/2.1.1/jquery.min.js"></script>-->
+<script>
+$('.input-file input[type=file]').on('change', function(){
+	let file = this.files[0];
+	$(this).closest('.input-file').find('.input-file-text').html(file.name);
+});
+</script>
+</div>
+<div>
+  <p>Загрузка cправочника FYS из excel без стоимости:</p>
+  <form method="post" th:action="@{/fys/upload_fys_xls_empty_price}" enctype="multipart/form-data">
+
+    <label class="input-file">
+      <span class="input-file-text" type="text"></span>
+      <input type="file" name="file" accept=".xls">
+      <span class="input-file-btn">Выберите файл</span>
+    </label>
+    <input class="input-file-submit" type="submit" value="Загрузить" />
+  </form>
+  <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script>
+$('.input-file input[type=file]').on('change', function(){
+	let file = this.files[0];
+	$(this).closest('.input-file').find('.input-file-text').html(file.name);
+});
+</script>
+</div>
+
+<div>
+  <p>Загрузка стоимости из excel:</p>
+  <form method="post" th:action="@{/fys/upload_price_xls}" enctype="multipart/form-data">
+
+    <label class="input-file">
+      <span class="input-file-text" type="text"></span>
+      <input type="file" name="file" accept=".xls">
+      <span class="input-file-btn">Выберите файл</span>
+    </label>
+    <input class="input-file-submit" type="submit" value="Загрузить" />
+  </form>
+  <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script>
+$('.input-file input[type=file]').on('change', function(){
+	let file = this.files[0];
+	$(this).closest('.input-file').find('.input-file-text').html(file.name);
+});
+</script>
+</div>
+<div>
+  <p>Расчет стоимости:</p>
+  <form method="get" th:action="@{/fys/fys_calc}">
+    <input type="submit" value="Рассчитать" />
+  </form>
+</div>
+<div>
+  <p>Скачать справочник в формате DBF:</p>
+  <form method="get" th:action="@{/fys/get_fys_dbf}">
+    <input type="submit" value="Скачать" />
+  </form>
+</div>
+
+<!--<form method="post" th:action="@{/fys/upload_fys_xls_empty_price}" enctype="multipart/form-data">-->
+
+<!--  <label for="fys_upload_empty_price">Загрузить cправочник из excel без стоимости</label>-->
+<!--  <input id="fys_upload_empty_price" type="file" name="file" accept=".xls"/>-->
+<!--  <input type="submit" value="Загрузить" />-->
+<!--</form>-->
 
 
 </body>

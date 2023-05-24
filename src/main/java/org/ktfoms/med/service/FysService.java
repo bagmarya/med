@@ -1,5 +1,6 @@
 package org.ktfoms.med.service;
 
+import org.apache.poi.poifs.filesystem.NotOLE2FileException;
 import org.ktfoms.med.dao.FysDao;
 import org.ktfoms.med.entity.Fys;
 import org.ktfoms.med.entity.Price;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -20,6 +22,37 @@ public class FysService {
 
     public FysService(FysDao fysDao) {
         this.fysDao = fysDao;
+    }
+
+    @Transactional
+    public String parseFysXls(InputStream in, boolean parsePrice) {
+        try {
+            List<Fys> fysList = ExcelHelper.parseFysXls(in, parsePrice);
+
+            if (fysList.size()==0) { return "Входной файл пуст";}
+            //TODO: узнать что делать с проверкой на дубликаты
+            List<String> duplicates = fysList.stream().map(Fys::getKodUslMz)
+                    //группируем в map (код -> количество вхождений)
+                    .collect(Collectors.groupingBy(Function.identity()))
+                    //проходим по группам
+                    .entrySet()
+                    .stream()
+                    //отбираем коды, встречающихся более одного раза
+                    .filter(e -> e.getValue().size() > 1)
+                    //вытаскиваем ключи
+                    .map(Map.Entry::getKey)
+                    //собираем в список
+                    .collect(Collectors.toList());
+            String duplicatesMessage = "";
+            if (duplicates.size() > 0) {
+                duplicatesMessage = "Файл содержит одинаковые коды услуг " + duplicates;
+            }
+            fysDao.clearFys();
+            fysList.forEach(fysDao::save);
+            return "Файл справочника успешно импортирован. " + (parsePrice ? "" : "Без стоимости. ") + duplicatesMessage;
+        } catch (Exception e) {
+            return e.getMessage();
+        }
     }
 
     @Transactional
@@ -43,11 +76,11 @@ public class FysService {
                     .collect(Collectors.toList());
             String duplicatesMessage = "";
             if (duplicates.size() > 0) {
-                duplicatesMessage = "Файл содержит одинаковые коды услуг " + duplicates;
+                duplicatesMessage = "Файл справочника содержит одинаковые коды услуг " + duplicates;
             }
             fysDao.clearFys();
             fysList.forEach(fysDao::save);
-            return "Файл успешно импортирован. " + duplicatesMessage;
+            return "Файл справочника успешно импортирован. " + duplicatesMessage;
         } catch (Exception e) {
             return e.getMessage();
         }
@@ -63,6 +96,22 @@ public class FysService {
             fysDao.clearPrice();
             priceList.forEach(fysDao::save);
             return "Файл успешно импортирован.";
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+
+    }
+
+    @Transactional
+    public String parsePriceXls(InputStream in) {
+        try {
+            List<Price> priceList = ExcelHelper.parsePriceXls(in);
+
+            if (priceList.size()==0) { return "Входной файл пуст";}
+
+            fysDao.clearPrice();
+            priceList.forEach(fysDao::save);
+            return "Файл со стоимостью успешно импортирован.";
         } catch (Exception e) {
             return e.getMessage();
         }
@@ -118,7 +167,7 @@ public class FysService {
             }
         }
         fysList.forEach(fysDao::save);
-        return "Расчет произведен";
+        return "Расчет произведен успешно";
     }
 
     public ByteArrayInputStream createFysDbf() {

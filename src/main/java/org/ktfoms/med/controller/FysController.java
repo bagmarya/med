@@ -1,6 +1,6 @@
 package org.ktfoms.med.controller;
 
-import org.ktfoms.med.service.FapService;
+
 import org.ktfoms.med.service.FysService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -10,8 +10,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,8 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.time.LocalDate;
-import java.util.Calendar;
 
 @Controller
 @RequestMapping("/fys")
@@ -75,43 +71,49 @@ public class FysController {
                 .contentType(MediaType.parseMediaType("application/vnd.dbf")).body(file);
     }
 
-//    @PostMapping("/files/upload")
-//    public String uploadFile(Model model, @RequestParam("file") MultipartFile file) {
-//    try {
-//            InputStream in = new ByteArrayInputStream(file.getBytes());
-//            System.out.println("!!!!!!!!!!!!!");
-//            System.out.println(in);
-//            System.out.println("!!!!!!!!!!!!!");
-//            return "File uploaded.";
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return "upload_form";
-//    }
-
-    @GetMapping("/upload_fys_xls")
-    public String newFile(Model model) {
-        return "upload_form";
-    }
-
-    @PostMapping({"/upload_fys_xls", "upload_fys_xls_empty_price"})
-    public String uploadFile(Model model, @RequestParam("file") MultipartFile file) {
+    @PostMapping("/upload_fys_xls")
+    public String uploadFys(Model model, @RequestParam("file") MultipartFile file) {
         String message = "";
 
         try {
             InputStream in = new ByteArrayInputStream(file.getBytes());
-            System.out.println("!!!!!!!!!!!!!");
-            System.out.println(in);
-            System.out.println("!!!!!!!!!!!!!");
-
-            message = "Uploaded the file successfully: " + file.getOriginalFilename();
+            message = fysService.parseFysXls(in, true);
             model.addAttribute("message", message);
         } catch (Exception e) {
-            message = "Could not upload the file: " + file.getOriginalFilename() + ". Error: " + e.getMessage();
+            message = "Не удается загрузить файл: " + file.getOriginalFilename() + "Неверный формат. Error: " + e.getMessage();
             model.addAttribute("message", message);
         }
+        return "fys";
+    }
 
-        return "upload_form";
+    @PostMapping("upload_fys_xls_empty_price")
+    public String uploadFysEmptyPrice(Model model, @RequestParam("file") MultipartFile file) {
+        String message = "";
+
+        try {
+            InputStream in = new ByteArrayInputStream(file.getBytes());
+            message = fysService.parseFysXls(in, false);
+            model.addAttribute("message", message);
+        } catch (Exception e) {
+            message = "Не удается загрузить файл: " + file.getOriginalFilename() + "Неверный формат. Error: " + e.getMessage();
+            model.addAttribute("message", message);
+        }
+        return "fys";
+    }
+
+    @PostMapping("upload_price_xls")
+    public String uploadPriceFys(Model model, @RequestParam("file") MultipartFile file) {
+        String message = "";
+
+        try {
+            InputStream in = new ByteArrayInputStream(file.getBytes());
+            message = fysService.parsePriceXls(in);
+            model.addAttribute("message", message);
+        } catch (Exception e) {
+            message = "Не удается загрузить файл: " + file.getOriginalFilename() + "Неверный формат. Error: " + e.getMessage();
+            model.addAttribute("message", message);
+        }
+        return "fys";
     }
 
 }
