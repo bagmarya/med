@@ -26,6 +26,7 @@ import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.servlet.view.ResourceBundleViewResolver;
 import org.springframework.web.servlet.view.XmlViewResolver;
 
@@ -104,21 +105,15 @@ public class MedApplication {
         factoryBean.afterPropertiesSet();
 
         return factoryBean.getNativeEntityManagerFactory();
-
     }
     @Bean
     public ResourceLoader createResourceLoader() {
         return new DefaultResourceLoader();
     }
 
-
-//    @Bean
-//    ResourceBundleViewResolver viewResolver1() {
-//        ResourceBundleViewResolver res = new ResourceBundleViewResolver();
-//        res.setOrder(1);
-//        res.setBasename("views");
-//        return res;
-//    }
-
+    @Bean
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
 }
