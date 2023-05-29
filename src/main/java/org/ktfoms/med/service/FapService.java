@@ -183,7 +183,7 @@ public class FapService {
         for (FapFin ff: fapFinEntityList){
             String lpuKey = ff.getPodr().substring(0,30);
             FundingNorma fn = fundingNormaMap.get(lpuKey);
-            double rateAstra = (fn.getQuantityInAstr() * 100 / (fn.getQuantityInAstr() + fn.getQuantityInKap()))/100.0;
+            double rateAstra = Math.round(fn.getQuantityInAstr() * 100.0 / (fn.getQuantityInAstr() + fn.getQuantityInKap()))/100.0;
             switch(month){
                 case 1:
                     ff.setSummAstra1(Math.round(ff.getGFin1() * ff.getKYkomp1() * rateAstra * 100 / 12) / 100.0);
