@@ -135,13 +135,17 @@ public class FysService {
             fys.setRv(0.0);
             fys.setRdi(0.0);
             fys.setRvi(0.0);
-            if (fys.isOms() & (fys.isPos() | fys.getVrvr() > 0)){
+            if (fys.isOms() & (fys.isPos() | fys.getVrvr() > 0 | fys.getVrss() > 0)){
                 if(dentistryCodes.contains(fys.getKodSp())){    //При условии что код специальности принадлежит стоматологии
                     Price price = priceMap.get("065П1");
                     fys.setGd(Math.round(price.getGd()*fys.getVrss()*100) / 100.0);
                     fys.setGv(Math.round(price.getGv()*fys.getVrvr()*100) / 100.0);
+                    fys.setGdi(Math.round(price.getGd()*fys.getVrss()*100) / 100.0);
+                    fys.setGvi(Math.round(price.getGv()*fys.getVrvr()*100) / 100.0);
                     fys.setRd(Math.round(price.getRd()*fys.getVrss()*100) / 100.0);
                     fys.setRv(Math.round(price.getRv()*fys.getVrvr()*100) / 100.0);
+                    fys.setRdi(Math.round(price.getRd()*fys.getVrss()*100) / 100.0);
+                    fys.setRvi(Math.round(price.getRv()*fys.getVrvr()*100) / 100.0);
                 } else {  //Если код специальности - не стамотология
                     if(urgentMkr.contains(fys.getMkr())){   //Если неотложка
                         fys.setGd(800.12);
@@ -162,8 +166,12 @@ public class FysService {
 
                 }
             }
-            if (!dentistryCodes.contains(fys.getKodSp()) & fys.getVrvr() > 0) {
-                //TODO: здесь нужно добавить код //не стоматология с УЕТами
+            if (!dentistryCodes.contains(fys.getKodSp()) & fys.getVrvr() > 0) {    //не стоматология с УЕТами
+                Price price = priceMap.get("065П1");
+                fys.setGdi(Math.round(price.getGd()*fys.getVrss()*100) / 100.0);
+                fys.setGvi(Math.round(price.getGv()*fys.getVrvr()*100) / 100.0);
+                fys.setRdi(Math.round(price.getRd()*fys.getVrss()*100) / 100.0);
+                fys.setRvi(Math.round(price.getRv()*fys.getVrvr()*100) / 100.0);
             }
         }
         fysList.forEach(fysDao::save);

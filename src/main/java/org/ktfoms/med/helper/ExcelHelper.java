@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.NotOLE2FileException;
 import org.apache.poi.ss.usermodel.BorderStyle;
@@ -617,7 +618,8 @@ public class ExcelHelper {
 
     }
 
-    public static List<Fys> parseFysXls(String fileName, boolean parsePrice) {
+    public static List<Fys> parseFysXls(String fileName, boolean parsePrice) throws Exception {
+        List<String> cyrillicChars = List.of("А", "а", "В", "в","Б", "б");
         List<Fys> fysList = new ArrayList<>();
         InputStream inputStream = null;
         HSSFWorkbook workBook = null;
@@ -633,13 +635,16 @@ public class ExcelHelper {
         //пропускаем строку с заголовком таблицы
         it.next();
 
-
+        int rowCounter = 1;
         //проходим по всему листу
         while (it.hasNext()) {
             Row row = it.next();
-
+            rowCounter ++;
             Fys fys = new Fys();
             if (row.getCell(0) == null) {break;}
+            if (cyrillicChars.contains(ExcelHelper.valueAsString(row.getCell(3)).substring(0,1))
+                    | cyrillicChars.contains(ExcelHelper.valueAsString(row.getCell(4)).substring(0,1))) {
+                throw new Exception("Файл содержит кириллические символы в полях KOD_USL_MZ или RZ в строке " + rowCounter);}
             fys.setKodSp(ExcelHelper.valueAsString(row.getCell(0)));
             fys.setNameYsl(ExcelHelper.valueAsString(row.getCell(1)));
             fys.setKodUslMz(ExcelHelper.valueAsString(row.getCell(3)));
@@ -652,7 +657,11 @@ public class ExcelHelper {
             fys.setPos(ExcelHelper.valueAsString(row.getCell(10)).equals("+"));
             fys.setMkr(ExcelHelper.valueAsString(row.getCell(11)));
             fys.setVrvr(ExcelHelper.valueAsNum(row.getCell(12)));
-            fys.setVrss(ExcelHelper.valueAsNum(row.getCell(13)));
+            if (ExcelHelper.valueAsNum(row.getCell(13)) > 0) {
+                fys.setVrss(ExcelHelper.valueAsNum(row.getCell(13)));
+            } else {
+                fys.setVrss(ExcelHelper.valueAsNum(row.getCell(12)));
+            }
 
             if (parsePrice){
                 fys.setGd(ExcelHelper.valueAsNum(row.getCell(18)));
@@ -686,6 +695,7 @@ public class ExcelHelper {
 
 
     public static List<Fys> parseFysXls(InputStream in, boolean parsePrice) throws Exception {
+        List<String> cyrillicChars = List.of("А", "а", "В", "в","Б", "б");
         List<Fys> fysList = new ArrayList<>();
         HSSFWorkbook workBook = null;
         try {
@@ -704,11 +714,15 @@ public class ExcelHelper {
 
 
         //проходим по всему листу
+        int rowCounter = 1;
         while (it.hasNext()) {
             Row row = it.next();
-
+            rowCounter++;
             Fys fys = new Fys();
             if (row.getCell(0) == null) {break;}
+            if (cyrillicChars.contains(ExcelHelper.valueAsString(row.getCell(3)).substring(0,1))
+                    | cyrillicChars.contains(ExcelHelper.valueAsString(row.getCell(4)).substring(0,1))) {
+                throw new Exception("Файл содержит кириллические символы в полях KOD_USL_MZ или RZ в строке " + rowCounter);}
             fys.setKodSp(ExcelHelper.valueAsString(row.getCell(0)));
             fys.setNameYsl(ExcelHelper.valueAsString(row.getCell(1)));
             fys.setKodUslMz(ExcelHelper.valueAsString(row.getCell(3)));
@@ -721,7 +735,11 @@ public class ExcelHelper {
             fys.setPos(ExcelHelper.valueAsString(row.getCell(10)).equals("+"));
             fys.setMkr(ExcelHelper.valueAsString(row.getCell(11)));
             fys.setVrvr(ExcelHelper.valueAsNum(row.getCell(12)));
-            fys.setVrss(ExcelHelper.valueAsNum(row.getCell(13)));
+            if (ExcelHelper.valueAsNum(row.getCell(13)) > 0) {
+                fys.setVrss(ExcelHelper.valueAsNum(row.getCell(13)));
+            } else {
+                fys.setVrss(ExcelHelper.valueAsNum(row.getCell(12)));
+            }
 
             if (parsePrice){
                 fys.setGd(ExcelHelper.valueAsNum(row.getCell(18)));
@@ -753,6 +771,33 @@ public class ExcelHelper {
         return fysList;
     }
 
+    public static boolean isFysIncludedCyrillicChar(InputStream in) throws Exception {
+        List<String> cyrillicChars = List.of("А", "а", "В", "в","Б", "б");
+        HSSFWorkbook workBook = null;
+        try {
+            workBook = new HSSFWorkbook(in);
+        } catch (NotOLE2FileException e) {
+            System.out.println("___Возникла ошибка NotOLE2FileException");
+            e.printStackTrace();
+            System.out.println("___Возникла ошибка NotOLE2FileException");
+            throw new Exception("Файл невыбран или неверный формат файла");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Sheet sheet = workBook.getSheetAt(0);
+        Iterator<Row> it = sheet.iterator();
+        it.next();
+
+        while (it.hasNext()) {
+            Row row = it.next();
+            if (row.getCell(0) == null) {break;}
+            if (cyrillicChars.contains(ExcelHelper.valueAsString(row.getCell(3)).substring(0,1))
+                    | cyrillicChars.contains(ExcelHelper.valueAsString(row.getCell(4)).substring(0,1))) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public static List<Price> parsePriceXls(String fileName){
         List<Price> priceList = new ArrayList<>();
