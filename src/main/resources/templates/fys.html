@@ -86,6 +86,12 @@ $('.input-file input[type=file]').on('change', function(){
     <input type="submit" value="Скачать" />
   </form>
 </div>
+<div>
+  <p>Скачать справочник в формате excel:</p>
+  <form method="get" th:action="@{/api/excel/fys/get_fys_excel}">
+    <input type="submit" value="Скачать" />
+  </form>
+</div>
 
 <!--<form method="post" th:action="@{/fys/upload_fys_xls_empty_price}" enctype="multipart/form-data">-->
 

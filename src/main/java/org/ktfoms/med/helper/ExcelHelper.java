@@ -24,10 +24,11 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+//В случае .xlsx использовать:
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 //В случае .xls использовать:
-//import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 
 import org.ktfoms.med.dto.FapFinDto;
@@ -711,8 +712,6 @@ public class ExcelHelper {
         Iterator<Row> it = sheet.iterator();
         //пропускаем строку с заголовком таблицы
         it.next();
-
-
         //проходим по всему листу
         int rowCounter = 1;
         while (it.hasNext()) {
@@ -720,36 +719,36 @@ public class ExcelHelper {
             rowCounter++;
             Fys fys = new Fys();
             if (row.getCell(0) == null) {break;}
-            if (cyrillicChars.contains(ExcelHelper.valueAsString(row.getCell(3)).substring(0,1))
-                    | cyrillicChars.contains(ExcelHelper.valueAsString(row.getCell(4)).substring(0,1))) {
+            if (cyrillicChars.contains(ExcelHelper.valueAsString(row.getCell(2)).substring(0,1))
+                    | cyrillicChars.contains(ExcelHelper.valueAsString(row.getCell(3)).substring(0,1))) {
                 throw new Exception("Файл содержит кириллические символы в полях KOD_USL_MZ или RZ в строке " + rowCounter);}
             fys.setKodSp(ExcelHelper.valueAsString(row.getCell(0)));
             fys.setNameYsl(ExcelHelper.valueAsString(row.getCell(1)));
-            fys.setKodUslMz(ExcelHelper.valueAsString(row.getCell(3)));
-            fys.setRz(ExcelHelper.valueAsString(row.getCell(4)));
-            fys.setTyp(ExcelHelper.valueAsString(row.getCell(5)));
-            fys.setKlas(ExcelHelper.valueAsString(row.getCell(6)));
-            fys.setVid(ExcelHelper.valueAsString(row.getCell(7)));
-            fys.setPvid(ExcelHelper.valueAsString(row.getCell(8)));
-            fys.setOms(ExcelHelper.valueAsString(row.getCell(9)).equals("+"));
-            fys.setPos(ExcelHelper.valueAsString(row.getCell(10)).equals("+"));
-            fys.setMkr(ExcelHelper.valueAsString(row.getCell(11)));
-            fys.setVrvr(ExcelHelper.valueAsNum(row.getCell(12)));
-            if (ExcelHelper.valueAsNum(row.getCell(13)) > 0) {
-                fys.setVrss(ExcelHelper.valueAsNum(row.getCell(13)));
-            } else {
+            fys.setKodUslMz(ExcelHelper.valueAsString(row.getCell(2)));
+            fys.setRz(ExcelHelper.valueAsString(row.getCell(3)));
+            fys.setTyp(ExcelHelper.valueAsString(row.getCell(4)));
+            fys.setKlas(ExcelHelper.valueAsString(row.getCell(5)));
+            fys.setVid(ExcelHelper.valueAsString(row.getCell(6)));
+            fys.setPvid(ExcelHelper.valueAsString(row.getCell(7)));
+            fys.setOms(ExcelHelper.valueAsString(row.getCell(8)).equals("+"));
+            fys.setPos(ExcelHelper.valueAsString(row.getCell(9)).equals("+"));
+            fys.setMkr(ExcelHelper.valueAsString(row.getCell(10)));
+            fys.setVrvr(ExcelHelper.valueAsNum(row.getCell(11)));
+            if (ExcelHelper.valueAsNum(row.getCell(12)) > 0) {
                 fys.setVrss(ExcelHelper.valueAsNum(row.getCell(12)));
+            } else {
+                fys.setVrss(ExcelHelper.valueAsNum(row.getCell(11)));
             }
 
             if (parsePrice){
-                fys.setGd(ExcelHelper.valueAsNum(row.getCell(18)));
-                fys.setGv(ExcelHelper.valueAsNum(row.getCell(19)));
-                fys.setGdi(ExcelHelper.valueAsNum(row.getCell(20)));
-                fys.setGvi(ExcelHelper.valueAsNum(row.getCell(21)));
-                fys.setRd(ExcelHelper.valueAsNum(row.getCell(22)));
-                fys.setRv(ExcelHelper.valueAsNum(row.getCell(23)));
-                fys.setRdi(ExcelHelper.valueAsNum(row.getCell(24)));
-                fys.setRvi(ExcelHelper.valueAsNum(row.getCell(25)));
+                fys.setGd(ExcelHelper.valueAsNum(row.getCell(13)));
+                fys.setGv(ExcelHelper.valueAsNum(row.getCell(14)));
+                fys.setGdi(ExcelHelper.valueAsNum(row.getCell(15)));
+                fys.setGvi(ExcelHelper.valueAsNum(row.getCell(16)));
+                fys.setRd(ExcelHelper.valueAsNum(row.getCell(17)));
+                fys.setRv(ExcelHelper.valueAsNum(row.getCell(18)));
+                fys.setRdi(ExcelHelper.valueAsNum(row.getCell(19)));
+                fys.setRvi(ExcelHelper.valueAsNum(row.getCell(20)));
             } else {
                 fys.setGd((double) 0);
                 fys.setGv((double) 0);
@@ -761,43 +760,92 @@ public class ExcelHelper {
                 fys.setRvi((double) 0);
             }
 
-            fys.setV021D(ExcelHelper.valueAsString(row.getCell(38)));
-            fys.setV021V(ExcelHelper.valueAsString(row.getCell(39)));
-            fys.setDiagN(ExcelHelper.valueAsString(row.getCell(40)));
-            fys.setDiagK(ExcelHelper.valueAsString(row.getCell(41)));
+            fys.setV021D(ExcelHelper.valueAsString(row.getCell(21)));
+            fys.setV021V(ExcelHelper.valueAsString(row.getCell(22)));
+            fys.setDiagN(ExcelHelper.valueAsString(row.getCell(23)));
+            fys.setDiagK(ExcelHelper.valueAsString(row.getCell(24)));
 
             fysList.add(fys);
         }
         return fysList;
     }
-
-    public static boolean isFysIncludedCyrillicChar(InputStream in) throws Exception {
-        List<String> cyrillicChars = List.of("А", "а", "В", "в","Б", "б");
-        HSSFWorkbook workBook = null;
-        try {
-            workBook = new HSSFWorkbook(in);
-        } catch (NotOLE2FileException e) {
-            System.out.println("___Возникла ошибка NotOLE2FileException");
-            e.printStackTrace();
-            System.out.println("___Возникла ошибка NotOLE2FileException");
-            throw new Exception("Файл невыбран или неверный формат файла");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Sheet sheet = workBook.getSheetAt(0);
-        Iterator<Row> it = sheet.iterator();
-        it.next();
-
-        while (it.hasNext()) {
-            Row row = it.next();
-            if (row.getCell(0) == null) {break;}
-            if (cyrillicChars.contains(ExcelHelper.valueAsString(row.getCell(3)).substring(0,1))
-                    | cyrillicChars.contains(ExcelHelper.valueAsString(row.getCell(4)).substring(0,1))) {
-                return true;
-            }
-        }
-        return false;
-    }
+// Старая версия метода - до удаления ненужных колонок из файла excel.
+//    public static List<Fys> parseFysXls(InputStream in, boolean parsePrice) throws Exception {
+//        List<String> cyrillicChars = List.of("А", "а", "В", "в","Б", "б");
+//        List<Fys> fysList = new ArrayList<>();
+//        HSSFWorkbook workBook = null;
+//        try {
+//            workBook = new HSSFWorkbook(in);
+//        } catch (NotOLE2FileException e) {
+//            e.printStackTrace();
+//            throw new Exception("Файл невыбран или неверный формат файла");
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        //разбираем первый лист входного файла на объектную модель
+//        Sheet sheet = workBook.getSheetAt(0);
+//        Iterator<Row> it = sheet.iterator();
+//        //пропускаем строку с заголовком таблицы
+//        it.next();
+//
+//
+//        //проходим по всему листу
+//        int rowCounter = 1;
+//        while (it.hasNext()) {
+//            Row row = it.next();
+//            rowCounter++;
+//            Fys fys = new Fys();
+//            if (row.getCell(0) == null) {break;}
+//            if (cyrillicChars.contains(ExcelHelper.valueAsString(row.getCell(3)).substring(0,1))
+//                    | cyrillicChars.contains(ExcelHelper.valueAsString(row.getCell(4)).substring(0,1))) {
+//                throw new Exception("Файл содержит кириллические символы в полях KOD_USL_MZ или RZ в строке " + rowCounter);}
+//            fys.setKodSp(ExcelHelper.valueAsString(row.getCell(0)));
+//            fys.setNameYsl(ExcelHelper.valueAsString(row.getCell(1)));
+//            fys.setKodUslMz(ExcelHelper.valueAsString(row.getCell(3)));
+//            fys.setRz(ExcelHelper.valueAsString(row.getCell(4)));
+//            fys.setTyp(ExcelHelper.valueAsString(row.getCell(5)));
+//            fys.setKlas(ExcelHelper.valueAsString(row.getCell(6)));
+//            fys.setVid(ExcelHelper.valueAsString(row.getCell(7)));
+//            fys.setPvid(ExcelHelper.valueAsString(row.getCell(8)));
+//            fys.setOms(ExcelHelper.valueAsString(row.getCell(9)).equals("+"));
+//            fys.setPos(ExcelHelper.valueAsString(row.getCell(10)).equals("+"));
+//            fys.setMkr(ExcelHelper.valueAsString(row.getCell(11)));
+//            fys.setVrvr(ExcelHelper.valueAsNum(row.getCell(12)));
+//            if (ExcelHelper.valueAsNum(row.getCell(13)) > 0) {
+//                fys.setVrss(ExcelHelper.valueAsNum(row.getCell(13)));
+//            } else {
+//                fys.setVrss(ExcelHelper.valueAsNum(row.getCell(12)));
+//            }
+//
+//            if (parsePrice){
+//                fys.setGd(ExcelHelper.valueAsNum(row.getCell(18)));
+//                fys.setGv(ExcelHelper.valueAsNum(row.getCell(19)));
+//                fys.setGdi(ExcelHelper.valueAsNum(row.getCell(20)));
+//                fys.setGvi(ExcelHelper.valueAsNum(row.getCell(21)));
+//                fys.setRd(ExcelHelper.valueAsNum(row.getCell(22)));
+//                fys.setRv(ExcelHelper.valueAsNum(row.getCell(23)));
+//                fys.setRdi(ExcelHelper.valueAsNum(row.getCell(24)));
+//                fys.setRvi(ExcelHelper.valueAsNum(row.getCell(25)));
+//            } else {
+//                fys.setGd((double) 0);
+//                fys.setGv((double) 0);
+//                fys.setGdi((double) 0);
+//                fys.setGvi((double) 0);
+//                fys.setRd((double) 0);
+//                fys.setRv((double) 0);
+//                fys.setRdi((double) 0);
+//                fys.setRvi((double) 0);
+//            }
+//
+//            fys.setV021D(ExcelHelper.valueAsString(row.getCell(38)));
+//            fys.setV021V(ExcelHelper.valueAsString(row.getCell(39)));
+//            fys.setDiagN(ExcelHelper.valueAsString(row.getCell(40)));
+//            fys.setDiagK(ExcelHelper.valueAsString(row.getCell(41)));
+//
+//            fysList.add(fys);
+//        }
+//        return fysList;
+//    }
 
     public static List<Price> parsePriceXls(String fileName){
         List<Price> priceList = new ArrayList<>();
@@ -870,5 +918,50 @@ public class ExcelHelper {
         }
 
 
-
+    public static ByteArrayInputStream fysEntityListToExcel(List<Fys> fysEntityList) {
+        String[] headers = {"KOD_SP", "NAME_YSL", "KOD_USL_MZ", "RZ", "TYP", "KLAS",
+                "VID", "PVID", "OMS", "POS", "MKR", "VRVR", "VRSS", "GD", "GV", "GDI", "GVI",
+                "RD", "RV", "RDI", "RVI", "V021_D", "V021_V", "DIAG_N", "DIAG_K"};
+        try (Workbook workbook = new HSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream();) {
+            Sheet sheet = workbook.createSheet("sheet1");
+            Row headerRow = sheet.createRow(0);
+            for (int col = 0; col < headers.length; col++) {
+                Cell cell = headerRow.createCell(col);
+                cell.setCellValue(headers[col]);
+            }
+            int rowIdx = 1;
+            for (Fys fys : fysEntityList) {
+                Row row = sheet.createRow(rowIdx++);
+                row.createCell(0).setCellValue(fys.getKodSp());
+                row.createCell(1).setCellValue(fys.getNameYsl());
+                row.createCell(2).setCellValue(fys.getKodUslMz());
+                row.createCell(3).setCellValue(fys.getRz());
+                row.createCell(4).setCellValue(fys.getTyp());
+                row.createCell(5).setCellValue(fys.getKlas());
+                row.createCell(6).setCellValue(fys.getVid());
+                row.createCell(7).setCellValue(fys.getPvid());
+                row.createCell(8).setCellValue(fys.isOms() ? "+" : "-");
+                row.createCell(9).setCellValue(fys.isPos() ? "+" : "-");
+                row.createCell(10).setCellValue(fys.getMkr());
+                row.createCell(11).setCellValue(fys.getVrvr());
+                row.createCell(12).setCellValue(fys.getVrss());
+                row.createCell(13).setCellValue(fys.getGd());
+                row.createCell(14).setCellValue(fys.getGv());
+                row.createCell(15).setCellValue(fys.getGdi());
+                row.createCell(16).setCellValue(fys.getGvi());
+                row.createCell(17).setCellValue(fys.getRd());
+                row.createCell(18).setCellValue(fys.getRv());
+                row.createCell(19).setCellValue(fys.getRdi());
+                row.createCell(20).setCellValue(fys.getRvi());
+                row.createCell(21).setCellValue(fys.getV021D());
+                row.createCell(22).setCellValue(fys.getV021V());
+                row.createCell(23).setCellValue(fys.getDiagN());
+                row.createCell(24).setCellValue(fys.getDiagK());
+            }
+            workbook.write(out);
+            return new ByteArrayInputStream(out.toByteArray());
+        } catch (IOException e) {
+            throw new RuntimeException("fail to import data to Excel file: " + e.getMessage());
+        }
+    }
 }
