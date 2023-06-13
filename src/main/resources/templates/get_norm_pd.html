@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Справочник нормативов по подушевому финансированию АПП</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:insert="~{menu :: copy}">...</div>
+<h1>Скачать справочник нормативов по подушевому финансированию АПП</h1>
+
+<span  th:if="${message == 'No data'}" >В базе нет данных за указанный период.</span>
+<p>Укажите период</p>
+<form th:action="@{/get_norm_pd}" th:object="${monthForm}" method="POST">
+
+    Месяц
+    <select th:field="*{month}">
+        <option th:each="monthname : ${monthForm.monthnames}"
+                th:value="${monthname}"
+                th:utext="${monthname}">
+        </option>
+    </select>
+    <br/>
+    Год
+    <input type="text" th:field="*{year}" />
+    <br/>
+    <input type="submit" value="Скачать справочник" />
+    <input type="button" value="Назад" onClick='location.href="/funding_norma"'>
+</form>
+</body>
+</html>

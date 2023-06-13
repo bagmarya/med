@@ -1,5 +1,6 @@
 package org.ktfoms.med.service;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
 import org.ktfoms.med.dao.LpuDao;
 import org.ktfoms.med.entity.FundingNorma;
 import org.ktfoms.med.entity.Lpu;
@@ -25,10 +26,17 @@ public class LpuService {
     }
 
     public List<FundingNorma> getFundingNormaInfos(){
-        return lpuDao.getFundingNormaEntityList();
-
-
+        Integer month = LocalDate.now().getMonthValue();
+        Integer year = LocalDate.now().getYear();
+        LocalDate thisMonthDate = LocalDate.of(year, month, 01);
+        LocalDate nextMonthDate = LocalDate.of(year+(month+1)/12, (month+1)%12, 01);
+        return lpuDao.getFundingNormaEntityList(thisMonthDate, nextMonthDate);
     }
+
+    public boolean isExistFundingNormaByDate(LocalDate date){
+        return lpuDao.getFundingNormaDtoListByDate(date).size() > 0;
+    }
+
 
     public FundingNorma getFundingNormaById(int id) {
         return lpuDao.getFundingNormaById(id);

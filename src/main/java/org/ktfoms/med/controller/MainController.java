@@ -10,6 +10,7 @@ import org.ktfoms.med.form.MonthForm;
 import org.ktfoms.med.service.FapService;
 import org.ktfoms.med.service.LpuService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -263,6 +264,31 @@ public class MainController {
         Integer year = monthForm.getYear();
         lpuService.addPeriodFundingNorma(month, year);
         return "redirect:/funding_norma";
+    }
+
+
+// Страница с выбором месяца для формирования справочника по подушевому финансированию АПП
+    @RequestMapping(value = {"/get_norm_pd"}, method = RequestMethod.GET)
+    public String getNormPd (Model model, @Param("message") String message) {
+        MonthForm monthForm = new MonthForm();
+        monthForm.setYear(LocalDate.now().getYear());
+        model.addAttribute("monthForm", monthForm);
+        model.addAttribute("message", message);
+        return "get_norm_pd";
+    }
+
+    //Добавит записи справочника СНПФ для нового периода
+    @RequestMapping(value = {"/get_norm_pd"}, method = RequestMethod.POST)
+    public String redirectNormPdByMonth (Model model,
+                                            @ModelAttribute("monthForm") MonthForm monthForm) {
+        Integer month = monthForm.getMonth();
+        Integer year = monthForm.getYear();
+        LocalDate date = LocalDate.of(year, month, 01);
+        if (lpuService.isExistFundingNormaByDate(date)) {
+            return "redirect:/api/excel/get_norm_pd_excel/" + year.toString() + "/" + month.toString();
+        } else {
+            return "redirect:/get_norm_pd?message=No data";
+        }
     }
 
 

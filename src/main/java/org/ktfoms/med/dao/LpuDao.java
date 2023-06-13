@@ -1,6 +1,8 @@
 package org.ktfoms.med.dao;
 
 import org.hibernate.SessionFactory;
+import org.ktfoms.med.dto.FapDto;
+import org.ktfoms.med.dto.FundingNormaDto;
 import org.ktfoms.med.entity.FundingNorma;
 import org.ktfoms.med.entity.Lpu;
 import org.slf4j.Logger;
@@ -51,6 +53,15 @@ public class LpuDao {
         return sessionFactory.getCurrentSession().createQuery("select fn from FundingNorma fn order by fn.fundingDate,fn.mNameF", FundingNorma.class)
                 .getResultList();
     }
+    @Transactional
+    public List<FundingNorma> getFundingNormaEntityList(LocalDate startDate, LocalDate endDate) {
+        return sessionFactory.getCurrentSession().createQuery("select fn from FundingNorma fn " +
+                        "where fn.fundingDate between :startDate and :endDate " +
+                        "order by fn.fundingDate desc,fn.mNameF ", FundingNorma.class)
+                .setParameter("startDate", startDate)
+                .setParameter("endDate", endDate)
+                .getResultList();
+    }
 
     public FundingNorma getFundingNormaById(int id) {
         return sessionFactory.getCurrentSession().get(FundingNorma.class, id);
@@ -64,5 +75,12 @@ public class LpuDao {
     public Lpu getLpuByOid(String oid) {
         return sessionFactory.getCurrentSession().createQuery("select l from Lpu l where l.kodSp = :oid", Lpu.class)
                 .setParameter("oid", oid).getSingleResult();
+    }
+
+    public List<FundingNormaDto> getFundingNormaDtoListByDate(LocalDate date) {
+        return sessionFactory.getCurrentSession().createQuery("select new org.ktfoms.med.dto.FundingNormaDto(" +
+                        "l.mNameS, l.cogrn, fn.fundingDate, fn.quantityInAstr, fn.quantityInKap, fn.norma) " +
+                        "from FundingNorma fn join Lpu l on fn.lpuId = l.id where fn.fundingDate = :date", FundingNormaDto.class)
+                .setParameter("date", date).getResultList();
     }
 }

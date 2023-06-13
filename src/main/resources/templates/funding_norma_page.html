@@ -3,12 +3,15 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Справочник нормативов подушевого финансирования</title>
+  <title>Справочник нормативов подушевого финансирования АПП</title>
   <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
 </head>
 <body>
 <div th:insert="~{menu :: copy}">...</div>
-<h1>Справочник нормативов подушевого финансирования</h1>
+<h1>Справочник нормативов подушевого финансирования АПП</h1>
+
+<p><a href="/add_period_funding_norma">Добавить период</a></p>
+<p><a href="/get_norm_pd">Скачать справочник нормативов по подушевому финансированию амбулаторно-поликлинической помощи</a></p>
 <table>
   <tr>
     <th></th>
@@ -28,6 +31,6 @@
   </tr>
 </table>
 
-<a href="/add_period_funding_norma">Добавить период</a>
+
 </body>
 </html>

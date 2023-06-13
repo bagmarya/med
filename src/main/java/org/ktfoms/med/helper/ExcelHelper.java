@@ -32,6 +32,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 
 import org.ktfoms.med.dto.FapFinDto;
+import org.ktfoms.med.dto.FundingNormaDto;
 import org.ktfoms.med.entity.Fys;
 import org.ktfoms.med.entity.Lpu;
 import org.ktfoms.med.entity.Price;
@@ -957,6 +958,32 @@ public class ExcelHelper {
                 row.createCell(22).setCellValue(fys.getV021V());
                 row.createCell(23).setCellValue(fys.getDiagN());
                 row.createCell(24).setCellValue(fys.getDiagK());
+            }
+            workbook.write(out);
+            return new ByteArrayInputStream(out.toByteArray());
+        } catch (IOException e) {
+            throw new RuntimeException("fail to import data to Excel file: " + e.getMessage());
+        }
+    }
+
+    public static ByteArrayInputStream FundingNormaDtoListToExcel(List<FundingNormaDto> fundingNormaDtoList) {
+        String[] headers = {"M_NAMES", "OGRN", "D_N", "CHIS_2778", "CHIS_2779", "FIN_N"};
+        try (Workbook workbook = new HSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream();) {
+            Sheet sheet = workbook.createSheet("sheet1");
+            Row headerRow = sheet.createRow(0);
+            for (int col = 0; col < headers.length; col++) {
+                Cell cell = headerRow.createCell(col);
+                cell.setCellValue(headers[col]);
+            }
+            int rowIdx = 1;
+            for (FundingNormaDto fnd : fundingNormaDtoList) {
+                Row row = sheet.createRow(rowIdx++);
+                row.createCell(0).setCellValue(fnd.getMNameS());
+                row.createCell(1).setCellValue(fnd.getOgrn().toString());
+                row.createCell(2).setCellValue(fnd.getFormatedFundingDate());
+                if (fnd.getQuantityInAstr() != null){row.createCell(3).setCellValue(fnd.getQuantityInAstr());}
+                if (fnd.getQuantityInKap() != null){row.createCell(4).setCellValue(fnd.getQuantityInKap());}
+                row.createCell(5).setCellValue(String.format("%.2f", fnd.getNorma()));
             }
             workbook.write(out);
             return new ByteArrayInputStream(out.toByteArray());
