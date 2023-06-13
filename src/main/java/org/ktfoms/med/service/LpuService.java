@@ -107,10 +107,7 @@ public class LpuService {
         SpFundingNormaSmp spFundingNormaSmp = objectMapper.readValue(
                 resourceLoader.getResource("file:PD_TARIF.xml").getContentAsString(Charset.forName("UTF-8")),
                 SpFundingNormaSmp.class);
-
         for (FundingNormaSmpDto fns: spFundingNormaSmp.getZap()) {
-            System.out.println(fns);
-            System.out.println(new FundingNormaSmp(fns));
             lpuDao.save(new FundingNormaSmp(fns));
         }
     }

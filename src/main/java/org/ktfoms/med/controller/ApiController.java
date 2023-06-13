@@ -101,9 +101,10 @@ public class ApiController {
     }
 
     @RequestMapping(value = { "/parse" }, method = RequestMethod.GET)
-    public void parseSpfinfap() throws IOException {
+    public ResponseEntity<String> parseXml() throws IOException {
 //        fapService.parseSpfinfap();
         lpuService.parseSpFundingNormaSmp();
+        return new ResponseEntity<>("import completed", HttpStatus.OK);
     }
 
 }
