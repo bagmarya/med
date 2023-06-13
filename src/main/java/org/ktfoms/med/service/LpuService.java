@@ -1,13 +1,22 @@
 package org.ktfoms.med.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import org.ktfoms.med.dao.LpuDao;
+import org.ktfoms.med.dto.FundingNormaSmpDto;
+import org.ktfoms.med.dto.SpFundingNormaSmp;
 import org.ktfoms.med.entity.FundingNorma;
+import org.ktfoms.med.entity.FundingNormaSmp;
 import org.ktfoms.med.entity.Lpu;
 import org.ktfoms.med.form.EditFundingNormaForm;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,6 +25,9 @@ import java.util.stream.Collectors;
 public class LpuService {
 
     private final LpuDao lpuDao;
+
+    @Autowired
+    private ResourceLoader resourceLoader;
 
     public LpuService(LpuDao lpuDao){
         this.lpuDao = lpuDao;
@@ -87,5 +99,19 @@ public class LpuService {
 
     public List<Lpu> getLpuEntityList() {
         return lpuDao.getLpuEntityList();
+    }
+
+    @Transactional
+    public void parseSpFundingNormaSmp() throws IOException {
+        ObjectMapper objectMapper = new XmlMapper();
+        SpFundingNormaSmp spFundingNormaSmp = objectMapper.readValue(
+                resourceLoader.getResource("file:PD_TARIF.xml").getContentAsString(Charset.forName("UTF-8")),
+                SpFundingNormaSmp.class);
+
+        for (FundingNormaSmpDto fns: spFundingNormaSmp.getZap()) {
+            System.out.println(fns);
+            System.out.println(new FundingNormaSmp(fns));
+            lpuDao.save(new FundingNormaSmp(fns));
+        }
     }
 }

@@ -102,7 +102,8 @@ public class ApiController {
 
     @RequestMapping(value = { "/parse" }, method = RequestMethod.GET)
     public void parseSpfinfap() throws IOException {
-        fapService.parseSpfinfap();
+//        fapService.parseSpfinfap();
+        lpuService.parseSpFundingNormaSmp();
     }
 
 }
