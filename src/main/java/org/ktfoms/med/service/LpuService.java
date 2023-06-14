@@ -17,8 +17,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Service
@@ -110,5 +112,29 @@ public class LpuService {
         for (FundingNormaSmpDto fns: spFundingNormaSmp.getZap()) {
             lpuDao.save(new FundingNormaSmp(fns));
         }
+    }
+
+    public String getFileSpFundingNormaSmp(Integer year){
+        List<FundingNormaSmp> fundingNormaSmpList = lpuDao.getFundingNormaSmpEntityList(year);
+        System.out.println(fundingNormaSmpList);
+        StringBuilder builder = new StringBuilder("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
+                "<PACKET>\n" +
+                "  <ZGLV>PD_TARIF</ZGLV>\n" +
+                "  <VERSION>1.0</VERSION>\n");
+        builder.append("  <DATA>" + LocalDate.now() + "</DATA>\n");
+        for(FundingNormaSmp fns : fundingNormaSmpList){
+            builder.append("  <ZAP>\n" +
+                    "    <USL_OK>" + fns.getUslOk() + "</USL_OK>\n" +
+                    "    <SMO>" + fns.getSmo() + "</SMO>\n" +
+                    "    <MCOD>" + fns.getMcod() + "</MCOD>\n" +
+                    "    <KOL_ZL>" + fns.getKolZl() + "</KOL_ZL>\n" +
+//                    "    <TARIF>" + (new DecimalFormat("#0.00").format(fns.getTarif())) + "</TARIF>\n" +
+                    "    <TARIF>" + String.format(Locale.ROOT, "%.2f", fns.getTarif()) + "</TARIF>\n" +
+                    "    <DATEBEG>" + fns.getDatebeg() + "</DATEBEG>\n" +
+                    "    <DATEEND>" + fns.getDateend() + "</DATEEND>\n" +
+                    "  </ZAP>\n");
+        }
+        builder.append("</PACKET>");
+        return builder.toString();
     }
 }

@@ -55,6 +55,12 @@ public class ApiController {
         return fapService.getFapFinById(id);
     }
 
+    @RequestMapping(value = { "/pd_tarif/{year}" }, method = RequestMethod.GET, produces = "application/xml;charset=UTF-8")
+    public ResponseEntity<String> getSpPdTarif(@PathVariable("year") int year) throws IOException {
+        HttpHeaders h = new HttpHeaders();
+        h.set("Content-Disposition", "attachment; filename=\"PD_TARIF.xml\"");
+        return new ResponseEntity<>(lpuService.getFileSpFundingNormaSmp(year),h, HttpStatus.OK);
+    }
 
 
     //TODO Шлет на фронт xml в cp1251 и сохраняет файл такой же xml в D:\data\javaprojects\med,

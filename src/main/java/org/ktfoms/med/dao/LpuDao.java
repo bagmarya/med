@@ -1,9 +1,11 @@
 package org.ktfoms.med.dao;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
 import org.hibernate.SessionFactory;
 import org.ktfoms.med.dto.FapDto;
 import org.ktfoms.med.dto.FundingNormaDto;
 import org.ktfoms.med.entity.FundingNorma;
+import org.ktfoms.med.entity.FundingNormaSmp;
 import org.ktfoms.med.entity.Lpu;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,5 +84,13 @@ public class LpuDao {
                         "l.mNameS, l.cogrn, fn.fundingDate, fn.quantityInAstr, fn.quantityInKap, fn.norma) " +
                         "from FundingNorma fn join Lpu l on fn.lpuId = l.id where fn.fundingDate = :date", FundingNormaDto.class)
                 .setParameter("date", date).getResultList();
+    }
+
+    public List<FundingNormaSmp> getFundingNormaSmpEntityList(Integer year) {
+        return sessionFactory.getCurrentSession().createQuery("select fns from FundingNormaSmp fns " +
+                        "where EXTRACT(YEAR FROM fns.datebeg) = :year " +
+                        "order by fns.datebeg, fns.mcod, fns.smo ", FundingNormaSmp.class)
+                .setParameter("year", year)
+                .getResultList();
     }
 }
