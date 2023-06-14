@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Справочник нормативов подушевого финансирования СМП</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:insert="~{menu :: copy}">...</div>
+<h1>Справочник нормативов подушевого финансирования СМП</h1>
+
+<div class="alert-message" th:if="${message != null}" role="alert">
+  [[${message}]]
+</div>
+
+<p><a href="/api/pd_tarif/2023">Скачать справочник нормативов по подушевому финансированию скорой медицинской помощи</a></p>
+
+<div>
+  <p>Загрузка норм подушевого финансирования СМП из excel:</p>
+  <form method="post" th:action="@{/upload_funding_norma_smp_xlsx}" enctype="multipart/form-data">
+
+    <label class="input-file">
+      <span class="input-file-text" type="text"></span>
+      <input type="file" name="file" accept=".xlsx">
+      <span class="input-file-btn">Выберите файл</span>
+    </label>
+
+    <input class="input-file-submit" type="submit" value="Загрузить" />
+
+  </form>
+    <script src="https://snipp.ru/cdn/jquery/2.1.1/jquery.min.js"></script>
+  <script>
+$('.input-file input[type=file]').on('change', function(){
+	let file = this.files[0];
+	$(this).closest('.input-file').find('.input-file-text').html(file.name);
+});
+</script>
+</div>
+
+<table>
+  <tr>
+    <th></th>
+    <th>ЛПУ</th>
+    <th>Код</th>
+    <th>Дата начала</th>
+    <th>Дата конца</th>
+    <th>Численность прикрепленных по Астрамед</th>
+    <th>Численность прикрепленных по Капитал</th>
+    <th>Подушевой норматив</th>
+  </tr>
+<!--  <tr th:each="fundingNormaInfo:${fundingNormaInfos}">-->
+<!--    <td><a th:href=@{edit_funding_norma/{id}(id=${fundingNormaInfo.id})}>Редактировать</a></td>-->
+<!--    <td th:utext="${fundingNormaInfo.mNameF}">..</td>-->
+<!--    <td th:utext="${fundingNormaInfo.FormatedFundingDate}">..</td>-->
+<!--    <td th:utext="${fundingNormaInfo.quantityInAstr}">..</td>-->
+<!--    <td th:utext="${fundingNormaInfo.quantityInKap}">..</td>-->
+<!--    <td th:utext="${fundingNormaInfo.norma}">..</td>-->
+<!--  </tr>-->
+</table>
+
+
+</body>
+</html>

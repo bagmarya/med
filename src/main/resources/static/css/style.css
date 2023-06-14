@@ -16,6 +16,10 @@ h3 {
     margin-top: 1.5em;
 }
 
+.alert-message{
+color: red;
+}
+
 div.content {
     width: 70vw;
     margin: auto;

@@ -1,21 +1,26 @@
 package org.ktfoms.med.service;
 
+import org.hibernate.JDBCException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import jakarta.persistence.criteria.CriteriaBuilder;
+import org.hibernate.exception.ConstraintViolationException;
 import org.ktfoms.med.dao.LpuDao;
 import org.ktfoms.med.dto.FundingNormaSmpDto;
 import org.ktfoms.med.dto.SpFundingNormaSmp;
 import org.ktfoms.med.entity.FundingNorma;
 import org.ktfoms.med.entity.FundingNormaSmp;
 import org.ktfoms.med.entity.Lpu;
+import org.ktfoms.med.entity.Price;
 import org.ktfoms.med.form.EditFundingNormaForm;
+import org.ktfoms.med.helper.ExcelHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
@@ -136,5 +141,23 @@ public class LpuService {
         }
         builder.append("</PACKET>");
         return builder.toString();
+    }
+
+    @Transactional
+    public String parseFundingNormaSmpXlsx(InputStream in) {
+        try {
+            List<FundingNormaSmp> fundingNormaSmpList = ExcelHelper.parseFundingNormaSmpXlsx(in);
+
+            if (fundingNormaSmpList.size() == 0) {
+                return "Входной файл пуст";
+            }
+
+            fundingNormaSmpList.forEach(lpuDao::save);
+            return "Файл с нормативами ПФ СМП успешно импортирован.";
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return e.getMessage();
+        }
     }
 }

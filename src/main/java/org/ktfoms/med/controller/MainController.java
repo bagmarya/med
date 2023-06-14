@@ -1,5 +1,6 @@
 package org.ktfoms.med.controller;
 
+import org.hibernate.exception.ConstraintViolationException;
 import org.ktfoms.med.dto.FapFinDto;
 import org.ktfoms.med.entity.Fap;
 import org.ktfoms.med.entity.FundingNorma;
@@ -12,12 +13,17 @@ import org.ktfoms.med.service.LpuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.UnexpectedRollbackException;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
@@ -289,6 +295,33 @@ public class MainController {
         } else {
             return "redirect:/get_norm_pd?message=No data";
         }
+    }
+
+
+    @RequestMapping(value = { "/upload_funding_norma_smp_xlsx" }, method = RequestMethod.POST)
+    public String uploadFundingNormaSmp(Model model, @RequestParam("file") MultipartFile file) {
+        String message = "";
+
+        try {
+            InputStream in = new ByteArrayInputStream(file.getBytes());
+            message = lpuService.parseFundingNormaSmpXlsx(in);
+            model.addAttribute("message", message);
+        } catch (UnexpectedRollbackException e) {
+            e.printStackTrace();
+            message = "Данные за этот период были загружены ранее";
+            model.addAttribute("message", message);
+        } catch (Exception e) {
+            e.printStackTrace();
+            message = "Не удается загрузить файл: " + file.getOriginalFilename() + " Error: " + e.getMessage();
+            model.addAttribute("message", message);
+        }
+        return "funding_norma_smp";
+    }
+
+    @RequestMapping(value = { "/funding_norma_smp" },  method = RequestMethod.GET)
+    public String fundingNormaSmp(Model model) {
+
+        return "funding_norma_smp";
     }
 
 

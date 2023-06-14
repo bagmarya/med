@@ -14,7 +14,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
+import org.apache.poi.EmptyFileException;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.openxml4j.exceptions.NotOfficeXmlFileException;
+import org.apache.poi.openxml4j.exceptions.OLE2NotOfficeXmlFileException;
 import org.apache.poi.poifs.filesystem.NotOLE2FileException;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
@@ -33,6 +36,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 import org.ktfoms.med.dto.FapFinDto;
 import org.ktfoms.med.dto.FundingNormaDto;
+import org.ktfoms.med.entity.FundingNormaSmp;
 import org.ktfoms.med.entity.Fys;
 import org.ktfoms.med.entity.Lpu;
 import org.ktfoms.med.entity.Price;
@@ -607,6 +611,22 @@ public class ExcelHelper {
 
     }
 
+    public static Integer valueAsInteger (Cell cell) {
+        if (cell == null) {return null;}
+        if (cell.getCellType() == null) {return null;}
+        CellType cellType = cell.getCellType();
+        //перебираем возможные типы ячеек
+        switch (cellType) {
+            case STRING:
+                return Integer.parseInt(cell.getStringCellValue().trim());
+            case NUMERIC:
+                return (int) cell.getNumericCellValue();
+            default:
+                return null;
+        }
+
+    }
+
     public static Double valueAsNum (Cell cell) {
         if (cell == null) {return null;}
         if (cell.getCellType() == null) {return null;}
@@ -990,5 +1010,78 @@ public class ExcelHelper {
         } catch (IOException e) {
             throw new RuntimeException("fail to import data to Excel file: " + e.getMessage());
         }
+    }
+
+    public static List<FundingNormaSmp> parseFundingNormaSmpXlsx(InputStream in) throws Exception {
+        List<FundingNormaSmp> fundingNormaSmpList = new ArrayList<>();
+        XSSFWorkbook workBook = null;
+        try {
+            workBook = new XSSFWorkbook(in);
+        } catch (EmptyFileException e) {
+            e.printStackTrace();
+            throw new Exception("Файл невыбран");
+        } catch (NotOfficeXmlFileException e) {
+            e.printStackTrace();
+            throw new Exception("Неверный формат файла");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        assert workBook != null;
+        Sheet sheet = workBook.getSheetAt(0);
+        Iterator<Row> it = sheet.iterator();
+
+        //пропускаем строку с заголовком таблицы
+        it.next();
+
+        //проходим по всему листу
+        while (it.hasNext()) {
+            Row row = it.next();
+            if (row.getCell(0) == null) {
+                break;
+            }
+            Double tarif = ExcelHelper.valueAsNum(row.getCell(2));
+            if (tarif == null){continue;}
+            if (tarif == 0){continue;}
+            Integer mcod = ExcelHelper.valueAsInteger(row.getCell(5));
+            Integer kolZlAstr = ExcelHelper.valueAsInteger(row.getCell(3));
+            Integer kolZlKapit = ExcelHelper.valueAsInteger(row.getCell(4));
+
+            LocalDate datebeg = LocalDate.of(
+                    ExcelHelper.valueAsInteger(row.getCell(0)),
+                    ExcelHelper.valueAsInteger(row.getCell(1)),
+                    1
+            );
+            LocalDate dateend = LocalDate.of(
+                    ExcelHelper.valueAsInteger(row.getCell(0)),
+                    ExcelHelper.valueAsInteger(row.getCell(1)) + 1,
+                    1
+            ).minusDays(1);
+            System.out.println(tarif);
+            System.out.println(mcod);
+            System.out.println(kolZlAstr);
+            System.out.println(kolZlKapit);
+            System.out.println(dateend);
+            FundingNormaSmp fnpAstr = new FundingNormaSmp();
+            fnpAstr.setUslOk(4);
+            fnpAstr.setSmo(45001);
+            fnpAstr.setMcod(mcod);
+            fnpAstr.setKolZl(kolZlAstr);
+            fnpAstr.setTarif(tarif);
+            fnpAstr.setDatebeg(datebeg);
+            fnpAstr.setDateend(dateend);
+            fundingNormaSmpList.add(fnpAstr);
+
+            FundingNormaSmp fnpKapit = new FundingNormaSmp();
+            fnpKapit.setUslOk(4);
+            fnpKapit.setSmo(45002);
+            fnpKapit.setMcod(mcod);
+            fnpKapit.setKolZl(kolZlKapit);
+            fnpKapit.setTarif(tarif);
+            fnpKapit.setDatebeg(datebeg);
+            fnpKapit.setDateend(dateend);
+            fundingNormaSmpList.add(fnpKapit);
+        }
+        return fundingNormaSmpList;
     }
 }
