@@ -7,6 +7,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import org.hibernate.exception.ConstraintViolationException;
 import org.ktfoms.med.dao.LpuDao;
 import org.ktfoms.med.dto.FundingNormaSmpDto;
+import org.ktfoms.med.dto.FundingNormaSmpInfo;
 import org.ktfoms.med.dto.SpFundingNormaSmp;
 import org.ktfoms.med.entity.FundingNorma;
 import org.ktfoms.med.entity.FundingNormaSmp;
@@ -24,9 +25,15 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toMap;
 
 @Service
 public class LpuService {
@@ -159,5 +166,36 @@ public class LpuService {
             e.printStackTrace();
             return e.getMessage();
         }
+    }
+
+    public List<FundingNormaSmpInfo> getFundingNormaSmpInfos() {
+        Map<Integer, String> lpuMap = lpuDao.getLpuEntityList().stream().collect(toMap(Lpu::getMkod, Lpu::getMNameF));
+        List<FundingNormaSmpInfo> infosList = new ArrayList<>();
+        List<FundingNormaSmp> entityList = lpuDao.getFundingNormaSmpEntityList();
+        Map<String, FundingNormaSmpInfo> infosMap = new TreeMap<>();
+        for (FundingNormaSmp entity: entityList){
+            String key = entity.getDatebeg().toString()+entity.getMcod().toString();
+            if (!infosMap.containsKey(key)){
+                FundingNormaSmpInfo newInfo =  new FundingNormaSmpInfo();
+                newInfo.setMcod(entity.getMcod());
+                newInfo.setLpuName(lpuMap.get(entity.getMcod()));
+                newInfo.setDatebeg(entity.getDatebeg().toString());
+                newInfo.setDateend(entity.getDateend().toString());
+                if (entity.getSmo() == 45001){newInfo.setKolZlAstr(entity.getKolZl());}
+                if (entity.getSmo() == 45002){newInfo.setKolZlKapit(entity.getKolZl());}
+                newInfo.setTarif(entity.getTarif());
+                infosMap.put(key, newInfo);
+            } else {
+                if (entity.getSmo() == 45001){infosMap.get(key).setKolZlAstr(entity.getKolZl());}
+                if (entity.getSmo() == 45002){infosMap.get(key).setKolZlKapit(entity.getKolZl());}
+            }
+        }
+        for (Map.Entry<String, FundingNormaSmpInfo> entry : infosMap.entrySet()) {
+            infosList.add(entry.getValue());
+        }
+
+
+
+        return infosList;
     }
 }

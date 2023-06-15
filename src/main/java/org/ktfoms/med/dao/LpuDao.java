@@ -93,4 +93,10 @@ public class LpuDao {
                 .setParameter("year", year)
                 .getResultList();
     }
+
+    public List<FundingNormaSmp> getFundingNormaSmpEntityList() {
+        return sessionFactory.getCurrentSession().createQuery("select fns from FundingNormaSmp fns " +
+                        "order by fns.datebeg, fns.mcod, fns.smo ", FundingNormaSmp.class)
+                .getResultList();
+    }
 }

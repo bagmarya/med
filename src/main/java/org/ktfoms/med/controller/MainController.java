@@ -2,6 +2,7 @@ package org.ktfoms.med.controller;
 
 import org.hibernate.exception.ConstraintViolationException;
 import org.ktfoms.med.dto.FapFinDto;
+import org.ktfoms.med.dto.FundingNormaSmpInfo;
 import org.ktfoms.med.entity.Fap;
 import org.ktfoms.med.entity.FundingNorma;
 import org.ktfoms.med.form.EditFapForm;
@@ -221,8 +222,8 @@ public class MainController {
     public String showFundingNormaPage(Model model) {
         List<FundingNorma> list = lpuService.getFundingNormaInfos();
         model.addAttribute("fundingNormaInfos", list);
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("d.MM.uuuu");
-        model.addAttribute("dateTimeFormatter", dateTimeFormatter);
+//        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("d.MM.uuuu");
+//        model.addAttribute("dateTimeFormatter", dateTimeFormatter);
         return "funding_norma_page";
     }
 
@@ -320,6 +321,8 @@ public class MainController {
 
     @RequestMapping(value = { "/funding_norma_smp" },  method = RequestMethod.GET)
     public String fundingNormaSmp(Model model) {
+        List<FundingNormaSmpInfo> list = lpuService.getFundingNormaSmpInfos();
+        model.addAttribute("fundingNormaInfos", list);
 
         return "funding_norma_smp";
     }

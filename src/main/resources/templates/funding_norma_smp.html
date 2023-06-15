@@ -14,7 +14,6 @@
   [[${message}]]
 </div>
 
-<p><a href="/api/pd_tarif/2023">Скачать справочник нормативов по подушевому финансированию скорой медицинской помощи</a></p>
 
 <div>
   <p>Загрузка норм подушевого финансирования СМП из excel:</p>
@@ -37,6 +36,7 @@ $('.input-file input[type=file]').on('change', function(){
 });
 </script>
 </div>
+<p><a href="/api/pd_tarif/2023">Скачать справочник нормативов по подушевому финансированию скорой медицинской помощи</a></p>
 
 <table>
   <tr>
@@ -49,14 +49,16 @@ $('.input-file input[type=file]').on('change', function(){
     <th>Численность прикрепленных по Капитал</th>
     <th>Подушевой норматив</th>
   </tr>
-<!--  <tr th:each="fundingNormaInfo:${fundingNormaInfos}">-->
-<!--    <td><a th:href=@{edit_funding_norma/{id}(id=${fundingNormaInfo.id})}>Редактировать</a></td>-->
-<!--    <td th:utext="${fundingNormaInfo.mNameF}">..</td>-->
-<!--    <td th:utext="${fundingNormaInfo.FormatedFundingDate}">..</td>-->
-<!--    <td th:utext="${fundingNormaInfo.quantityInAstr}">..</td>-->
-<!--    <td th:utext="${fundingNormaInfo.quantityInKap}">..</td>-->
-<!--    <td th:utext="${fundingNormaInfo.norma}">..</td>-->
-<!--  </tr>-->
+  <tr th:each="fundingNormaInfo:${fundingNormaInfos}">
+    <td></td>
+    <td th:utext="${fundingNormaInfo.lpuName}">..</td>
+    <td th:utext="${fundingNormaInfo.mcod}">..</td>
+    <td th:utext="${fundingNormaInfo.datebeg}">..</td>
+    <td th:utext="${fundingNormaInfo.dateend}">..</td>
+    <td th:utext="${fundingNormaInfo.kolZlAstr}">..</td>
+    <td th:utext="${fundingNormaInfo.kolZlKapit}">..</td>
+    <td th:utext="${fundingNormaInfo.tarif}">..</td>
+  </tr>
 </table>
 
 
