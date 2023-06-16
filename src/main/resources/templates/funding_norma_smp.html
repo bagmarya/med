@@ -38,28 +38,51 @@ $('.input-file input[type=file]').on('change', function(){
 </div>
 <p><a href="/api/pd_tarif">Скачать справочник нормативов по подушевому финансированию скорой медицинской помощи</a></p>
 
+<div  class="scroll-table">
 <table>
-  <tr>
-    <th></th>
-    <th>ЛПУ</th>
-    <th>Код</th>
-    <th>Дата начала</th>
-    <th>Дата конца</th>
-    <th>Численность прикрепленных по Астрамед</th>
-    <th>Численность прикрепленных по Капитал</th>
-    <th>Подушевой норматив</th>
-  </tr>
-  <tr th:each="fundingNormaInfo:${fundingNormaInfos}">
-    <td></td>
-    <td th:utext="${fundingNormaInfo.lpuName}">..</td>
-    <td th:utext="${fundingNormaInfo.mcod}">..</td>
-    <td th:utext="${fundingNormaInfo.datebeg}">..</td>
-    <td th:utext="${fundingNormaInfo.dateend}">..</td>
-    <td th:utext="${fundingNormaInfo.kolZlAstr}">..</td>
-    <td th:utext="${fundingNormaInfo.kolZlKapit}">..</td>
-    <td th:utext="${fundingNormaInfo.tarif}">..</td>
-  </tr>
+  <col style="width:40%">
+  <col style="width:10%">
+  <col style="width:10%">
+  <col style="width:10%">
+  <col style="width:10%">
+  <col style="width:10%">
+  <col style="width:10%">
+  <thead>
+    <tr>
+      <th>ЛПУ</th>
+      <th>Код</th>
+      <th>Дата начала</th>
+      <th>Дата конца</th>
+      <th>Численность прикрепленных по Астрамед</th>
+      <th>Численность прикрепленных по Капитал</th>
+      <th>Подушевой норматив</th>
+    </tr>
+  </thead>
 </table>
+  <div class="scroll-table-body">
+    <table>
+      <col style="width:40%">
+      <col style="width:10%">
+      <col style="width:10%">
+      <col style="width:10%">
+      <col style="width:10%">
+      <col style="width:10%">
+      <col style="width:10%">
+      <tbody>
+        <tr th:each="fundingNormaInfo:${fundingNormaInfos}">
+          <td th:utext="${fundingNormaInfo.lpuName}">..</td>
+          <td th:utext="${fundingNormaInfo.mcod}">..</td>
+          <td th:utext="${fundingNormaInfo.datebeg}">..</td>
+          <td th:utext="${fundingNormaInfo.dateend}">..</td>
+          <td th:utext="${fundingNormaInfo.kolZlAstr}">..</td>
+          <td th:utext="${fundingNormaInfo.kolZlKapit}">..</td>
+          <td th:utext="${fundingNormaInfo.tarif}">..</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
 
 
 </body>
