@@ -54,55 +54,6 @@ public class FysService {
         }
     }
 
-    //  в данный момент не работает, т.к. ориентировано на старый формат справочника
-    @Transactional
-    public String parseFysXls(String fileName, boolean parsePrice) {
-        try {
-            List<Fys> fysList = ExcelHelper.parseFysXls(fileName, parsePrice);
-
-            if (fysList.size()==0) { return "Входной файл пуст";}
-            //TODO: узнать что делать с проверкой на дубликаты
-            List<String> duplicates = fysList.stream().map(Fys::getKodUslMz)
-                    //группируем в map (код -> количество вхождений)
-                    .collect(Collectors.groupingBy(Function.identity()))
-                    //проходим по группам
-                    .entrySet()
-                    .stream()
-                    //отбираем коды, встречающихся более одного раза
-                    .filter(e -> e.getValue().size() > 1)
-                    //вытаскиваем ключи
-                    .map(Map.Entry::getKey)
-                    //собираем в список
-                    .collect(Collectors.toList());
-            String duplicatesMessage = "";
-            if (duplicates.size() > 0) {
-                duplicatesMessage = "Файл справочника содержит одинаковые коды услуг " + duplicates;
-            }
-            fysDao.clearFys();
-            fysList.forEach(fysDao::save);
-            return "Файл справочника успешно импортирован. " + duplicatesMessage;
-        } catch (Exception e) {
-            return e.getMessage();
-        }
-    }
-
-    //  в данный момент не работает, т.к. ориентировано на старый формат справочника
-    @Transactional
-    public String parsePriceXls(String fileName) {
-        try {
-            List<Price> priceList = ExcelHelper.parsePriceXls(fileName);
-
-            if (priceList.size()==0) { return "Входной файл пуст";}
-
-            fysDao.clearPrice();
-            priceList.forEach(fysDao::save);
-            return "Файл успешно импортирован.";
-        } catch (Exception e) {
-            return e.getMessage();
-        }
-
-    }
-
     @Transactional
     public String parsePriceXls(InputStream in) {
         try {

@@ -32,32 +32,6 @@ public class FysController {
         return "fys";
     }
 
-    //  в данный момент не работает, т.к. ориентировано на старый формат справочника
-    @RequestMapping(value = { "/parse/fys" }, method = RequestMethod.GET)
-    public String parseFys(Model model) {
-        String filename = "fys.xls";
-        String message = fysService.parseFysXls(filename, true);
-        model.addAttribute("message", message);
-        return "message";
-    }
-
-    //  в данный момент не работает, т.к. ориентировано на старый формат справочника
-    @RequestMapping(value = { "/parse/fys_empty_price" }, method = RequestMethod.GET)
-    public String parseFysEmptyPrice(Model model) {
-        String filename = "fys.xls";
-        String message = fysService.parseFysXls(filename, false);
-        model.addAttribute("message", message);
-        return "message";
-    }
-
-    @RequestMapping(value = { "/parse/price" }, method = RequestMethod.GET)
-    public String parsePrice(Model model) {
-        String filename = "sto_m.xls";
-        String message = fysService.parsePriceXls(filename);
-        model.addAttribute("message", message);
-        return "message";
-    }
-
     @RequestMapping(value = { "/fys_calc" }, method = RequestMethod.GET)
     public String fysCalculate(Model model) {
         String message = fysService.fysCalculate();
