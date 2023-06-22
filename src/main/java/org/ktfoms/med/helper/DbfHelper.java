@@ -74,69 +74,69 @@ public class DbfHelper {
             fields[10].setLength(5);
 
             fields[11] = new DBFField();
-            fields[11].setName("VRVR");
+            fields[11].setName("V_uet");
             fields[11].setType(DBFDataType.NUMERIC);
             fields[11].setLength(7);
             fields[11].setDecimalCount(2);
 
             fields[12] = new DBFField();
-            fields[12].setName("VRSS");
+            fields[12].setName("D_uet");
             fields[12].setType(DBFDataType.NUMERIC);
             fields[12].setLength(7);
             fields[12].setDecimalCount(2);
 
 
             fields[13] = new DBFField();
-            fields[13].setName("GD");
+            fields[13].setName("D1");
             fields[13].setType(DBFDataType.NUMERIC);
             fields[13].setLength(9);
             fields[13].setDecimalCount(2);
 
 
             fields[14] = new DBFField();
-            fields[14].setName("GV");
+            fields[14].setName("V1");
             fields[14].setType(DBFDataType.NUMERIC);
             fields[14].setLength(9);
             fields[14].setDecimalCount(2);
 
 
             fields[15] = new DBFField();
-            fields[15].setName("GDI");
+            fields[15].setName("D1_uet");
             fields[15].setType(DBFDataType.NUMERIC);
             fields[15].setLength(9);
             fields[15].setDecimalCount(2);
 
 
             fields[16] = new DBFField();
-            fields[16].setName("GVI");
+            fields[16].setName("V1_uet");
             fields[16].setType(DBFDataType.NUMERIC);
             fields[16].setLength(9);
             fields[16].setDecimalCount(2);
 
 
             fields[17] = new DBFField();
-            fields[17].setName("RD");
+            fields[17].setName("D2");
             fields[17].setType(DBFDataType.NUMERIC);
             fields[17].setLength(9);
             fields[17].setDecimalCount(2);
 
 
             fields[18] = new DBFField();
-            fields[18].setName("RV");
+            fields[18].setName("V2");
             fields[18].setType(DBFDataType.NUMERIC);
             fields[18].setLength(9);
             fields[18].setDecimalCount(2);
 
 
             fields[19] = new DBFField();
-            fields[19].setName("RDI");
+            fields[19].setName("D2_uet");
             fields[19].setType(DBFDataType.NUMERIC);
             fields[19].setLength(9);
             fields[19].setDecimalCount(2);
 
 
             fields[20] = new DBFField();
-            fields[20].setName("RVI");
+            fields[20].setName("V2_uet");
             fields[20].setType(DBFDataType.NUMERIC);
             fields[20].setLength(9);
             fields[20].setDecimalCount(2);
@@ -179,17 +179,17 @@ public class DbfHelper {
                 rowData[8] = fys.isOms() ? "+" : "-";
                 rowData[9] = fys.isPos() ? "+" : "-";
                 rowData[10] = fys.getMkr();
-                rowData[11] = fys.getVrvr();
-                rowData[12] = fys.getVrss();
+                rowData[11] = fys.getVUet();
+                rowData[12] = fys.getDUet();
 
-                rowData[13] = fys.getGd();
-                rowData[14] = fys.getGv();
-                rowData[15] = fys.getGdi();
-                rowData[16] = fys.getGvi();
-                rowData[17] = fys.getRd();
-                rowData[18] = fys.getRv();
-                rowData[19] = fys.getRdi();
-                rowData[20] = fys.getRvi();
+                rowData[13] = fys.getD1();
+                rowData[14] = fys.getV1();
+                rowData[15] = fys.getD1Uet();
+                rowData[16] = fys.getV1Uet();
+                rowData[17] = fys.getD2();
+                rowData[18] = fys.getV2();
+                rowData[19] = fys.getD2Uet();
+                rowData[20] = fys.getV2Uet();
 
                 rowData[21] = fys.getV021D();
                 rowData[22] = fys.getV021V();

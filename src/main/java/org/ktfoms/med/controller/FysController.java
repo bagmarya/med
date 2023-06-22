@@ -32,6 +32,7 @@ public class FysController {
         return "fys";
     }
 
+    //  в данный момент не работает, т.к. ориентировано на старый формат справочника
     @RequestMapping(value = { "/parse/fys" }, method = RequestMethod.GET)
     public String parseFys(Model model) {
         String filename = "fys.xls";
@@ -40,6 +41,7 @@ public class FysController {
         return "message";
     }
 
+    //  в данный момент не работает, т.к. ориентировано на старый формат справочника
     @RequestMapping(value = { "/parse/fys_empty_price" }, method = RequestMethod.GET)
     public String parseFysEmptyPrice(Model model) {
         String filename = "fys.xls";

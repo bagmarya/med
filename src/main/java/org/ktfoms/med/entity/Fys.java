@@ -57,35 +57,35 @@ public class Fys {
     @Column(name = "mkr")
     private String mkr;
 
-    @Column(name = "vrvr")
-    private Double vrvr;
+    @Column(name = "v_uet")
+    private Double vUet;
 
-    @Column(name = "vrss")
-    private Double vrss;
+    @Column(name = "d_uet")
+    private Double dUet;
 
-    @Column(name = "gd")
-    private Double gd;
+    @Column(name = "d1")
+    private Double d1;
 
-    @Column(name = "gv")
-    private Double gv;
+    @Column(name = "v1")
+    private Double v1;
 
-    @Column(name = "gdi")
-    private Double gdi;
+    @Column(name = "d1_uet")
+    private Double d1Uet;
 
-    @Column(name = "gvi")
-    private Double gvi;
+    @Column(name = "v1_uet")
+    private Double v1Uet;
 
-    @Column(name = "rd")
-    private Double rd;
+    @Column(name = "d2")
+    private Double d2;
 
-    @Column(name = "rv")
-    private Double rv;
+    @Column(name = "v2")
+    private Double v2;
 
-    @Column(name = "rdi")
-    private Double rdi;
+    @Column(name = "d2_uet")
+    private Double d2Uet;
 
-    @Column(name = "rvi")
-    private Double rvi;
+    @Column(name = "v2_uet")
+    private Double v2Uet;
 
 
     @Column(name = "v021_d")

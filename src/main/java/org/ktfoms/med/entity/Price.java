@@ -32,16 +32,16 @@ public class Price {
     @Column(name = "mkr")
     private String mkr;
 
-    @Column(name = "gd")
-    private Double gd;
+    @Column(name = "d1")
+    private Double d1;
 
-    @Column(name = "gv")
-    private Double gv;
+    @Column(name = "v1")
+    private Double v1;
 
-    @Column(name = "rd")
-    private Double rd;
+    @Column(name = "d2")
+    private Double d2;
 
-    @Column(name = "rv")
-    private Double rv;
+    @Column(name = "v2")
+    private Double v2;
 
 }

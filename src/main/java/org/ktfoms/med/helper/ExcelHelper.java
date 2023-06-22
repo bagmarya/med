@@ -13,15 +13,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
 import org.apache.poi.EmptyFileException;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.NotOfficeXmlFileException;
-import org.apache.poi.openxml4j.exceptions.OLE2NotOfficeXmlFileException;
 import org.apache.poi.poifs.filesystem.NotOLE2FileException;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.DataFormat;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -31,7 +31,6 @@ import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 //В случае .xlsx использовать:
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 //В случае .xls использовать:
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 
 import org.ktfoms.med.dto.FapFinDto;
@@ -632,14 +631,14 @@ public class ExcelHelper {
         if (cell.getCellType() == null) {return null;}
         CellType cellType = cell.getCellType();
         switch (cellType) {
-            case NUMERIC:
+            case NUMERIC, FORMULA:
                 return cell.getNumericCellValue();
             default:
                 return Double.valueOf(0);
         }
-
     }
 
+    // нерабочий метод - рассчитан на старый формат справочника
     public static List<Fys> parseFysXls(String fileName, boolean parsePrice) throws Exception {
         List<String> cyrillicChars = List.of("А", "а", "В", "в","Б", "б");
         List<Fys> fysList = new ArrayList<>();
@@ -678,31 +677,31 @@ public class ExcelHelper {
             fys.setOms(ExcelHelper.valueAsString(row.getCell(9)).equals("+"));
             fys.setPos(ExcelHelper.valueAsString(row.getCell(10)).equals("+"));
             fys.setMkr(ExcelHelper.valueAsString(row.getCell(11)));
-            fys.setVrvr(ExcelHelper.valueAsNum(row.getCell(12)));
+            fys.setVUet(ExcelHelper.valueAsNum(row.getCell(12)));
             if (ExcelHelper.valueAsNum(row.getCell(13)) > 0) {
-                fys.setVrss(ExcelHelper.valueAsNum(row.getCell(13)));
+                fys.setDUet(ExcelHelper.valueAsNum(row.getCell(13)));
             } else {
-                fys.setVrss(ExcelHelper.valueAsNum(row.getCell(12)));
+                fys.setDUet(ExcelHelper.valueAsNum(row.getCell(12)));
             }
 
             if (parsePrice){
-                fys.setGd(ExcelHelper.valueAsNum(row.getCell(18)));
-                fys.setGv(ExcelHelper.valueAsNum(row.getCell(19)));
-                fys.setGdi(ExcelHelper.valueAsNum(row.getCell(20)));
-                fys.setGvi(ExcelHelper.valueAsNum(row.getCell(21)));
-                fys.setRd(ExcelHelper.valueAsNum(row.getCell(22)));
-                fys.setRv(ExcelHelper.valueAsNum(row.getCell(23)));
-                fys.setRdi(ExcelHelper.valueAsNum(row.getCell(24)));
-                fys.setRvi(ExcelHelper.valueAsNum(row.getCell(25)));
+                fys.setD1(ExcelHelper.valueAsNum(row.getCell(18)));
+                fys.setV1(ExcelHelper.valueAsNum(row.getCell(19)));
+                fys.setD1Uet(ExcelHelper.valueAsNum(row.getCell(20)));
+                fys.setV1Uet(ExcelHelper.valueAsNum(row.getCell(21)));
+                fys.setD2(ExcelHelper.valueAsNum(row.getCell(22)));
+                fys.setV2(ExcelHelper.valueAsNum(row.getCell(23)));
+                fys.setD2Uet(ExcelHelper.valueAsNum(row.getCell(24)));
+                fys.setV2Uet(ExcelHelper.valueAsNum(row.getCell(25)));
             } else {
-                fys.setGd((double) 0);
-                fys.setGv((double) 0);
-                fys.setGdi((double) 0);
-                fys.setGvi((double) 0);
-                fys.setRd((double) 0);
-                fys.setRv((double) 0);
-                fys.setRdi((double) 0);
-                fys.setRvi((double) 0);
+                fys.setD1((double) 0);
+                fys.setV1((double) 0);
+                fys.setD1Uet((double) 0);
+                fys.setV1Uet((double) 0);
+                fys.setD2((double) 0);
+                fys.setV2((double) 0);
+                fys.setD2Uet((double) 0);
+                fys.setV2Uet((double) 0);
             }
 
             fys.setV021D(ExcelHelper.valueAsString(row.getCell(38)));
@@ -715,7 +714,7 @@ public class ExcelHelper {
         return fysList;
     }
 
-
+    //рабочая версия метода, исправленная для нового формата справочника
     public static List<Fys> parseFysXls(InputStream in, boolean parsePrice) throws Exception {
         List<String> cyrillicChars = List.of("А", "а", "В", "в","Б", "б");
         List<Fys> fysList = new ArrayList<>();
@@ -754,31 +753,31 @@ public class ExcelHelper {
             fys.setOms(ExcelHelper.valueAsString(row.getCell(8)).equals("+"));
             fys.setPos(ExcelHelper.valueAsString(row.getCell(9)).equals("+"));
             fys.setMkr(ExcelHelper.valueAsString(row.getCell(10)));
-            fys.setVrvr(ExcelHelper.valueAsNum(row.getCell(11)));
+            fys.setVUet(ExcelHelper.valueAsNum(row.getCell(11)));
             if (ExcelHelper.valueAsNum(row.getCell(12)) > 0) {
-                fys.setVrss(ExcelHelper.valueAsNum(row.getCell(12)));
+                fys.setDUet(ExcelHelper.valueAsNum(row.getCell(12)));
             } else {
-                fys.setVrss(ExcelHelper.valueAsNum(row.getCell(11)));
+                fys.setDUet(ExcelHelper.valueAsNum(row.getCell(11)));
             }
 
             if (parsePrice){
-                fys.setGd(ExcelHelper.valueAsNum(row.getCell(13)));
-                fys.setGv(ExcelHelper.valueAsNum(row.getCell(14)));
-                fys.setGdi(ExcelHelper.valueAsNum(row.getCell(15)));
-                fys.setGvi(ExcelHelper.valueAsNum(row.getCell(16)));
-                fys.setRd(ExcelHelper.valueAsNum(row.getCell(17)));
-                fys.setRv(ExcelHelper.valueAsNum(row.getCell(18)));
-                fys.setRdi(ExcelHelper.valueAsNum(row.getCell(19)));
-                fys.setRvi(ExcelHelper.valueAsNum(row.getCell(20)));
+                fys.setD1(ExcelHelper.valueAsNum(row.getCell(13)));
+                fys.setV1(ExcelHelper.valueAsNum(row.getCell(14)));
+                fys.setD1Uet(ExcelHelper.valueAsNum(row.getCell(15)));
+                fys.setV1Uet(ExcelHelper.valueAsNum(row.getCell(16)));
+                fys.setD2(ExcelHelper.valueAsNum(row.getCell(17)));
+                fys.setV2(ExcelHelper.valueAsNum(row.getCell(18)));
+                fys.setD2Uet(ExcelHelper.valueAsNum(row.getCell(19)));
+                fys.setV2Uet(ExcelHelper.valueAsNum(row.getCell(20)));
             } else {
-                fys.setGd((double) 0);
-                fys.setGv((double) 0);
-                fys.setGdi((double) 0);
-                fys.setGvi((double) 0);
-                fys.setRd((double) 0);
-                fys.setRv((double) 0);
-                fys.setRdi((double) 0);
-                fys.setRvi((double) 0);
+                fys.setD1((double) 0);
+                fys.setV1((double) 0);
+                fys.setD1Uet((double) 0);
+                fys.setV1Uet((double) 0);
+                fys.setD2((double) 0);
+                fys.setV2((double) 0);
+                fys.setD2Uet((double) 0);
+                fys.setV2Uet((double) 0);
             }
 
             fys.setV021D(ExcelHelper.valueAsString(row.getCell(21)));
@@ -892,10 +891,10 @@ public class ExcelHelper {
             p.setKod(ExcelHelper.valueAsString(row.getCell(0)));
             p.setSpez(ExcelHelper.valueAsString(row.getCell(1)));
             p.setMkr(ExcelHelper.valueAsString(row.getCell(2)));
-            p.setGd(ExcelHelper.valueAsNum(row.getCell(5)));
-            p.setGv(ExcelHelper.valueAsNum(row.getCell(6)));
-            p.setRd(ExcelHelper.valueAsNum(row.getCell(7)));
-            p.setRv(ExcelHelper.valueAsNum(row.getCell(8)));
+            p.setD1(ExcelHelper.valueAsNum(row.getCell(5)));
+            p.setV1(ExcelHelper.valueAsNum(row.getCell(6)));
+            p.setD2(ExcelHelper.valueAsNum(row.getCell(7)));
+            p.setV2(ExcelHelper.valueAsNum(row.getCell(8)));
             priceList.add(p);
         }
         return priceList;
@@ -929,10 +928,10 @@ public class ExcelHelper {
                 p.setKod(ExcelHelper.valueAsString(row.getCell(0)));
                 p.setSpez(ExcelHelper.valueAsString(row.getCell(1)));
                 p.setMkr(ExcelHelper.valueAsString(row.getCell(2)));
-                p.setGd(ExcelHelper.valueAsNum(row.getCell(5)));
-                p.setGv(ExcelHelper.valueAsNum(row.getCell(6)));
-                p.setRd(ExcelHelper.valueAsNum(row.getCell(7)));
-                p.setRv(ExcelHelper.valueAsNum(row.getCell(8)));
+                p.setD1(ExcelHelper.valueAsNum(row.getCell(3)));
+                p.setV1(ExcelHelper.valueAsNum(row.getCell(4)));
+                p.setD2(ExcelHelper.valueAsNum(row.getCell(5)));
+                p.setV2(ExcelHelper.valueAsNum(row.getCell(6)));
                 priceList.add(p);
             }
             return priceList;
@@ -941,9 +940,14 @@ public class ExcelHelper {
 
     public static ByteArrayInputStream fysEntityListToExcel(List<Fys> fysEntityList) {
         String[] headers = {"KOD_SP", "NAME_YSL", "KOD_USL_MZ", "RZ", "TYP", "KLAS",
-                "VID", "PVID", "OMS", "POS", "MKR", "VRVR", "VRSS", "GD", "GV", "GDI", "GVI",
-                "RD", "RV", "RDI", "RVI", "V021_D", "V021_V", "DIAG_N", "DIAG_K"};
+                "VID", "PVID", "OMS", "POS", "MKR", "V_uet", "D_uet", "D1", "V1", "D1_uet", "V1_uet",
+                "D2", "V2", "D2_uet", "V2_uet", "V021_D", "V021_V", "DIAG_N", "DIAG_K"};
         try (Workbook workbook = new HSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream();) {
+            //Создадим стиль ячейки со значением денежной суммы
+            CellStyle numStyle = workbook.createCellStyle();
+            DataFormat format = workbook.createDataFormat();
+            numStyle.setDataFormat(format.getFormat("0.00"));
+
             Sheet sheet = workbook.createSheet("sheet1");
             Row headerRow = sheet.createRow(0);
             for (int col = 0; col < headers.length; col++) {
@@ -964,20 +968,30 @@ public class ExcelHelper {
                 row.createCell(8).setCellValue(fys.isOms() ? "+" : "-");
                 row.createCell(9).setCellValue(fys.isPos() ? "+" : "-");
                 row.createCell(10).setCellValue(fys.getMkr());
-                row.createCell(11).setCellValue(fys.getVrvr());
-                row.createCell(12).setCellValue(fys.getVrss());
-                row.createCell(13).setCellValue(fys.getGd());
-                row.createCell(14).setCellValue(fys.getGv());
-                row.createCell(15).setCellValue(fys.getGdi());
-                row.createCell(16).setCellValue(fys.getGvi());
-                row.createCell(17).setCellValue(fys.getRd());
-                row.createCell(18).setCellValue(fys.getRv());
-                row.createCell(19).setCellValue(fys.getRdi());
-                row.createCell(20).setCellValue(fys.getRvi());
+                row.createCell(11).setCellValue(fys.getVUet());
+                row.createCell(12).setCellValue(fys.getDUet());
+                row.createCell(13).setCellValue(fys.getD1());
+                row.createCell(14).setCellValue(fys.getV1());
+                row.createCell(15).setCellValue(fys.getD1Uet());
+                row.createCell(16).setCellValue(fys.getV1Uet());
+                row.createCell(17).setCellValue(fys.getD2());
+                row.createCell(18).setCellValue(fys.getV2());
+                row.createCell(19).setCellValue(fys.getD2Uet());
+                row.createCell(20).setCellValue(fys.getV2Uet());
                 row.createCell(21).setCellValue(fys.getV021D());
                 row.createCell(22).setCellValue(fys.getV021V());
                 row.createCell(23).setCellValue(fys.getDiagN());
                 row.createCell(24).setCellValue(fys.getDiagK());
+                row.getCell(11).setCellStyle(numStyle);
+                row.getCell(12).setCellStyle(numStyle);
+                row.getCell(13).setCellStyle(numStyle);
+                row.getCell(14).setCellStyle(numStyle);
+                row.getCell(15).setCellStyle(numStyle);
+                row.getCell(16).setCellStyle(numStyle);
+                row.getCell(17).setCellStyle(numStyle);
+                row.getCell(18).setCellStyle(numStyle);
+                row.getCell(19).setCellStyle(numStyle);
+                row.getCell(20).setCellStyle(numStyle);
             }
             workbook.write(out);
             return new ByteArrayInputStream(out.toByteArray());
