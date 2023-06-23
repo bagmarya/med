@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
@@ -133,6 +134,12 @@ public class FysService {
     public ByteArrayInputStream createFysDbf() {
         List<Fys> fysEntityList = fysDao.getFysEntityList();
         ByteArrayInputStream in = DbfHelper.createFysDbf(fysEntityList);
+        return in;
+    }
+//TODO: переделываем этот метод
+    public ByteArrayInputStream createObrcDbf() {
+        List<Price> obrcPriceEntityList = fysDao.getObrcPriceEntityList();
+        ByteArrayInputStream in = DbfHelper.createObrcDbf(obrcPriceEntityList);
         return in;
     }
 }

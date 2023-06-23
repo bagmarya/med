@@ -81,25 +81,23 @@ $('.input-file input[type=file]').on('change', function(){
   </form>
 </div>
 <div>
-  <p>Скачать справочник в формате DBF:</p>
+  <p>Скачать справочник FYS в формате DBF:</p>
   <form method="get" th:action="@{/fys/get_fys_dbf}">
     <input type="submit" value="Скачать" />
   </form>
 </div>
 <div>
-  <p>Скачать справочник в формате excel:</p>
+  <p>Скачать справочник FYS в формате excel:</p>
   <form method="get" th:action="@{/api/excel/fys/get_fys_excel}">
     <input type="submit" value="Скачать" />
   </form>
 </div>
-
-<!--<form method="post" th:action="@{/fys/upload_fys_xls_empty_price}" enctype="multipart/form-data">-->
-
-<!--  <label for="fys_upload_empty_price">Загрузить cправочник из excel без стоимости</label>-->
-<!--  <input id="fys_upload_empty_price" type="file" name="file" accept=".xls"/>-->
-<!--  <input type="submit" value="Загрузить" />-->
-<!--</form>-->
-
+<div>
+  <p>Скачать справочник obrc в формате DBF:</p>
+  <form method="get" th:action="@{/fys/get_obrc_dbf}">
+    <input type="submit" value="Скачать" />
+  </form>
+</div>
 
 </body>
 </html>

@@ -50,6 +50,11 @@ public class FysDao {
                 .getResultList();
     }
 
+    public List<Price> getObrcPriceEntityList() {
+        return sessionFactory.getCurrentSession().createQuery("select p from Price p where p.mkr = :mkr order by p.kod", Price.class)
+                .setParameter("mkr", "ОБ").getResultList();
+    }
+
     public void clearPrice() {
         sessionFactory.getCurrentSession().createQuery("DELETE FROM Price").executeUpdate();
     }

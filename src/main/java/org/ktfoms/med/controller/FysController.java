@@ -47,6 +47,15 @@ public class FysController {
                 .contentType(MediaType.parseMediaType("application/vnd.dbf")).body(file);
     }
 
+    @RequestMapping(value = { "/get_obrc_dbf" }, method = RequestMethod.GET)
+    public ResponseEntity<Resource> getObrcDbf() {
+        String filename = "obrc.dbf";
+        InputStreamResource file = new InputStreamResource(fysService.createObrcDbf());
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
+                .contentType(MediaType.parseMediaType("application/vnd.dbf")).body(file);
+    }
+
     @PostMapping("/upload_fys_xls")
     public String uploadFys(Model model, @RequestParam("file") MultipartFile file) {
         String message = "";

@@ -5,9 +5,11 @@ import com.linuxense.javadbf.DBFDataType;
 import com.linuxense.javadbf.DBFField;
 import com.linuxense.javadbf.DBFWriter;
 import org.ktfoms.med.entity.Fys;
+import org.ktfoms.med.entity.Price;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.List;
@@ -209,4 +211,71 @@ public class DbfHelper {
             e.printStackTrace();
         }
         return null;
-    }}
+    }
+
+    public static ByteArrayInputStream createObrcDbf(List<Price> obrcList) {
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream();){
+            // Определение полей файла DBF
+            DBFField[] fields = new DBFField[6];
+            fields[0] = new DBFField();
+            fields[0].setName("KOD_SP");
+            fields[0].setType(DBFDataType.CHARACTER);
+            fields[0].setLength(3);
+
+            fields[1] = new DBFField();
+            fields[1].setName("NAME _SP");
+            fields[1].setType(DBFDataType.CHARACTER);
+            fields[1].setLength(254);
+
+            fields[2] = new DBFField();
+            fields[2].setName("D1");
+            fields[2].setType(DBFDataType.NUMERIC);
+            fields[2].setLength(9);
+            fields[2].setDecimalCount(2);
+
+            fields[3] = new DBFField();
+            fields[3].setName("V1");
+            fields[3].setType(DBFDataType.NUMERIC);
+            fields[3].setLength(9);
+            fields[3].setDecimalCount(2);
+
+            fields[4] = new DBFField();
+            fields[4].setName("D2");
+            fields[4].setType(DBFDataType.NUMERIC);
+            fields[4].setLength(9);
+            fields[4].setDecimalCount(2);
+
+
+            fields[5] = new DBFField();
+            fields[5].setName("V2");
+            fields[5].setType(DBFDataType.NUMERIC);
+            fields[5].setLength(9);
+            fields[5].setDecimalCount(2);
+
+            DBFWriter writer = new DBFWriter(out);  //экземпляр DBFWriter для записи DBF
+            writer.setCharset(Charset.forName("Cp866")); // определим кодировку выходного файла
+            writer.setFields(fields);  // задать структуру таблицы
+            // запись объектов:
+            for(Price price:obrcList){
+                Object[] rowData = new Object[6];
+                rowData[0] = price.getKod();
+                rowData[1] = price.getSpez();
+                rowData[2] = price.getD1();
+                rowData[3] = price.getV1();
+                rowData[4] = price.getD2();
+                rowData[5] = price.getV2();
+                writer.addRecord(rowData);
+            }
+            // вывод данных
+            writer.write();
+            byte[] byteArray = out.toByteArray();
+            // для того, чтобы кодировка при открытии файла определялась автоматически,
+            // прописываем в 29-й байт заголовка информацию о кодовой странице OEM866
+            byteArray[29] = 0x26;
+            return new ByteArrayInputStream(byteArray);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+}
