@@ -19,10 +19,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -124,6 +127,18 @@ public class LpuService {
         for (FundingNormaSmpDto fns: spFundingNormaSmp.getZap()) {
             lpuDao.save(new FundingNormaSmp(fns));
         }
+    }
+
+    @Transactional
+    public String parseSpFundingNormaSmp(MultipartFile file) throws IOException {
+        ObjectMapper objectMapper = new XmlMapper();
+        SpFundingNormaSmp spFundingNormaSmp = objectMapper.readValue(
+                file.getResource().getContentAsString(StandardCharsets.UTF_8),
+                SpFundingNormaSmp.class);
+        for (FundingNormaSmpDto fns: spFundingNormaSmp.getZap()) {
+            lpuDao.save(new FundingNormaSmp(fns));
+        }
+        return "Справочник норм ПФ СМП успешно загружен";
     }
     public String getFileSpFundingNormaSmp(){
         List<FundingNormaSmp> fundingNormaSmpList = lpuDao.getFundingNormaSmpEntityList();

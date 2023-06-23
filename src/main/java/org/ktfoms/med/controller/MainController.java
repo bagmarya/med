@@ -18,12 +18,14 @@ import org.springframework.transaction.UnexpectedRollbackException;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -327,5 +329,22 @@ public class MainController {
         return "funding_norma_smp";
     }
 
+    @PostMapping("/upload_funding_norma_smp_xml")
+    public String uploadFundingNormaSmpXml(Model model, @RequestParam("file") MultipartFile file) {
+        String message = "";
 
+        try {
+            InputStream in = new ByteArrayInputStream(file.getBytes());
+            message = lpuService.parseSpFundingNormaSmp(file);
+            model.addAttribute("message", message);
+        } catch (ConstraintViolationException e) {
+            message = "Данные за этот период были загружены ранее";
+            model.addAttribute("message", message);
+        } catch (Exception e) {
+            e.printStackTrace();
+            message = "Не удается загрузить файл: " + file.getOriginalFilename() + "Неверный формат. Error: " + e.getMessage();
+            model.addAttribute("message", message);
+        }
+        return "message";
+    }
 }
