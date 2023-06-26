@@ -347,4 +347,20 @@ public class MainController {
         }
         return "message";
     }
+
+    @RequestMapping("/login")
+    public String login() {
+        return "login";
+    }
+
+    @RequestMapping("/login-error")
+    public String loginError(Model model) {
+        model.addAttribute("loginError", true);
+        return "login";
+    }
+
+    @RequestMapping("/403")
+    public String accessDenied(Model model) {
+        return "message";
+    }
 }

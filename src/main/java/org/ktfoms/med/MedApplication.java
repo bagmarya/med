@@ -26,7 +26,9 @@ import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.servlet.view.ResourceBundleViewResolver;
 import org.springframework.web.servlet.view.XmlViewResolver;
 
@@ -116,4 +118,26 @@ public class MedApplication {
         return new BCryptPasswordEncoder();
     }
 
+    @Bean
+    public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
+        http
+                .formLogin()
+                .loginPage("/login")
+                .defaultSuccessUrl("/index", true)
+                .failureUrl("/login-error")
+                .and()
+                .logout()
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login")
+                .and()
+                .authorizeHttpRequests()
+                .requestMatchers("/login").anonymous()
+                .requestMatchers("/login-error.html","/login-error", "/error**", "/logout").permitAll()
+                .requestMatchers("/fys").hasRole("ADMIN")
+                .requestMatchers("/", "/index", "/funding_fap", "/lpu", "/fap", "/funding_norma", "/funding_norma_smp").hasAnyRole("USER","ADMIN")
+                .anyRequest().authenticated()
+                .and()
+                .exceptionHandling()
+                .accessDeniedPage("/403");
+        return http.build();}
 }
