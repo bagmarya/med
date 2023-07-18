@@ -5,7 +5,6 @@ import jakarta.persistence.EntityManagerFactory;
 
 import java.util.Properties;
 import javax.sql.DataSource;
-import javax.sql.XAConnection;
 
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -29,8 +28,6 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.servlet.view.ResourceBundleViewResolver;
-import org.springframework.web.servlet.view.XmlViewResolver;
 
 
 @SpringBootApplication (scanBasePackages = "org.ktfoms.med")
@@ -133,7 +130,7 @@ public class MedApplication {
                 .authorizeHttpRequests()
                 .requestMatchers("/login").anonymous()
                 .requestMatchers("/login-error.html","/login-error", "/error**", "/logout").permitAll()
-                .requestMatchers("/fys").hasRole("ADMIN")
+                .requestMatchers("/fys", "/adm").hasRole("ADMIN")
                 .requestMatchers("/", "/index", "/funding_fap", "/lpu", "/fap", "/funding_norma", "/funding_norma_smp").hasAnyRole("USER","ADMIN")
                 .anyRequest().authenticated()
                 .and()

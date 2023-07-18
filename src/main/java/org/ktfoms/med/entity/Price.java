@@ -23,7 +23,7 @@ public class Price {
     @Column(name = "price_id")
     private Integer id;
 
-    @Column(name = "kod")
+    @Column(name = "code")
     private String kod;
 
     @Column(name = "spez")

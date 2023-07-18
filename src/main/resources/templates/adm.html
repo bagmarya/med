@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ru">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Администрирование</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:insert="~{menu :: copy}">...</div>
+<h1>Администрирование</h1>
+
+<div  th:if="${message != null}" role="alert" class="alert-message">
+    [[${message}]]
+</div>
+
+<div>
+    <p>Обновление классификатора профилей оказанной медицинской помощи v002:</p>
+    <form method="post" th:action="@{/adm/upload_v002_xml}" enctype="multipart/form-data">
+
+        <label class="input-file">
+            <span class="input-file-text" type="text"></span>
+            <input type="file" name="file" accept=".xml">
+            <span class="input-file-btn">Выберите файл</span>
+        </label>
+
+        <input class="input-file-submit" type="submit" value="Загрузить" />
+
+    </form>
+    <script src="https://snipp.ru/cdn/jquery/2.1.1/jquery.min.js"></script>
+    <script>
+        $('.input-file input[type=file]').on('change', function(){
+            let file = this.files[0];
+            $(this).closest('.input-file').find('.input-file-text').html(file.name);
+        });
+    </script>
+</div>
+
+
+
+<div>
+    <p>Заполнить список врачебных специальностей в соответствии с fys:</p>
+    <form method="post" th:action="@{/fys/upd_spez_code}">
+        <input type="submit" value="Заполнить" />
+    </form>
+    <p>(Для формирования справочника лицензий список врачебных специальностей должен быть заполнен с использованием файла стоимосей медицинских услуг.
+        На момент формирования списка в систему должен быть загружен актуальный файл со стоимостью)</p>
+</div>
+
+
+
+</body>
+</html>

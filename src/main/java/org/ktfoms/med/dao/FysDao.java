@@ -2,9 +2,7 @@ package org.ktfoms.med.dao;
 
 
 import org.hibernate.SessionFactory;
-import org.ktfoms.med.entity.Fap;
 import org.ktfoms.med.entity.Fys;
-import org.ktfoms.med.entity.Lpu;
 import org.ktfoms.med.entity.Price;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,5 +55,13 @@ public class FysDao {
 
     public void clearPrice() {
         sessionFactory.getCurrentSession().createQuery("DELETE FROM Price").executeUpdate();
+    }
+
+    public void fillSpezCode() {
+        sessionFactory.getCurrentSession().createNativeQuery("insert into spez_code (select distinct code, spez from price p order by code)").executeUpdate();
+    }
+
+    public void clearSpezCode() {
+        sessionFactory.getCurrentSession().createQuery("DELETE FROM Spez").executeUpdate();
     }
 }
