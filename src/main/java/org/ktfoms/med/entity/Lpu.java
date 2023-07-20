@@ -11,6 +11,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import org.ktfoms.med.dto.LpuF003Dto;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 
 @Getter
@@ -86,7 +91,31 @@ public class Lpu {
     @Column(name = "funded")
     private boolean funded;
 
+    @Column(name = "date_beg")
+    private LocalDate dateBeg;
+
+    @Column(name = "date_end")
+    private LocalDate dateEnd;
+
     public Lpu() {
+    }
+
+    public Lpu(LpuF003Dto dto){
+        this.cogrn = dto.getOgrn();
+        this.tfokato = 37;
+        this.mNameS = dto.getMNameS();
+        this.mNameF = dto.getMNameF();
+        this.kpp = dto.getKpp();
+        this.postId = dto.getPostId();
+        this.gvfio = dto.getFamRuk() + " " + dto.getImRuk() + " " + dto.getOtRuk();
+        this.tel = dto.getTel();
+        this.fax = dto.getFax();
+        this.eMail = dto.getEMail();
+        this.lpuinn = dto.getLpuinn();
+        this.mkod = dto.getMcod();
+        this.dateBeg = LocalDate.parse(dto.getDateBeg(), DateTimeFormatter.ofPattern("dd.MM.uuuu"));
+        if (!Objects.equals(dto.getDateEnd(), "")){this.dateEnd = LocalDate.parse(dto.getDateEnd(), DateTimeFormatter.ofPattern("dd.MM.uuuu"));}
+
     }
 
     public Lpu(Integer id,

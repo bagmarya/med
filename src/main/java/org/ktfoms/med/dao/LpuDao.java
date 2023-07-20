@@ -1,8 +1,6 @@
 package org.ktfoms.med.dao;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
 import org.hibernate.SessionFactory;
-import org.ktfoms.med.dto.FapDto;
 import org.ktfoms.med.dto.FundingNormaDto;
 import org.ktfoms.med.entity.FundingNorma;
 import org.ktfoms.med.entity.FundingNormaSmp;
@@ -41,7 +39,7 @@ public class LpuDao {
 
     @Transactional
     public List<Lpu> getLpuEntityList() {
-        return sessionFactory.getCurrentSession().createQuery("select l from Lpu l order by l.mkod", Lpu.class)
+        return sessionFactory.getCurrentSession().createQuery("select l from Lpu l  where l.dateEnd is null order by l.mkod", Lpu.class)
                 .getResultList();
     }
     @Transactional
@@ -98,5 +96,16 @@ public class LpuDao {
         return sessionFactory.getCurrentSession().createQuery("select fns from FundingNormaSmp fns " +
                         "order by fns.datebeg, fns.mcod, fns.smo ", FundingNormaSmp.class)
                 .getResultList();
+    }
+
+    public List<Integer> getMcodeList() {
+        return sessionFactory.getCurrentSession().createQuery("select l.mkod from Lpu l", Integer.class)
+                .getResultList();
+    }
+
+    public Lpu getLpuByMcod(Integer mcod) {
+        return sessionFactory.getCurrentSession().createQuery("select l from Lpu l where l.mkod = :mcod", Lpu.class)
+                .setParameter("mcod", mcod)
+                .getSingleResult();
     }
 }

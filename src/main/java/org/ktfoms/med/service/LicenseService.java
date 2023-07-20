@@ -3,8 +3,13 @@ package org.ktfoms.med.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.ktfoms.med.dao.LicenseDao;
+import org.ktfoms.med.dto.LicensePolDto;
+import org.ktfoms.med.dto.LicenseStacDto;
 import org.ktfoms.med.dto.ProfilDto;
+import org.ktfoms.med.dto.SpLicense;
 import org.ktfoms.med.dto.SpV002Profil;
+import org.ktfoms.med.entity.LicensePol;
+import org.ktfoms.med.entity.LicenseStac;
 import org.ktfoms.med.entity.Profil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,5 +43,20 @@ public class LicenseService {
             }
         }
         return "Классификатор профилей оказанной медицинской помощи успешно обновлен";
+    }
+
+    @Transactional
+    public String parseSpLicense(MultipartFile file) throws IOException {
+        ObjectMapper objectMapper = new XmlMapper();
+        SpLicense spLicense = objectMapper.readValue(
+                file.getResource().getContentAsString(Charset.forName("windows-1251")),
+                SpLicense.class);
+        for (LicenseStacDto dto: spLicense.getStacionar()) {
+            licenseDao.save(new LicenseStac(dto));
+        }
+        for (LicensePolDto dto: spLicense.getPoliclinic()) {
+            licenseDao.save(new LicensePol(dto));
+        }
+        return "Справочник лицензий успешно загружен";
     }
 }

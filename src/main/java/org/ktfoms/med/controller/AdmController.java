@@ -2,6 +2,7 @@ package org.ktfoms.med.controller;
 
 
 import org.hibernate.NonUniqueObjectException;
+import org.hibernate.exception.ConstraintViolationException;
 import org.ktfoms.med.service.FapService;
 import org.ktfoms.med.service.LicenseService;
 import org.ktfoms.med.service.LpuService;
@@ -44,6 +45,84 @@ public class AdmController {
             model.addAttribute("message", message);
         } catch (NonUniqueObjectException e) {
             message = "В справочнике присутствуют две или более незакрытых записи с одинаковым кодм профиля медицинской помощи";
+            model.addAttribute("message", message);
+        } catch (Exception e) {
+            e.printStackTrace();
+            message = "Не удается загрузить файл: " + file.getOriginalFilename() + "Неверный формат. Error: " + e.getMessage();
+            model.addAttribute("message", message);
+        }
+        return "message";
+    }
+
+    @PostMapping("/upload_sp_license_xml")
+    public String uploadSpLicenseXml(Model model, @RequestParam("file") MultipartFile file) {
+        String message = "";
+
+        try {
+            InputStream in = new ByteArrayInputStream(file.getBytes());
+            message = licenseService.parseSpLicense(file);
+            model.addAttribute("message", message);
+        } catch (ConstraintViolationException e) {
+            message = "Ограничения целостности не позволяют загрузить справочник, см. подробности в логах";
+            model.addAttribute("message", message);
+        } catch (Exception e) {
+            e.printStackTrace();
+            message = "Не удается загрузить файл: " + file.getOriginalFilename() + "Неверный формат. Error: " + e.getMessage();
+            model.addAttribute("message", message);
+        }
+        return "message";
+    }
+
+    @PostMapping("/add_lpu_F003_xml")
+    public String addLpuF003Xml(Model model, @RequestParam("file") MultipartFile file) {
+        String message = "";
+
+        try {
+            InputStream in = new ByteArrayInputStream(file.getBytes());
+            message = lpuService.parseF003ForAddLpu(file);
+            model.addAttribute("message", message);
+        } catch (ConstraintViolationException e) {
+            message = "Ограничения целостности не позволяют загрузить данные справочника, см. подробности в логах";
+            model.addAttribute("message", message);
+        } catch (Exception e) {
+            e.printStackTrace();
+            message = "Не удается загрузить файл: " + file.getOriginalFilename() + "Неверный формат. Error: " + e.getMessage();
+            model.addAttribute("message", message);
+        }
+        return "message";
+    }
+
+    @PostMapping("/upd_lpu_F003_xml")
+    public String updateLpuF003Xml(Model model, @RequestParam("file") MultipartFile file) {
+        String message = "";
+
+        try {
+            InputStream in = new ByteArrayInputStream(file.getBytes());
+            message = lpuService.parseF003ForUpdLpu(file);
+            model.addAttribute("message", message);
+        } catch (ConstraintViolationException e) {
+            message = "Ограничения целостности не позволяют обновить данные справочника, см. подробности в логах";
+            model.addAttribute("message", message);
+        } catch (Exception e) {
+            e.printStackTrace();
+            message = "Не удается загрузить файл: " + file.getOriginalFilename() + "Неверный формат. Error: " + e.getMessage();
+            model.addAttribute("message", message);
+        }
+        return "message";
+    }
+
+//    Принимает на вход файл реестра МО с сайта http://192.168.12.200/downloads/doc/forall/2023/02/MO-2023.xlsx
+//    и обновляет ИНН, КПП, ОГРН, Названия организации, используя код МО в качестве ключа
+    @PostMapping("/upd_lpu_xlsx")
+    public String updateLpuXlsx(Model model, @RequestParam("file") MultipartFile file) {
+        String message = "";
+
+        try {
+            InputStream in = new ByteArrayInputStream(file.getBytes());
+            message = lpuService.parseXlsxForUpdLpu(file);
+            model.addAttribute("message", message);
+        } catch (ConstraintViolationException e) {
+            message = "Ограничения целостности не позволяют обновить данные справочника, см. подробности в логах";
             model.addAttribute("message", message);
         } catch (Exception e) {
             e.printStackTrace();

@@ -1,18 +1,16 @@
 package org.ktfoms.med.service;
 
-import org.hibernate.JDBCException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import org.hibernate.exception.ConstraintViolationException;
 import org.ktfoms.med.dao.LpuDao;
 import org.ktfoms.med.dto.FundingNormaSmpDto;
 import org.ktfoms.med.dto.FundingNormaSmpInfo;
+import org.ktfoms.med.dto.LpuF003Dto;
+import org.ktfoms.med.dto.SpF003Lpu;
 import org.ktfoms.med.dto.SpFundingNormaSmp;
 import org.ktfoms.med.entity.FundingNorma;
 import org.ktfoms.med.entity.FundingNormaSmp;
 import org.ktfoms.med.entity.Lpu;
-import org.ktfoms.med.entity.Price;
 import org.ktfoms.med.form.EditFundingNormaForm;
 import org.ktfoms.med.helper.ExcelHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,15 +19,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.text.DecimalFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -142,7 +139,6 @@ public class LpuService {
     }
     public String getFileSpFundingNormaSmp(){
         List<FundingNormaSmp> fundingNormaSmpList = lpuDao.getFundingNormaSmpEntityList();
-        System.out.println(fundingNormaSmpList);
         StringBuilder builder = new StringBuilder("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
                 "<PACKET>\n" +
                 "  <ZGLV>PD_TARIF</ZGLV>\n" +
@@ -230,9 +226,67 @@ public class LpuService {
         for (Map.Entry<String, FundingNormaSmpInfo> entry : infosMap.entrySet()) {
             infosList.add(entry.getValue());
         }
-
-
-
         return infosList;
+    }
+
+    @Transactional
+    public String parseF003ForAddLpu(MultipartFile file) throws IOException {
+        List<Integer> mcodesInBase = lpuDao.getMcodeList();
+        ObjectMapper objectMapper = new XmlMapper();
+        SpF003Lpu spLpu = objectMapper.readValue(
+                file.getResource().getContentAsString(Charset.forName("windows-1251")),
+                SpF003Lpu.class);
+        for (LpuF003Dto dto: spLpu.getLpuList()) {
+            if(mcodesInBase.contains(dto.getMcod())) {continue;}
+            lpuDao.save(new Lpu(dto));
+        }
+        return "Список ЛПУ успешно загружен";
+    }
+
+    @Transactional
+    public String parseF003ForUpdLpu(MultipartFile file) throws IOException {
+        List<Integer> mcodesInBase = lpuDao.getMcodeList();
+        ObjectMapper objectMapper = new XmlMapper();
+        SpF003Lpu spLpu = objectMapper.readValue(
+                file.getResource().getContentAsString(Charset.forName("windows-1251")),
+                SpF003Lpu.class);
+        for (LpuF003Dto dto: spLpu.getLpuList()) {
+
+            if(mcodesInBase.contains(dto.getMcod())) {
+                Lpu lpu = lpuDao.getLpuByMcod(dto.getMcod());
+//                lpu.setKpp(dto.getKpp());
+                lpu.setPostId(dto.getPostId());
+//                lpu.setGvfio(dto.getFamRuk() + " " + dto.getImRuk() + " " + dto.getOtRuk());
+                lpu.setTel(dto.getTel());
+                lpu.setFax(dto.getFax());
+                lpu.setEMail(dto.getEMail());
+                if (dto.getDateBeg()!=""){lpu.setDateBeg(LocalDate.parse(dto.getDateBeg(), DateTimeFormatter.ofPattern("dd.MM.uuuu")));}
+                if (dto.getDateEnd()!=""){lpu.setDateEnd(LocalDate.parse(dto.getDateEnd(), DateTimeFormatter.ofPattern("dd.MM.uuuu")));}
+                lpuDao.save(lpu);
+            }
+
+        }
+        return "Информация о ЛПУ успешно обновлена";
+    }
+
+    @Transactional
+    public String parseXlsxForUpdLpu(MultipartFile file) throws Exception {
+        List<Integer> mcodesInBase = lpuDao.getMcodeList();
+        InputStream in = new ByteArrayInputStream(file.getBytes());
+        List<LpuF003Dto> listLpu = ExcelHelper.parseLpuXlsx(in);
+        for (LpuF003Dto dto: listLpu) {
+
+            if(mcodesInBase.contains(dto.getMcod())) {
+                Lpu lpu = lpuDao.getLpuByMcod(dto.getMcod());
+                lpu.setKpp(dto.getKpp());
+                lpu.setCogrn(dto.getOgrn());
+                lpu.setLpuinn(dto.getLpuinn());
+                lpu.setMNameS(dto.getMNameS());
+//                lpu.setMNameF(dto.getMNameF());
+                lpuDao.save(lpu);
+            }
+
+        }
+        return "Информация о ЛПУ успешно обновлена";
     }
 }

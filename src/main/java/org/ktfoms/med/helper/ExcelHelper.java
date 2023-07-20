@@ -1,7 +1,6 @@
 package org.ktfoms.med.helper;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
@@ -35,6 +34,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import org.ktfoms.med.dto.FapFinDto;
 import org.ktfoms.med.dto.FundingNormaDto;
+import org.ktfoms.med.dto.LpuF003Dto;
 import org.ktfoms.med.entity.FundingNormaSmp;
 import org.ktfoms.med.entity.Fys;
 import org.ktfoms.med.entity.Lpu;
@@ -626,6 +626,21 @@ public class ExcelHelper {
 
     }
 
+    public static Long valueAsLong (Cell cell) {
+        if (cell == null) {return null;}
+        if (cell.getCellType() == null) {return null;}
+        CellType cellType = cell.getCellType();
+        //перебираем возможные типы ячеек
+        switch (cellType) {
+            case STRING:
+                return Long.parseLong(cell.getStringCellValue().trim());
+            case NUMERIC:
+                return (long) cell.getNumericCellValue();
+            default:
+                return null;
+        }
+    }
+
     public static Double valueAsNum (Cell cell) {
         if (cell == null) {return null;}
         if (cell.getCellType() == null) {return null;}
@@ -911,5 +926,45 @@ public class ExcelHelper {
             fundingNormaSmpList.add(fnpKapit);
         }
         return fundingNormaSmpList;
+    }
+
+    public static List<LpuF003Dto> parseLpuXlsx(InputStream in) throws Exception {
+        List<LpuF003Dto> lpuList = new ArrayList<>();
+        XSSFWorkbook workBook = null;
+        try {
+            workBook = new XSSFWorkbook(in);
+        } catch (EmptyFileException e) {
+            e.printStackTrace();
+            throw new Exception("Файл невыбран");
+        } catch (NotOfficeXmlFileException e) {
+            e.printStackTrace();
+            throw new Exception("Неверный формат файла");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        assert workBook != null;
+        Sheet sheet = workBook.getSheetAt(0);
+        Iterator<Row> it = sheet.iterator();
+
+        //пропускаем строку с заголовком таблицы
+        it.next();
+
+        //проходим по всему листу
+        while (it.hasNext()) {
+            Row row = it.next();
+            if (row.getCell(0) == null) {
+                break;
+            }
+            LpuF003Dto dto = new LpuF003Dto();
+            dto.setMcod(ExcelHelper.valueAsInteger(row.getCell(4))) ;
+            dto.setMNameF(ExcelHelper.valueAsString(row.getCell(5)));
+            dto.setMNameS(ExcelHelper.valueAsString(row.getCell(6)));
+            dto.setLpuinn(ExcelHelper.valueAsLong(row.getCell(7)));
+            dto.setKpp(ExcelHelper.valueAsInteger(row.getCell(8)));
+            dto.setOgrn(ExcelHelper.valueAsLong(row.getCell(9)));
+            lpuList.add(dto);
+        }
+        return lpuList;
     }
 }

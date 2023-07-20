@@ -101,10 +101,4 @@ public class FysController {
         return "fys";
     }
 
-    @RequestMapping(value = { "/upd_spez_code" }, method = RequestMethod.POST)
-    public String updateSpezCode(Model model) {
-        String message = fysService.updateSpezCode();
-        model.addAttribute("message", message);
-        return "message";
-    }
 }

@@ -142,12 +142,6 @@ public class FysService {
         return in;
     }
 
-    @Transactional
-    public String updateSpezCode() {
-        fysDao.clearSpezCode();
-        fysDao.fillSpezCode();
-        return "Список врачебных специальностей успешно заполнен";
-    }
 }
 
 

@@ -57,11 +57,4 @@ public class FysDao {
         sessionFactory.getCurrentSession().createQuery("DELETE FROM Price").executeUpdate();
     }
 
-    public void fillSpezCode() {
-        sessionFactory.getCurrentSession().createNativeQuery("insert into spez_code (select distinct code, spez from price p order by code)").executeUpdate();
-    }
-
-    public void clearSpezCode() {
-        sessionFactory.getCurrentSession().createQuery("DELETE FROM Spez").executeUpdate();
-    }
 }

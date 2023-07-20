@@ -7,6 +7,7 @@
     <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
 </head>
 <body>
+<script src="jquery.min.js"></script>
 <div th:insert="~{menu :: copy}">...</div>
 <h1>Администрирование</h1>
 
@@ -15,7 +16,7 @@
 </div>
 
 <div>
-    <p>Обновление классификатора профилей оказанной медицинской помощи v002:</p>
+    <h4>Обновление классификатора профилей оказанной медицинской помощи v002:</h4>
     <form method="post" th:action="@{/adm/upload_v002_xml}" enctype="multipart/form-data">
 
         <label class="input-file">
@@ -27,7 +28,6 @@
         <input class="input-file-submit" type="submit" value="Загрузить" />
 
     </form>
-    <script src="https://snipp.ru/cdn/jquery/2.1.1/jquery.min.js"></script>
     <script>
         $('.input-file input[type=file]').on('change', function(){
             let file = this.files[0];
@@ -36,18 +36,99 @@
     </script>
 </div>
 
-
-
 <div>
-    <p>Заполнить список врачебных специальностей в соответствии с fys:</p>
-    <form method="post" th:action="@{/fys/upd_spez_code}">
-        <input type="submit" value="Заполнить" />
+    <h4>Загрузка ЛПУ из справочника F003 (добавит записи отсутствующие в базе)</h4>
+    <p>(добавит записи отсутствующие в базе)</p>
+    <form method="post" th:action="@{/adm/add_lpu_F003_xml}" enctype="multipart/form-data">
+
+        <label class="input-file">
+            <span class="input-file-text" type="text"></span>
+            <input type="file" name="file" accept=".xml">
+            <span class="input-file-btn">Выберите файл</span>
+        </label>
+
+        <input class="input-file-submit" type="submit" value="Загрузить" />
+
     </form>
-    <p>(Для формирования справочника лицензий список врачебных специальностей должен быть заполнен с использованием файла стоимосей медицинских услуг.
-        На момент формирования списка в систему должен быть загружен актуальный файл со стоимостью)</p>
+    <script>
+        $('.input-file input[type=file]').on('change', function(){
+            let file = this.files[0];
+            $(this).closest('.input-file').find('.input-file-text').html(file.name);
+        });
+    </script>
 </div>
 
+<div>
+    <h4>ОБНОВЛЕНИЕ информации о ЛПУ из справочника F003</h4>
+    <p>(обновит записи существующие в базе: контактные данные и дату открытия и закрытия записи по справочнику)</p>
+    <form method="post" th:action="@{/adm/upd_lpu_F003_xml}" enctype="multipart/form-data">
 
+        <label class="input-file">
+            <span class="input-file-text" type="text"></span>
+            <input type="file" name="file" accept=".xml">
+            <span class="input-file-btn">Выберите файл</span>
+        </label>
+
+        <input class="input-file-submit" type="submit" value="Загрузить" />
+
+    </form>
+    <script>
+        $('.input-file input[type=file]').on('change', function(){
+            let file = this.files[0];
+            $(this).closest('.input-file').find('.input-file-text').html(file.name);
+        });
+    </script>
+</div>
+
+<div>
+    <h4>ОБНОВЛЕНИЕ информации о ЛПУ из реестра медицинских организаций в формате Excel</h4>
+    <p>(обновит записи существующие в базе: ИНН, КПП, ОГРН и названия организации, используя код МО в качестве ключа.</p>
+    <p>Перед использованием функции убедитесь, что данные находятся в нужных ячейках и сделайте резервную копию базы.</p>
+    <p> Код МО - столбец E;
+        полное наименование - столбец F;
+        краткое наименование - столбец G;
+        ИНН - столбец H;
+        КПП - столбец I;
+        ОГРН - столбец J)</p>
+    <form method="post" th:action="@{/adm/upd_lpu_xlsx}" enctype="multipart/form-data">
+
+        <label class="input-file">
+            <span class="input-file-text" type="text"></span>
+            <input type="file" name="file" accept=".xlsx">
+            <span class="input-file-btn">Выберите файл</span>
+        </label>
+
+        <input class="input-file-submit" type="submit" value="Загрузить" />
+    </form>
+    <script>
+        $('.input-file input[type=file]').on('change', function(){
+            let file = this.files[0];
+            $(this).closest('.input-file').find('.input-file-text').html(file.name);
+        });
+    </script>
+</div>
+
+<div>
+    <h4>Загрузка справочника лицензий</h4>
+    <p>(заменит все лицензии в базе на лицензии из загружаемого справочика!)</p>
+    <form method="post" th:action="@{/adm/upload_sp_license_xml}" enctype="multipart/form-data">
+
+        <label class="input-file">
+            <span class="input-file-text" type="text"></span>
+            <input type="file" name="file" accept=".xml">
+            <span class="input-file-btn">Выберите файл</span>
+        </label>
+
+        <input class="input-file-submit" type="submit" value="Загрузить" />
+
+    </form>
+    <script>
+        $('.input-file input[type=file]').on('change', function(){
+            let file = this.files[0];
+            $(this).closest('.input-file').find('.input-file-text').html(file.name);
+        });
+    </script>
+</div>
 
 </body>
 </html>
