@@ -8,6 +8,7 @@ import org.ktfoms.med.dto.LicenseStacDto;
 import org.ktfoms.med.dto.ProfilDto;
 import org.ktfoms.med.dto.SpLicense;
 import org.ktfoms.med.dto.SpV002Profil;
+import org.ktfoms.med.entity.FundingNormaSmp;
 import org.ktfoms.med.entity.LicensePol;
 import org.ktfoms.med.entity.LicenseStac;
 import org.ktfoms.med.entity.Profil;
@@ -19,6 +20,8 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Locale;
 
 @Service
 public class LicenseService {
@@ -58,5 +61,42 @@ public class LicenseService {
             licenseDao.save(new LicensePol(dto));
         }
         return "Справочник лицензий успешно загружен";
+    }
+
+    @Transactional
+    public String getFileLicences() {
+        List<LicenseStac> licenseStacList = licenseDao.getLicenseStacList();
+        List<LicensePol> licensePolList = licenseDao.getLicensePolList();
+        StringBuilder builder = new StringBuilder("<?xml version=\"1.0\" encoding=\"windows-1251\"?>\n" +
+                "<Root>\n" +
+                "  <Stacionar>\n");
+        for(LicenseStac licenseStac : licenseStacList){
+            builder.append(
+                    "    <License>\n" +
+                    "      <MCOD>" + licenseStac.getMcod() + "</MCOD>\n" +
+                    "      <PROF_CODE>" + licenseStac.getProfil() + "</PROF_CODE>\n" +
+                    "      <VOZRAST>" + licenseStac.getAge() + "</VOZRAST>\n" +
+                    "      <DATE_BEG>" + licenseStac.getDateBeg() + "</DATE_BEG>\n" +
+                    "      <DATE_END>" + licenseStac.getDateEnd() + "</DATE_END>\n" +
+                    "      <TIP_STAC>" + licenseStac.getStacType() + "</TIP_STAC>\n" +
+                    "      <OPLAT>" + licenseStac.getPayType() + "</OPLAT>\n" +
+                    "    </License>\n");
+        }
+        builder.append("  </Stacionar>\n");
+        builder.append("  <Policlinic>\n");
+        for(LicensePol licensePol : licensePolList){
+            builder.append(
+                    "    <License>\n" +
+                            "      <MCOD>" + licensePol.getMcod() + "</MCOD>\n" +
+                            "      <SPEZ_CODE>" + licensePol.getSpez() + "</SPEZ_CODE>\n" +
+                            "      <KATEGOR>" + licensePol.getCategory() + "</KATEGOR>\n" +
+                            "      <VOZRAST>" + licensePol.getAge() + "</VOZRAST>\n" +
+                            "      <DATE_BEG>" + licensePol.getDateBeg() + "</DATE_BEG>\n" +
+                            "      <DATE_END>" + licensePol.getDateEnd() + "</DATE_END>\n" +
+                            "    </License>\n");
+        }
+        builder.append("  </Policlinic>\n");
+        builder.append("</Root>\n");
+        return builder.toString();
     }
 }

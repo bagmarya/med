@@ -7,6 +7,7 @@ import org.ktfoms.med.entity.Fap;
 import org.ktfoms.med.entity.FapFin;
 import org.ktfoms.med.entity.Lpu;
 import org.ktfoms.med.service.FapService;
+import org.ktfoms.med.service.LicenseService;
 import org.ktfoms.med.service.LpuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -34,6 +35,9 @@ public class ApiController {
     private LpuService lpuService;
     @Autowired
     private FapService fapService;
+
+    @Autowired
+    private LicenseService licenseService;
 
     @GetMapping("/lpu/{id}")
     public Lpu  getLpuById(@PathVariable("id") int id) {
@@ -119,4 +123,10 @@ public class ApiController {
         return new ResponseEntity<>("import completed", HttpStatus.OK);
     }
 
+    @RequestMapping(value = { "/licences" }, method = RequestMethod.GET, produces = "application/xml;charset=windows-1251")
+    public ResponseEntity<String> getLicences() {
+        HttpHeaders h = new HttpHeaders();
+        h.set("Content-Disposition", "attachment; filename=\"Licences.xml\"");
+        return new ResponseEntity<>(licenseService.getFileLicences(),h, HttpStatus.OK);
+    }
 }

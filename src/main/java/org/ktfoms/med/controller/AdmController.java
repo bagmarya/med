@@ -25,7 +25,6 @@ public class AdmController {
     private LpuService lpuService;
     @Autowired
     private FapService fapService;
-
     @Autowired
     private LicenseService licenseService;
 
