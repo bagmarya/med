@@ -13,7 +13,7 @@
 <h2 th:utext="${lpu.mNameS}"></h2>
 <p>Введите данные для новой лицензии (все поля обязателны для заполнения)</p>
 <form th:action="@{/license/stac/add_license_stac/{mcod}(mcod=${lpu.mkod})}" th:object="${newLicenseStacForm}" method="POST">
-    Код ЛПУ:
+    <p>Код ЛПУ:</p>
     <input type="text" th:field="*{mcod}" />
     <br/>
     <p>Тип стационара:</p>

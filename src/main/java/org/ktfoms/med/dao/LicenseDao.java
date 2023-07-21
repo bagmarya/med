@@ -127,4 +127,8 @@ public class LicenseDao {
                                 tuple -> tuple.get("category_name").toString()
                         ));
     }
+
+    public LicenseStac getLicenseStacById(Integer id) {
+            return sessionFactory.getCurrentSession().get(LicenseStac.class, id);
+        }
 }

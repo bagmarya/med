@@ -152,4 +152,42 @@ public class LicenseService {
         licenseDao.save(new LicenseStac(licenseStacForm));
         return "Лицензия добавлена";
     }
+
+    public LicenseStacForm getEditLicenseStacForm(Integer id) {
+        LicenseStacForm form = new LicenseStacForm();
+        form.setStacTypeNames(licenseDao.getStacTypeMap());
+        //Для формы нужен словарь профилей отсортированный по значениям,
+        // чтобы проще было найти нужный профиль МП в выпадающем списке
+        form.setProfilNames(licenseDao.getProfilMap().entrySet().stream()
+                .sorted(Map.Entry.comparingByValue())
+                .collect(Collectors
+                        .toMap(Map.Entry::getKey,
+                                Map.Entry::getValue,
+                                (e1, e2) -> e1,
+                                LinkedHashMap::new)));
+        form.setAgeNames(licenseDao.getAgeMap());
+        form.setPayTypeNames(licenseDao.getPayTypeMap());
+        LicenseStac entity = licenseDao.getLicenseStacById(id);
+        form.setMcod(entity.getMcod());
+        form.setStacType(entity.getStacType());
+        form.setProfil(entity.getProfil());
+        form.setAge(entity.getAge());
+        form.setPayType(entity.getPayType());
+        form.setDateBeg(entity.getDateBeg().toString());
+        form.setDateEnd(entity.getDateEnd().toString());
+        return form;
+    }
+
+    public String saveEditLicenseStac(Integer id, LicenseStacForm form) {
+        LicenseStac entity = licenseDao.getLicenseStacById(id);
+        entity.setMcod(form.getMcod());
+        entity.setStacType(form.getStacType());
+        entity.setProfil(form.getProfil());
+        entity.setAge(form.getAge());
+        entity.setPayType(form.getPayType());
+        entity.setDateBeg(LocalDate.parse(form.getDateBeg()));
+        entity.setDateEnd(LocalDate.parse(form.getDateEnd()));
+        licenseDao.save(entity);
+        return "Изменения сохранены";
+    }
 }

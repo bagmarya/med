@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.time.LocalDate;
 import java.util.Map;
 
 @Getter
@@ -24,5 +23,6 @@ public class LicenseStacForm {
     private String age;
     private Integer payType;
     private String dateBeg;
+    private String dateEnd;
 
 }
