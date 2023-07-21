@@ -11,37 +11,12 @@
 <h1>Справочник ЛПУ</h1>
 <table>
     <tr>
-<!--        <th></th>-->
         <th>Код ЛПУ</th>
         <th>ЛПУ</th>
-        <th>ОГРН</th>
-        <th>ИНН</th>
-        <th>КПП</th>
-        <th>Признак подушевого финансирования</th>
-        <th>Код ЛПУ из Минздрав.</th>
-        <th>Индескc</th>
-        <th>Адрес</th>
-        <th>Главный врач</th>
-
     </tr>
     <tr th:each="lpu:${lpuList}">
-<!--        <td><a th:href=@{edit_lpu/{id}(id=${lpu.id})}>Редактировать</a></td>-->
         <td th:utext="${lpu.mkod}">..</td>
-        <td th:utext="${lpu.mNameF}">..</td>
-        <td th:utext="${lpu.cogrn}">..</td>
-        <td th:utext="${lpu.lpuinn}">..</td>
-        <td th:utext="${lpu.kpp}">..</td>
-        <td th:utext="(${lpu.funded} ? 'Да' : 'Нет')">..</td>
-        <td th:utext="${lpu.kodSp}">..</td>
-        <td th:utext="${lpu.postId}">..</td>
-        <td th:utext="(${lpu.areaName} ? ${lpu.areaName} + ', ' : '') +
-        (${lpu.rName} ? ${lpu.rName} + ', ' : '') +
-        (${lpu.npName} ? ${lpu.npName} + ', ' : '') +
-        (${lpu.ulName} ? ${lpu.ulName} + ', ' : '') +
-        (${lpu.dom} ? ${lpu.dom} : '') ">..</td>
-        <td th:utext="${lpu.gvfio}">..</td>
-
-
+        <td><a th:href=@{lpu/{mcod}(mcod=${lpu.mkod})}  th:utext="${lpu.mNameS}">..</a></td>
     </tr>
 </table>
 

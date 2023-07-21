@@ -39,7 +39,7 @@ public class LpuDao {
 
     @Transactional
     public List<Lpu> getLpuEntityList() {
-        return sessionFactory.getCurrentSession().createQuery("select l from Lpu l  where l.dateEnd is null order by l.mkod", Lpu.class)
+        return sessionFactory.getCurrentSession().createQuery("select l from Lpu l  where l.dateEnd is null and l.mkod!=450000 order by l.mkod", Lpu.class)
                 .getResultList();
     }
     @Transactional

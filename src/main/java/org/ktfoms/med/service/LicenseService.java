@@ -5,10 +5,10 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.ktfoms.med.dao.LicenseDao;
 import org.ktfoms.med.dto.LicensePolDto;
 import org.ktfoms.med.dto.LicenseStacDto;
+import org.ktfoms.med.dto.LicenseStacInfo;
 import org.ktfoms.med.dto.ProfilDto;
 import org.ktfoms.med.dto.SpLicense;
 import org.ktfoms.med.dto.SpV002Profil;
-import org.ktfoms.med.entity.FundingNormaSmp;
 import org.ktfoms.med.entity.LicensePol;
 import org.ktfoms.med.entity.LicenseStac;
 import org.ktfoms.med.entity.Profil;
@@ -20,8 +20,9 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
+import java.util.Map;
 
 @Service
 public class LicenseService {
@@ -98,5 +99,30 @@ public class LicenseService {
         builder.append("  </Policlinic>\n");
         builder.append("</Root>\n");
         return builder.toString();
+    }
+
+    public List<LicenseStacInfo> getLicenseStacInfosByMcod(Integer mcod) {
+        List<LicenseStacInfo> licenseStacInfos = new ArrayList<>();
+        List<LicenseStac> licenseStacList = licenseDao.getLicenseStacList(mcod);
+        Map<String, String> ageMap = licenseDao.getAgeMap();
+        Map<Integer,String> profMap = licenseDao.getProfilMap();
+        Map<Integer,String> stacTypeMap = licenseDao.getStacTypeMap();
+        Map<Integer,String> payTypeMap = licenseDao.getPayTypeMap();
+//        Map<String, String> spezMap = licenseDao.getSpezMap();
+//        Map<String, String> categoryMap = licenseDao.getCategoryMap();
+        for (LicenseStac entity : licenseStacList){
+            LicenseStacInfo lsi = new LicenseStacInfo();
+            lsi.setId(entity.getId());
+            lsi.setMcod(entity.getMcod());
+            lsi.setProfil(profMap.get(entity.getProfil()));
+            lsi.setAge(ageMap.get(entity.getAge()));
+            lsi.setStacType(stacTypeMap.get(entity.getStacType()));
+            lsi.setPayType(payTypeMap.get(entity.getPayType()));
+            lsi.setDateBeg(entity.getDateBeg().format(DateTimeFormatter.ofPattern("dd.MM.uuuu")));
+            lsi.setDateEnd(entity.getDateEnd().format(DateTimeFormatter.ofPattern("dd.MM.uuuu")));
+            licenseStacInfos.add(lsi);
+        }
+
+        return licenseStacInfos;
     }
 }

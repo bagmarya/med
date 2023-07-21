@@ -25,12 +25,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.InputStream;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -49,11 +46,18 @@ public class MainController {
         return "index";
     }
 
-    //Страница для справочника ЛПУ
+    //Страница (основная) для справочника ЛПУ
     @RequestMapping(value = { "/lpu" }, method = RequestMethod.GET)
     public String lpu(Model model) {
         model.addAttribute("lpuList", lpuService.getLpuEntityList());
         return "lpu";
+    }
+
+    //Страница (вложенная) для справочника ЛПУ
+    @RequestMapping(value = { "/lpu/{mcod}" }, method = RequestMethod.GET)
+    public String lpuInfo(Model model, @PathVariable("mcod") Integer mcod) {
+        model.addAttribute("lpu", lpuService.getLpuByMcod(mcod));
+        return "lpu_info";
     }
 
     //Страница (основная) для справочника ФАП

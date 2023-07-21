@@ -285,8 +285,10 @@ public class LpuService {
 //                lpu.setMNameF(dto.getMNameF());
                 lpuDao.save(lpu);
             }
-
         }
         return "Информация о ЛПУ успешно обновлена";
+    }
+    public Lpu getLpuByMcod(Integer mcod) {
+        return lpuDao.getLpuByMcod(mcod);
     }
 }

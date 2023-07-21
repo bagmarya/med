@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ru">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Справочник ЛПУ</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:insert="~{menu :: copy}">...</div>
+<h1>Справочник ЛПУ</h1>
+<input type="button" value="Вернуться к списку ЛПУ" onClick='location.href="/lpu"'>
+<h2 th:utext="${lpu.mNameS}"></h2>
+<p>Полное наименование: <span th:utext="${lpu.mNameF}">..</span></p>
+<p>Код ЛПУ: <span th:utext="${lpu.mkod}">..</span></p>
+<p>ОГРН: <span th:utext="${lpu.cogrn}">..</span></p>
+<p>ИНН/КПП: <span th:utext="${lpu.lpuinn} + '/' + ${lpu.kpp}">..</span></p>
+<p>Подушевое финансирование АПП: <span th:utext="(${lpu.funded} ? 'Да' : 'Нет')">..</span></p>
+<p>Код ЛПУ из Минздрав.: <span th:utext="${lpu.kodSp}">..</span></p>
+<p>Индескc: <span th:utext="${lpu.postId}">..</span></p>
+<p>Адрес: <span th:utext="(${lpu.areaName} ? ${lpu.areaName} + ', ' : '') +
+        (${lpu.rName} ? ${lpu.rName} + ', ' : '') +
+        (${lpu.npName} ? ${lpu.npName} + ', ' : '') +
+        (${lpu.ulName} ? ${lpu.ulName} + ', ' : '') +
+        (${lpu.dom} ? ${lpu.dom} : '') ">..</span></p>
+<p>Главный врач: <span th:utext="${lpu.gvfio}">..</span></p>
+
+<p><a th:href="@{/license/stac/{mcod}(mcod=${lpu.mkod})}">Лицензии стационара</a></p>
+<p><a th:href="@{/license/pol/{mcod}(mcod=${lpu.mkod})}">Лицензии поликлиники</a></p>
+
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ru">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Справочник лицензий (лицензии стационара)</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:insert="~{menu :: copy}">...</div>
+<h1>Лицензии стационара</h1>
+<input type="button" value="Вернуться к ЛПУ" th:onClick="'location.href = \'' + @{/lpu/{mcod}(mcod=${lpu.mkod})} + '\''">
+<h2 th:utext="${lpu.mNameS}"></h2>
+<table>
+    <tr>
+        <th></th>
+        <th>Тип стационара</th>
+        <th>Тип профиля</th>
+        <th>Возраст</th>
+        <th>Вид оплаты</th>
+        <th>Дата начала</th>
+        <th>Дата закрытия</th>
+    </tr>
+    <tr th:each="lic:${licenseStacList}">
+        <td><a th:href=@{edit_license_stac/{id}(id=${lic.id})}>Редактировать</a></td>
+        <td th:utext="${lic.stacType}">..</td>
+        <td th:utext="${lic.profil}">..</td>
+        <td th:utext="${lic.age}">..</td>
+        <td th:utext="${lic.payType}">..</td>
+        <td th:utext="${lic.dateBeg}">..</td>
+        <td th:utext="${lic.dateEnd}">..</td>
+    </tr>
+</table>
+<p><a th:href="@{/license/stac/add_license_stac/{mcod}(mcod=${lpu.mkod})}">Добавить лицензию для стационара</a></p>
+</body>
+</html>
