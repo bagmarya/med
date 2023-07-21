@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.ktfoms.med.dto.LicenseStacDto;
+import org.ktfoms.med.form.LicenseStacForm;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -60,4 +61,13 @@ public class LicenseStac {
         this.dateEnd = LocalDate.parse(dto.getDateEnd(), DateTimeFormatter.ofPattern("dd.MM.uuuu"));
     }
 
+    public LicenseStac(LicenseStacForm form) {
+        this.mcod = form.getMcod();
+        this.profil = form.getProfil();
+        this.age = form.getAge();
+        this.stacType = form.getStacType();
+        this.payType = form.getPayType();
+        this.dateBeg = LocalDate.parse(form.getDateBeg());
+        this.dateEnd = LocalDate.of(9999, 12, 31);
+    }
 }

@@ -9,6 +9,10 @@
 <body>
 <div th:insert="~{menu :: copy}">...</div>
 <h1>Лицензии стационара</h1>
+<div  th:if="${message != null}" role="alert" class="alert-message">
+    [[${message}]]
+</div>
+<br/>
 <input type="button" value="Вернуться к ЛПУ" th:onClick="'location.href = \'' + @{/lpu/{mcod}(mcod=${lpu.mkod})} + '\''">
 <h2 th:utext="${lpu.mNameS}"></h2>
 <table>

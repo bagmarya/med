@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ru">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Справочник лицензий (лицензии стационара)</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:insert="~{menu :: copy}">...</div>
+<h1>Добавление лицензии стационара</h1>
+<input type="button" value="Вернуться к лицензиям" th:onClick="'location.href = \'' + @{/license/stac/{mcod}(mcod=${lpu.mkod})} + '\''">
+<h2 th:utext="${lpu.mNameS}"></h2>
+<p>Введите данные для новой лицензии (все поля обязателны для заполнения)</p>
+<form th:action="@{/license/stac/add_license_stac/{mcod}(mcod=${lpu.mkod})}" th:object="${newLicenseStacForm}" method="POST">
+    Код ЛПУ:
+    <input type="text" th:field="*{mcod}" />
+    <br/>
+    <p>Тип стационара:</p>
+    <select th:field="*{stacType}">
+        <option th:each="stacTypeName : ${newLicenseStacForm.stacTypeNames}"
+                th:value="${stacTypeName.key}"
+                th:utext="${stacTypeName.value}">
+        </option>
+    </select>
+    <br/>
+    <p>Тип профиля:</p>
+    <select th:field="*{profil}">
+        <option th:each="profilName : ${newLicenseStacForm.profilNames}"
+                th:value="${profilName.key}"
+                th:utext="${profilName.value}">
+        </option>
+    </select>
+    <br/>
+    <p>Возраст:</p>
+    <select th:field="*{age}">
+        <option th:each="ageName : ${newLicenseStacForm.ageNames}"
+                th:value="${ageName.key}"
+                th:utext="${ageName.value}">
+        </option>
+    </select>
+    <br/>
+    <p>Вид оплаты:</p>
+    <select th:field="*{payType}">
+        <option th:each="payTypeName : ${newLicenseStacForm.payTypeNames}"
+                th:value="${payTypeName.key}"
+                th:utext="${payTypeName.value}">
+        </option>
+    </select>
+    <br/>
+    <p>Дата начала:</p>
+    <input type="date" th:field="*{dateBeg}" />
+    <br/>
+    <input type="submit" value="Сохранить" />
+    <input type="button" value="Отмена"  th:onClick="'location.href = \'' + @{/license/stac/{mcod}(mcod=${lpu.mkod})} + '\''">
+</form>
+</body>
+</html>

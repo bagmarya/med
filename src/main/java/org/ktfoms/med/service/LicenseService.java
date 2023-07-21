@@ -12,6 +12,7 @@ import org.ktfoms.med.dto.SpV002Profil;
 import org.ktfoms.med.entity.LicensePol;
 import org.ktfoms.med.entity.LicenseStac;
 import org.ktfoms.med.entity.Profil;
+import org.ktfoms.med.form.LicenseStacForm;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,8 +22,10 @@ import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class LicenseService {
@@ -124,5 +127,29 @@ public class LicenseService {
         }
 
         return licenseStacInfos;
+    }
+
+
+    public LicenseStacForm getNewLicenseStacForm() {
+        LicenseStacForm form = new LicenseStacForm();
+        form.setStacTypeNames(licenseDao.getStacTypeMap());
+        //Для формы нужен словарь профилей отсортированный по значениям,
+        // чтобы проще было найти нужный профиль МП в выпадающем списке
+        form.setProfilNames(licenseDao.getProfilMap().entrySet().stream()
+                .sorted(Map.Entry.comparingByValue())
+                .collect(Collectors
+                        .toMap(Map.Entry::getKey,
+                                Map.Entry::getValue,
+                                (e1, e2) -> e1,
+                                LinkedHashMap::new)));
+        form.setAgeNames(licenseDao.getAgeMap());
+        form.setPayTypeNames(licenseDao.getPayTypeMap());
+
+        return form;
+    }
+
+    public String saveNewLicenseStac (LicenseStacForm licenseStacForm) {
+        licenseDao.save(new LicenseStac(licenseStacForm));
+        return "Лицензия добавлена";
     }
 }
