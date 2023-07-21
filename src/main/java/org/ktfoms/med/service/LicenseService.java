@@ -190,4 +190,9 @@ public class LicenseService {
         licenseDao.save(entity);
         return "Изменения сохранены";
     }
+
+    public String deleteLicenseStac(Integer id) {
+        licenseDao.deleteLicenseStac(id);
+        return "Лицензия удалена";
+    }
 }

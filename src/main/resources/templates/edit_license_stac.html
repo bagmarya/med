@@ -57,5 +57,9 @@
     <input type="submit" value="Сохранить" />
     <input type="button" value="Отмена"  th:onClick="'location.href = \'' + @{/license/stac/{mcod}(mcod=${lpu.mkod})} + '\''">
 </form>
+
+<form th:action="@{/license/stac/delete_license_stac/{id}(id=${id})}" method="POST">
+    <input type="submit" value="Удалить эту лицензию" />
+</form>
 </body>
 </html>

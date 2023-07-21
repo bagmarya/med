@@ -131,4 +131,10 @@ public class LicenseDao {
     public LicenseStac getLicenseStacById(Integer id) {
             return sessionFactory.getCurrentSession().get(LicenseStac.class, id);
         }
+
+    public void deleteLicenseStac(Integer id) {
+        sessionFactory.getCurrentSession()
+                .createQuery("delete from LicenseStac ls where ls.id=:id")
+                .setParameter("id", id).executeUpdate();
+    }
 }

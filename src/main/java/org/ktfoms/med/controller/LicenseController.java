@@ -74,4 +74,18 @@ public class LicenseController {
         return "redirect:/license/stac/" + licenseStacForm.getMcod().toString() + "?message=" + URLEncoder.encode(message, StandardCharsets.UTF_8);
     }
 
+    @RequestMapping(value = { "/stac/delete_license_stac/{id}" }, method = RequestMethod.POST)
+    public String saveEditLicenseStac(Model model, @PathVariable("id") Integer id) {
+        String message = "";
+        String mcod = licenseService.getEditLicenseStacForm(id).getMcod().toString();
+        try {
+            message = licenseService.deleteLicenseStac(id);
+            model.addAttribute("message", message);
+        } catch (Exception e) {
+            e.printStackTrace();
+            message = "Не удалось далить";
+            model.addAttribute("message", message);}
+        return "redirect:/license/stac/" + mcod + "?message=" + URLEncoder.encode(message, StandardCharsets.UTF_8);
+    }
+
 }
