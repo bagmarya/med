@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru">
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
     <title>Справочник лицензий (лицензии стационара)</title>
@@ -13,10 +14,10 @@
 <h2 th:utext="${lpu.mNameS}"></h2>
 <form th:action="@{/license/stac/edit_license_stac/{id}(id=${id})}" th:object="${editLicenseStacForm}" method="POST">
     <p>Код ЛПУ:</p>
-    <input type="text" th:field="*{mcod}" />
+    <input type="text" th:field="*{mcod}"  disabled />
     <br/>
     <p>Тип стационара:</p>
-    <select th:field="*{stacType}">
+    <select th:field="*{stacType}" th:disabled="!${#authorization.expression('hasRole(''ADMIN'')')}">
         <option th:each="stacTypeName : *{stacTypeNames}"
                 th:value="${stacTypeName.key}"
                 th:utext="${stacTypeName.value}">
@@ -24,7 +25,7 @@
     </select>
     <br/>
     <p>Тип профиля:</p>
-    <select th:field="*{profil}">
+    <select th:field="*{profil}" th:disabled="!${#authorization.expression('hasRole(''ADMIN'')')}">
         <option th:each="profilName : *{profilNames}"
                 th:value="${profilName.key}"
                 th:utext="${profilName.value}">
@@ -32,7 +33,7 @@
     </select>
     <br/>
     <p>Возраст:</p>
-    <select th:field="*{age}">
+    <select th:field="*{age}" th:disabled="!${#authorization.expression('hasRole(''ADMIN'')')}">
         <option th:each="ageName : *{ageNames}"
                 th:value="${ageName.key}"
                 th:utext="${ageName.value}">
@@ -40,7 +41,7 @@
     </select>
     <br/>
     <p>Вид оплаты:</p>
-    <select th:field="*{payType}">
+    <select th:field="*{payType}" th:disabled="!${#authorization.expression('hasRole(''ADMIN'')')}">
         <option th:each="payTypeName : *{payTypeNames}"
                 th:value="${payTypeName.key}"
                 th:utext="${payTypeName.value}">
@@ -48,7 +49,7 @@
     </select>
     <br/>
     <p>Дата начала:</p>
-    <input type="date" th:field="*{dateBeg}" />
+    <input type="date" th:field="*{dateBeg}"  th:disabled="!${#authorization.expression('hasRole(''ADMIN'')')}"/>
     <br/>
 
     <p>Дата закрытия:</p>
@@ -58,8 +59,11 @@
     <input type="button" value="Отмена"  th:onClick="'location.href = \'' + @{/license/stac/{mcod}(mcod=${lpu.mkod})} + '\''">
 </form>
 
-<form th:action="@{/license/stac/delete_license_stac/{id}(id=${id})}" method="POST">
-    <input type="submit" value="Удалить эту лицензию" />
-</form>
+<div sec:authorize="hasRole('ADMIN')">
+    <form th:action="@{/license/stac/delete_license_stac/{id}(id=${id})}" method="POST">
+        <input type="submit" value="Удалить эту лицензию"/>
+    </form>
+</div>
+
 </body>
 </html>

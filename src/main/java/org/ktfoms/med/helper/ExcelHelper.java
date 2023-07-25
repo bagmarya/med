@@ -846,7 +846,7 @@ public class ExcelHelper {
                 row.createCell(2).setCellValue(fnd.getFormatedFundingDate());
                 if (fnd.getQuantityInAstr() != null){row.createCell(3).setCellValue(fnd.getQuantityInAstr());}
                 if (fnd.getQuantityInKap() != null){row.createCell(4).setCellValue(fnd.getQuantityInKap());}
-                row.createCell(5).setCellValue(String.format("%.2f", fnd.getNorma()));
+                row.createCell(5).setCellValue(fnd.getNorma());
             }
             workbook.write(out);
             return new ByteArrayInputStream(out.toByteArray());
