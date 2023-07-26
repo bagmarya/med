@@ -15,6 +15,7 @@
 <form th:action="@{/license/stac/edit_license_stac/{id}(id=${id})}" th:object="${editLicenseStacForm}" method="POST">
     <p>Код ЛПУ:</p>
     <input type="text" th:field="*{mcod}"  disabled />
+    <input type="hidden" th:field="*{mcod}">
     <br/>
     <p>Тип стационара:</p>
     <select th:field="*{stacType}" th:disabled="!${#authorization.expression('hasRole(''ADMIN'')')}">
@@ -23,6 +24,7 @@
                 th:utext="${stacTypeName.value}">
         </option>
     </select>
+    <input type="hidden" th:field="*{stacType}" th:if="!${#authorization.expression('hasRole(''ADMIN'')')}">
     <br/>
     <p>Тип профиля:</p>
     <select th:field="*{profil}" th:disabled="!${#authorization.expression('hasRole(''ADMIN'')')}">
@@ -31,6 +33,7 @@
                 th:utext="${profilName.value}">
         </option>
     </select>
+    <input type="hidden" th:field="*{profil}" th:if="!${#authorization.expression('hasRole(''ADMIN'')')}">
     <br/>
     <p>Возраст:</p>
     <select th:field="*{age}" th:disabled="!${#authorization.expression('hasRole(''ADMIN'')')}">
@@ -39,6 +42,7 @@
                 th:utext="${ageName.value}">
         </option>
     </select>
+    <input type="hidden" th:field="*{age}" th:if="!${#authorization.expression('hasRole(''ADMIN'')')}">
     <br/>
     <p>Вид оплаты:</p>
     <select th:field="*{payType}" th:disabled="!${#authorization.expression('hasRole(''ADMIN'')')}">
@@ -47,9 +51,11 @@
                 th:utext="${payTypeName.value}">
         </option>
     </select>
+    <input type="hidden" th:field="*{payType}" th:if="!${#authorization.expression('hasRole(''ADMIN'')')}">
     <br/>
     <p>Дата начала:</p>
     <input type="date" th:field="*{dateBeg}"  th:disabled="!${#authorization.expression('hasRole(''ADMIN'')')}"/>
+    <input type="hidden" th:field="*{dateBeg}" th:if="!${#authorization.expression('hasRole(''ADMIN'')')}">
     <br/>
 
     <p>Дата закрытия:</p>
