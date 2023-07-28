@@ -37,8 +37,7 @@ import org.springframework.security.web.SecurityFilterChain;
         HibernateJpaAutoConfiguration.class })
 public class MedApplication {
 
-
-    private static Logger logger = LoggerFactory.getLogger(MedApplication.class);
+    private static final Logger logger = LoggerFactory.getLogger(MedApplication.class);
 
     @Autowired
     private Environment env;

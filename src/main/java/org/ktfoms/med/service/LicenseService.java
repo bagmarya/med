@@ -13,6 +13,9 @@ import org.ktfoms.med.entity.LicensePol;
 import org.ktfoms.med.entity.LicenseStac;
 import org.ktfoms.med.entity.Profil;
 import org.ktfoms.med.form.LicenseStacForm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,6 +32,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class LicenseService {
+    private static final Logger logger = LoggerFactory.getLogger(LicenseService.class);
     private final LicenseDao licenseDao;
 
     public LicenseService(LicenseDao licenseDao) {
@@ -193,6 +197,7 @@ public class LicenseService {
 
     public String deleteLicenseStac(Integer id) {
         licenseDao.deleteLicenseStac(id);
+        logger.info("Удалена лицензия стационара. Имя пользователья: " + SecurityContextHolder.getContext().getAuthentication().getName());
         return "Лицензия удалена";
     }
 }

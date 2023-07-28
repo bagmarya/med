@@ -1,6 +1,8 @@
 package org.ktfoms.med.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.hibernate.exception.ConstraintViolationException;
+import org.ktfoms.med.MedApplication;
 import org.ktfoms.med.dto.FapFinDto;
 import org.ktfoms.med.dto.FundingNormaSmpInfo;
 import org.ktfoms.med.entity.Fap;
@@ -11,8 +13,11 @@ import org.ktfoms.med.form.EditFundingNormaForm;
 import org.ktfoms.med.form.MonthForm;
 import org.ktfoms.med.service.FapService;
 import org.ktfoms.med.service.LpuService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.UnexpectedRollbackException;
 import org.springframework.ui.Model;
@@ -33,15 +38,15 @@ import java.util.Objects;
 
 @Controller
 public class MainController {
-
+    private static final Logger logger = LoggerFactory.getLogger(MainController.class);
     @Autowired
     private LpuService lpuService;
     @Autowired
     private FapService fapService;
 
     @RequestMapping(value = { "/", "/index" }, method = RequestMethod.GET)
-    public String index(Model model) {
-//        System.out.println("!!!!!!!!!!!!!!!сервер отвечает!!!!!!!!!!!!!!!!");
+    public String index(Model model, HttpServletRequest request) {
+        logger.info("Вход в приложение с адреса: " + request.getRemoteAddr() + "| Логин: " + SecurityContextHolder.getContext().getAuthentication().getName());
         model.addAttribute("today", Calendar.getInstance());
         return "index";
     }
