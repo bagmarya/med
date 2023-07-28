@@ -58,7 +58,8 @@ public class LicenseDao {
 
     public List<LicensePol> getLicensePolList(Integer mcod) {
         return sessionFactory.getCurrentSession()
-                .createQuery("select lp from LicensePol lp where ls.mcod=:mcod order by lp.dateBeg", LicensePol.class)
+                .createQuery("select lp from LicensePol lp where lp.mcod=:mcod order by lp.dateBeg", LicensePol.class)
+                .setParameter("mcod", mcod)
                 .getResultList();
     }
 
@@ -135,6 +136,16 @@ public class LicenseDao {
     public void deleteLicenseStac(Integer id) {
         sessionFactory.getCurrentSession()
                 .createQuery("delete from LicenseStac ls where ls.id=:id")
+                .setParameter("id", id).executeUpdate();
+    }
+
+    public LicensePol getLicensePolById(Integer id) {
+        return sessionFactory.getCurrentSession().get(LicensePol.class, id);
+    }
+
+    public void deleteLicensePol(Integer id) {
+        sessionFactory.getCurrentSession()
+                .createQuery("delete from LicensePol lp where lp.id=:id")
                 .setParameter("id", id).executeUpdate();
     }
 }

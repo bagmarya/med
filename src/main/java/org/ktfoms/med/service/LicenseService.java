@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.ktfoms.med.dao.LicenseDao;
 import org.ktfoms.med.dto.LicensePolDto;
+import org.ktfoms.med.dto.LicensePolInfo;
 import org.ktfoms.med.dto.LicenseStacDto;
 import org.ktfoms.med.dto.LicenseStacInfo;
 import org.ktfoms.med.dto.ProfilDto;
@@ -12,6 +13,7 @@ import org.ktfoms.med.dto.SpV002Profil;
 import org.ktfoms.med.entity.LicensePol;
 import org.ktfoms.med.entity.LicenseStac;
 import org.ktfoms.med.entity.Profil;
+import org.ktfoms.med.form.LicensePolForm;
 import org.ktfoms.med.form.LicenseStacForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,6 +73,7 @@ public class LicenseService {
         return "Справочник лицензий успешно загружен";
     }
 
+    //Экспорт лицензий из базы в xml (справочник лицензий)
     @Transactional
     public String getFileLicences() {
         List<LicenseStac> licenseStacList = licenseDao.getLicenseStacList();
@@ -108,6 +111,7 @@ public class LicenseService {
         return builder.toString();
     }
 
+    // Получение информации по лицензиям для последующего вывода на странице лицензий стационара для одной ЛПУ
     public List<LicenseStacInfo> getLicenseStacInfosByMcod(Integer mcod) {
         List<LicenseStacInfo> licenseStacInfos = new ArrayList<>();
         List<LicenseStac> licenseStacList = licenseDao.getLicenseStacList(mcod);
@@ -115,8 +119,6 @@ public class LicenseService {
         Map<Integer,String> profMap = licenseDao.getProfilMap();
         Map<Integer,String> stacTypeMap = licenseDao.getStacTypeMap();
         Map<Integer,String> payTypeMap = licenseDao.getPayTypeMap();
-//        Map<String, String> spezMap = licenseDao.getSpezMap();
-//        Map<String, String> categoryMap = licenseDao.getCategoryMap();
         for (LicenseStac entity : licenseStacList){
             LicenseStacInfo lsi = new LicenseStacInfo();
             lsi.setId(entity.getId());
@@ -133,7 +135,7 @@ public class LicenseService {
         return licenseStacInfos;
     }
 
-
+    //Генерация формы для новой лицензии стационара
     public LicenseStacForm getNewLicenseStacForm() {
         LicenseStacForm form = new LicenseStacForm();
         form.setStacTypeNames(licenseDao.getStacTypeMap());
@@ -152,11 +154,14 @@ public class LicenseService {
         return form;
     }
 
+    //Сохранение новой лицензии стационара
     public String saveNewLicenseStac (LicenseStacForm licenseStacForm) {
         licenseDao.save(new LicenseStac(licenseStacForm));
         return "Лицензия добавлена";
     }
 
+    //Генерация формы для редактирования лицензии стационара
+    //(форма предзаполняется данными из базы)
     public LicenseStacForm getEditLicenseStacForm(Integer id) {
         LicenseStacForm form = new LicenseStacForm();
         form.setStacTypeNames(licenseDao.getStacTypeMap());
@@ -182,6 +187,7 @@ public class LicenseService {
         return form;
     }
 
+    // Сохранение изменений лицензии стационара
     public String saveEditLicenseStac(Integer id, LicenseStacForm form) {
         LicenseStac entity = licenseDao.getLicenseStacById(id);
         entity.setMcod(form.getMcod());
@@ -195,9 +201,105 @@ public class LicenseService {
         return "Изменения сохранены";
     }
 
+    // Удаление лицензии стационара
     public String deleteLicenseStac(Integer id) {
         licenseDao.deleteLicenseStac(id);
         logger.info("Удалена лицензия стационара. Имя пользователья: " + SecurityContextHolder.getContext().getAuthentication().getName());
         return "Лицензия удалена";
+    }
+
+    // Получение информации по лицензиям для последующего вывода на странице лицензий поликлиники для одной ЛПУ
+    public List<LicensePolInfo> getLicensePolInfosByMcod(Integer mcod) {
+        List<LicensePolInfo> licensePolInfos = new ArrayList<>();
+        List<LicensePol> licensePolList = licenseDao.getLicensePolList(mcod);
+        Map<String, String> ageMap = licenseDao.getAgeMap();
+        Map<String, String> spezMap = licenseDao.getSpezMap();
+        Map<String, String> categoryMap = licenseDao.getCategoryMap();
+        for (LicensePol entity : licensePolList){
+            LicensePolInfo lpi = new LicensePolInfo();
+            lpi.setId(entity.getId());
+            lpi.setMcod(entity.getMcod());
+            lpi.setSpez(spezMap.get(entity.getSpez()));
+            lpi.setAge(ageMap.get(entity.getAge()));
+            lpi.setCategory(categoryMap.get(entity.getCategory()));
+            lpi.setDateBeg(entity.getDateBeg().format(DateTimeFormatter.ofPattern("dd.MM.uuuu")));
+            lpi.setDateEnd(entity.getDateEnd().format(DateTimeFormatter.ofPattern("dd.MM.uuuu")));
+            licensePolInfos.add(lpi);
+        }
+
+        return licensePolInfos;
+    }
+
+    //Генерация формы для создания новой лицензии поликлиники
+    //(форма предзаполняется вариантами значений полей, таких как возраст, специальность и категория)
+    public LicensePolForm getNewLicensePolForm() {
+        LicensePolForm form = new LicensePolForm();
+        //Для формы нужен словарь специальностей отсортированный по значениям,
+        // чтобы проще было найти нужную специальность в выпадающем списке
+        form.setSpezNames(licenseDao.getSpezMap()
+                .entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByValue())
+                .collect(Collectors
+                        .toMap(Map.Entry::getKey,
+                                Map.Entry::getValue,
+                                (e1, e2) -> e1,
+                                LinkedHashMap::new)));
+        form.setAgeNames(licenseDao.getAgeMap());
+        form.setCategoryNames(licenseDao.getCategoryMap());
+        return form;
+    }
+
+    //Сохранение новой лицензии поликлиники
+    public String saveNewLicensePol (LicensePolForm licensePolForm) {
+        licenseDao.save(new LicensePol(licensePolForm));
+        return "Лицензия добавлена";
+    }
+
+    //Генерация формы для редактирования лицензии поликлиники
+    //(форма предзаполняется данными из базы)
+    public LicensePolForm getEditLicensePolForm(Integer id) {
+        LicensePolForm form = new LicensePolForm();
+        //Для формы нужен словарь специальностей отсортированный по значениям,
+        // чтобы проще было найти нужную специальность в выпадающем списке
+        form.setSpezNames(licenseDao.getSpezMap()
+                .entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByValue())
+                .collect(Collectors
+                        .toMap(Map.Entry::getKey,
+                                Map.Entry::getValue,
+                                (e1, e2) -> e1,
+                                LinkedHashMap::new)));
+        form.setAgeNames(licenseDao.getAgeMap());
+        form.setCategoryNames(licenseDao.getCategoryMap());
+        LicensePol entity = licenseDao.getLicensePolById(id);
+        form.setMcod(entity.getMcod());
+        form.setCategory(entity.getCategory());
+        form.setSpez(entity.getSpez());
+        form.setAge(entity.getAge());
+        form.setDateBeg(entity.getDateBeg().toString());
+        form.setDateEnd(entity.getDateEnd().toString());
+        return form;
+    }
+
+    //Сохранение изменений лицензии поликлиники
+    public String saveEditLicensePol(Integer id, LicensePolForm form) {
+        LicensePol entity = licenseDao.getLicensePolById(id);
+        entity.setMcod(form.getMcod());
+        entity.setCategory(form.getCategory());
+        entity.setSpez(form.getSpez());
+        entity.setAge(form.getAge());
+        entity.setDateBeg(LocalDate.parse(form.getDateBeg()));
+        entity.setDateEnd(LocalDate.parse(form.getDateEnd()));
+        licenseDao.save(entity);
+        return "Изменения сохранены";
+    }
+
+    // Удаление лицензии поликлиники
+    public String deleteLicensePol(Integer id) {
+            licenseDao.deleteLicensePol(id);
+            logger.info("Удалена лицензия стационара. Имя пользователья: " + SecurityContextHolder.getContext().getAuthentication().getName());
+            return "Лицензия удалена";
     }
 }

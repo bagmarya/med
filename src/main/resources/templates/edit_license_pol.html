@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ru">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <title>Справочник лицензий (лицензии поликлиники)</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:insert="~{menu :: copy}">...</div>
+<h1>Редактирование лицензии поликлиники</h1>
+<input type="button" value="Вернуться к лицензиям" th:onClick="'location.href = \'' + @{/license/pol/{mcod}(mcod=${lpu.mkod})} + '\''">
+<h2 th:utext="${lpu.mNameS}"></h2>
+<form th:action="@{/license/pol/edit_license_pol/{id}(id=${id})}" th:object="${editLicensePolForm}" method="POST">
+    <p>Код ЛПУ:</p>
+    <input type="text" th:field="*{mcod}"  disabled />
+    <input type="hidden" th:field="*{mcod}">
+    <br/>
+    <p>Специальность:</p>
+    <select th:field="*{spez}" th:disabled="!${#authorization.expression('hasRole(''ADMIN'')')}">
+        <option th:each="spezName : *{spezNames}"
+                th:value="${spezName.key}"
+                th:utext="${spezName.value}">
+        </option>
+    </select>
+    <input type="hidden" th:field="*{spez}" th:if="!${#authorization.expression('hasRole(''ADMIN'')')}">
+    <br/>
+    <p>Категория:</p>
+    <select th:field="*{category}" th:disabled="!${#authorization.expression('hasRole(''ADMIN'')')}">
+        <option th:each="categoryName : *{categoryNames}"
+                th:value="${categoryName.key}"
+                th:utext="${categoryName.value}">
+        </option>
+    </select>
+    <input type="hidden" th:field="*{category}" th:if="!${#authorization.expression('hasRole(''ADMIN'')')}">
+    <br/>
+    <p>Возраст:</p>
+    <select th:field="*{age}" th:disabled="!${#authorization.expression('hasRole(''ADMIN'')')}">
+        <option th:each="ageName : *{ageNames}"
+                th:value="${ageName.key}"
+                th:utext="${ageName.value}">
+        </option>
+    </select>
+    <input type="hidden" th:field="*{age}" th:if="!${#authorization.expression('hasRole(''ADMIN'')')}">
+    <br/>
+    <p>Дата начала:</p>
+    <input type="date" th:field="*{dateBeg}"  th:disabled="!${#authorization.expression('hasRole(''ADMIN'')')}"/>
+    <input type="hidden" th:field="*{dateBeg}" th:if="!${#authorization.expression('hasRole(''ADMIN'')')}">
+    <br/>
+    <p>Дата закрытия:</p>
+    <input type="date" th:field="*{dateEnd}" />
+    <br/>
+    <input type="submit" value="Сохранить" />
+    <input type="button" value="Отмена"  th:onClick="'location.href = \'' + @{/license/pol/{mcod}(mcod=${lpu.mkod})} + '\''">
+</form>
+
+<div sec:authorize="hasRole('ADMIN')">
+    <form th:action="@{/license/pol/delete_license_pol/{id}(id=${id})}" method="POST">
+        <input type="submit" value="Удалить эту лицензию"/>
+    </form>
+</div>
+
+</body>
+</html>

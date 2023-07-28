@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Справочник лицензий (лицензии поликлиники)</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:insert="~{menu :: copy}">...</div>
+<h1>Добавление лицензии поликлиники</h1>
+<input type="button" value="Вернуться к лицензиям" th:onClick="'location.href = \'' + @{/license/pol/{mcod}(mcod=${lpu.mkod})} + '\''">
+<h2 th:utext="${lpu.mNameS}"></h2>
+<p>Введите данные для новой лицензии (все поля обязателны для заполнения)</p>
+<form th:action="@{/license/pol/add_license_pol/{mcod}(mcod=${lpu.mkod})}" th:object="${newLicensePolForm}" method="POST">
+    <p>Код ЛПУ:</p>
+    <input type="text" th:field="*{mcod}" disabled/>
+    <br/>
+    <p>Специальность:</p>
+    <select th:field="*{spez}">
+        <option th:each="spezName : *{spezNames}"
+                th:value="${spezName.key}"
+                th:utext="${spezName.value}">
+        </option>
+    </select>
+    <br/>
+    <p>Категория:</p>
+    <select th:field="*{category}">
+        <option th:each="categoryName : *{categoryNames}"
+                th:value="${categoryName.key}"
+                th:utext="${categoryName.value}">
+        </option>
+    </select>
+    <br/>
+    <p>Возраст:</p>
+    <select th:field="*{age}">
+        <option th:each="ageName : *{ageNames}"
+                th:value="${ageName.key}"
+                th:utext="${ageName.value}">
+        </option>
+    </select>
+    <br/>
+
+    <p>Дата начала:</p>
+    <input type="date" th:field="*{dateBeg}" />
+    <br/>
+    <input type="submit" value="Сохранить" />
+    <input type="button" value="Отмена"  th:onClick="'location.href = \'' + @{/license/pol/{mcod}(mcod=${lpu.mkod})} + '\''">
+</form>
+</body>
+</html>

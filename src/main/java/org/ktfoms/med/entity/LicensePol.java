@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.ktfoms.med.dto.LicensePolDto;
+import org.ktfoms.med.form.LicensePolForm;
+import org.ktfoms.med.form.LicenseStacForm;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -55,5 +57,14 @@ public class LicensePol {
         this.category = dto.getCategory();
         this.dateBeg = LocalDate.parse(dto.getDateBeg(), DateTimeFormatter.ofPattern("dd.MM.uuuu"));
         this.dateEnd = LocalDate.parse(dto.getDateEnd(), DateTimeFormatter.ofPattern("dd.MM.uuuu"));
+    }
+
+    public LicensePol(LicensePolForm form) {
+        this.mcod = form.getMcod();
+        this.spez = form.getSpez();
+        this.age = form.getAge();
+        this.category = form.getCategory();
+        this.dateBeg = LocalDate.parse(form.getDateBeg());
+        this.dateEnd = LocalDate.of(9999, 12, 31);
     }
 }
