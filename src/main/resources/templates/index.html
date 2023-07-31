@@ -1,5 +1,6 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8" />
     <title>Welcome</title>
@@ -7,13 +8,25 @@
 </head>
 <body>
 <div th:insert="~{menu :: copy}">...</div>
-<h1>Добро пожаловать!</h1>
-<p>
-    Сегодня: <span th:text="${#calendars.format(today,'dd MMMM yyyy')}">13 May 2011</span>
-</p>
+<h1>Справочники ТФ ОМС</h1>
+<p>Сегодня: <span th:text="${#calendars.format(today,'dd MMMM yyyy')}">13 May 2011</span></p>
+<p>Вы вошли как <span sec:authentication="name"></span></p>
+<form th:action="@{/logout}" method="post">
+    <input type="submit" value="выйти" />
+</form>
+
+<h4>Справочники доступные для скачивания:</h4>
+<p><a th:href="@{/fys/get_fys_dbf}">Справочник медицинских услуг (DBF)</a></p>
+<p><a th:href="@{/api/pd_tarif}">Справочник нормативов по подушевому финансированию скорой медицинской помощи (XML)</a></p>
+<p><a th:href="@{/get_norm_pd}">Справочник нормативов по подушевому финансированию амбулаторно-поликлинической помощи (XLS)</a></p>
+<p><a th:href="@{/api/sp_fin_fap/{year}(year=${#calendars.format(today,'yyyy')})}">Справочник нормативов по подушевому финансированию ФАП (XML)</a></p>
+<p><a th:href="@{/api/licences}">Справочник лицензий медицинских организаций (XML)</a></p>
 
 </body>
-<footer><form th:action="@{/logout}" method="post">
-    <input type="submit" value="выйти" />
-</form></footer>
+
+<footer>
+
+
+</footer>
+
 </html>

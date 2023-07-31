@@ -1,0 +1,17 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Публикация справочников</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div th:insert="~{menu :: copy}">...</div>
+<h1>Публикация справочников на сайт</h1>
+<h4>Справочники доступные для публикации на сайте:</h4>
+<form th:action="@{/api/publish_licences}" method="post">
+    <label>Справочник лицензий медицинских организаций </label>
+    <input type="submit" value="опубликовать" />
+</form>
+</body>
+</html>

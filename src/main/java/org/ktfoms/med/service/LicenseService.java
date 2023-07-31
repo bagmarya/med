@@ -17,12 +17,17 @@ import org.ktfoms.med.form.LicensePolForm;
 import org.ktfoms.med.form.LicenseStacForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -36,7 +41,8 @@ import java.util.stream.Collectors;
 public class LicenseService {
     private static final Logger logger = LoggerFactory.getLogger(LicenseService.class);
     private final LicenseDao licenseDao;
-
+    @Autowired
+    private Environment env;
     public LicenseService(LicenseDao licenseDao) {
         this.licenseDao = licenseDao;
     }
@@ -157,6 +163,8 @@ public class LicenseService {
     //Сохранение новой лицензии стационара
     public String saveNewLicenseStac (LicenseStacForm licenseStacForm) {
         licenseDao.save(new LicenseStac(licenseStacForm));
+        logger.info("Добавлена лицензия стационара. Имя пользователья: " + SecurityContextHolder.getContext().getAuthentication().getName());
+        logger.info(licenseStacForm.toString());
         return "Лицензия добавлена";
     }
 
@@ -190,6 +198,7 @@ public class LicenseService {
     // Сохранение изменений лицензии стационара
     public String saveEditLicenseStac(Integer id, LicenseStacForm form) {
         LicenseStac entity = licenseDao.getLicenseStacById(id);
+        logger.info("Изменение лицензии стационара. " + entity.toString());
         entity.setMcod(form.getMcod());
         entity.setStacType(form.getStacType());
         entity.setProfil(form.getProfil());
@@ -198,11 +207,15 @@ public class LicenseService {
         entity.setDateBeg(LocalDate.parse(form.getDateBeg()));
         entity.setDateEnd(LocalDate.parse(form.getDateEnd()));
         licenseDao.save(entity);
+        logger.info("Изменена лицензия стационара. Имя пользователья: " + SecurityContextHolder.getContext().getAuthentication().getName());
+        logger.info(entity.toString());
         return "Изменения сохранены";
     }
 
     // Удаление лицензии стационара
     public String deleteLicenseStac(Integer id) {
+        LicenseStac entity = licenseDao.getLicenseStacById(id);
+        logger.info("Удаление лицензии стационара. " + entity.toString());
         licenseDao.deleteLicenseStac(id);
         logger.info("Удалена лицензия стационара. Имя пользователья: " + SecurityContextHolder.getContext().getAuthentication().getName());
         return "Лицензия удалена";
@@ -253,6 +266,8 @@ public class LicenseService {
     //Сохранение новой лицензии поликлиники
     public String saveNewLicensePol (LicensePolForm licensePolForm) {
         licenseDao.save(new LicensePol(licensePolForm));
+        logger.info("Добавлена лицензия поликлиники. Имя пользователья: " + SecurityContextHolder.getContext().getAuthentication().getName());
+        logger.info(licensePolForm.toString());
         return "Лицензия добавлена";
     }
 
@@ -286,6 +301,7 @@ public class LicenseService {
     //Сохранение изменений лицензии поликлиники
     public String saveEditLicensePol(Integer id, LicensePolForm form) {
         LicensePol entity = licenseDao.getLicensePolById(id);
+        logger.info("Изменение лицензии поликлиники. " + entity.toString());
         entity.setMcod(form.getMcod());
         entity.setCategory(form.getCategory());
         entity.setSpez(form.getSpez());
@@ -293,13 +309,29 @@ public class LicenseService {
         entity.setDateBeg(LocalDate.parse(form.getDateBeg()));
         entity.setDateEnd(LocalDate.parse(form.getDateEnd()));
         licenseDao.save(entity);
+        logger.info("Изменена лицензия поликлиники. Имя пользователья: " + SecurityContextHolder.getContext().getAuthentication().getName());
+        logger.info(entity.toString());
         return "Изменения сохранены";
     }
 
     // Удаление лицензии поликлиники
     public String deleteLicensePol(Integer id) {
-            licenseDao.deleteLicensePol(id);
-            logger.info("Удалена лицензия стационара. Имя пользователья: " + SecurityContextHolder.getContext().getAuthentication().getName());
-            return "Лицензия удалена";
+        LicensePol entity = licenseDao.getLicensePolById(id);
+        logger.info("Удаление лицензии поликлиники. " + entity.toString());
+        licenseDao.deleteLicensePol(id);
+        logger.info("Удалена лицензия поликлиники. Имя пользователья: " + SecurityContextHolder.getContext().getAuthentication().getName());
+        return "Лицензия удалена";
+    }
+
+    public String publishLicences() throws IOException {
+        String fileName = "Licences.xml";
+        String path = env.getProperty("puths.publication_path");
+        String encoding = "windows-1251";
+        Writer output = new OutputStreamWriter(new FileOutputStream(path + fileName), encoding);
+        output.write(getFileLicences());
+        output.flush();
+        output.close();
+        logger.info("Справочник лицензий опубликован на сайте. Имя пользователья: " + SecurityContextHolder.getContext().getAuthentication().getName());
+        return "Опубликовано по пути " + path;
     }
 }

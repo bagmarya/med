@@ -129,4 +129,9 @@ public class ApiController {
         h.set("Content-Disposition", "attachment; filename=\"Licences.xml\"");
         return new ResponseEntity<>(licenseService.getFileLicences(),h, HttpStatus.OK);
     }
+
+    @RequestMapping(value = { "/publish_licences" }, method = RequestMethod.POST)
+    public ResponseEntity<String> publishLicences() throws IOException {
+        return new ResponseEntity<>(licenseService.publishLicences(), HttpStatus.OK);
+    }
 }

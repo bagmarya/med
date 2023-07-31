@@ -130,7 +130,7 @@ public class MedApplication {
                 .requestMatchers("/login").anonymous()
                 .requestMatchers("/login-error.html","/login-error", "/error**", "/logout").permitAll()
                 .requestMatchers("/fys", "/adm").hasRole("ADMIN")
-                .requestMatchers("/", "/index", "/funding_fap", "/lpu", "/fap", "/funding_norma", "/funding_norma_smp", "/license").hasAnyRole("USER","ADMIN")
+                .requestMatchers("/", "/index", "/funding_fap", "/lpu", "/fap", "/funding_norma", "/funding_norma_smp", "/license", "/publish").hasAnyRole("USER","ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling()

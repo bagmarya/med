@@ -51,6 +51,11 @@ public class MainController {
         return "index";
     }
 
+    @RequestMapping(value = { "/publish" }, method = RequestMethod.GET)
+    public String publish(Model model) {
+        return "publish";
+    }
+
     //Страница (основная) для справочника ЛПУ
     @RequestMapping(value = { "/lpu" }, method = RequestMethod.GET)
     public String lpu(Model model) {
