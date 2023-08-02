@@ -13,8 +13,11 @@ import org.ktfoms.med.entity.FundingNormaSmp;
 import org.ktfoms.med.entity.Lpu;
 import org.ktfoms.med.form.EditFundingNormaForm;
 import org.ktfoms.med.helper.ExcelHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,6 +40,8 @@ import static java.util.stream.Collectors.toMap;
 
 @Service
 public class LpuService {
+
+    private static final Logger logger = LoggerFactory.getLogger(LpuService.class);
 
     private final LpuDao lpuDao;
 
@@ -135,6 +140,7 @@ public class LpuService {
         for (FundingNormaSmpDto fns: spFundingNormaSmp.getZap()) {
             lpuDao.save(new FundingNormaSmp(fns));
         }
+        logger.info("Справочник норм ПФ СМП успешно перезагружен из xml. Имя пользователья: " + SecurityContextHolder.getContext().getAuthentication().getName());
         return "Справочник норм ПФ СМП успешно загружен";
     }
     public String getFileSpFundingNormaSmp(){
@@ -193,6 +199,7 @@ public class LpuService {
             }
 
             fundingNormaSmpList.forEach(lpuDao::save);
+            logger.info("Справочник норм ПФ СМП успешно загружен из excel. Имя пользователья: " + SecurityContextHolder.getContext().getAuthentication().getName());
             return "Файл с нормативами ПФ СМП успешно импортирован.";
 
         } catch (Exception e) {

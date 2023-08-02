@@ -31,6 +31,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.List;
@@ -322,24 +324,21 @@ public class MainController {
         try {
             InputStream in = new ByteArrayInputStream(file.getBytes());
             message = lpuService.parseFundingNormaSmpXlsx(in);
-            model.addAttribute("message", message);
         } catch (UnexpectedRollbackException e) {
             e.printStackTrace();
             message = "Данные за этот период были загружены ранее";
-            model.addAttribute("message", message);
         } catch (Exception e) {
             e.printStackTrace();
             message = "Не удается загрузить файл: " + file.getOriginalFilename() + " Error: " + e.getMessage();
-            model.addAttribute("message", message);
         }
-        return "funding_norma_smp";
+        return "redirect:/funding_norma_smp" + "?message=" + URLEncoder.encode(message, StandardCharsets.UTF_8);
     }
 
     @RequestMapping(value = { "/funding_norma_smp" },  method = RequestMethod.GET)
-    public String fundingNormaSmp(Model model) {
+    public String fundingNormaSmp(Model model, @Param("message") String message) {
         List<FundingNormaSmpInfo> list = lpuService.getFundingNormaSmpInfos();
         model.addAttribute("fundingNormaInfos", list);
-
+        model.addAttribute("message", message);
         return "funding_norma_smp";
     }
 
