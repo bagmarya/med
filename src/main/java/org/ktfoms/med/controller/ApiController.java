@@ -69,7 +69,7 @@ public class ApiController {
     @RequestMapping(value = { "/pd_tarif" }, method = RequestMethod.GET, produces = "application/xml;charset=UTF-8")
     public ResponseEntity<String> getSpPdTarif() throws IOException {
         HttpHeaders h = new HttpHeaders();
-        h.set("Content-Disposition", "attachment; filename=\"PD_TARIF.xml\"");
+        h.set("Content-Disposition", "attachment; filename=\"PD_TARIF_" + LocalDate.now().format(DateTimeFormatter.ofPattern("uuuuMMdd")) + ".xml\"");
         return new ResponseEntity<>(lpuService.getFileSpFundingNormaSmp(),h, HttpStatus.OK);
     }
 
