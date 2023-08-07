@@ -10,7 +10,12 @@
 <div th:insert="~{menu :: copy}">...</div>
 <h1>Справочник нормативов подушевого финансирования АПП</h1>
 
+<div  th:if="${message != null}" role="alert" class="alert-message">
+  [[${message}]]
+</div>
+
 <p><a href="/add_period_funding_norma">Добавить период</a></p>
+<p><a href="/fill_next_month_norm_pd">Перенос данных из предыдущего месяца</a></p>
 <p><a href="/get_norm_pd">Скачать справочник нормативов по подушевому финансированию амбулаторно-поликлинической помощи</a></p>
 
 <div  class="scroll-table">

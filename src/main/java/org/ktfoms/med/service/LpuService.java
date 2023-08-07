@@ -3,6 +3,7 @@ package org.ktfoms.med.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.ktfoms.med.dao.LpuDao;
+import org.ktfoms.med.dto.FundingNormaDto;
 import org.ktfoms.med.dto.FundingNormaSmpDto;
 import org.ktfoms.med.dto.FundingNormaSmpInfo;
 import org.ktfoms.med.dto.LpuF003Dto;
@@ -13,6 +14,7 @@ import org.ktfoms.med.entity.FundingNormaSmp;
 import org.ktfoms.med.entity.Lpu;
 import org.ktfoms.med.form.EditFundingNormaForm;
 import org.ktfoms.med.helper.ExcelHelper;
+import org.ktfoms.med.enums.Month;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,8 +35,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toMap;
 
@@ -64,10 +68,31 @@ public class LpuService {
         return lpuDao.getFundingNormaEntityList(thisMonthDate, nextMonthDate);
     }
 
+    //Есть ли в базе записи за такой-то месяц (дата - первое число месяца)
     public boolean isExistFundingNormaByDate(LocalDate date){
+        logger.info("Проверяем наличие в базе записей за " +date);
         return lpuDao.getFundingNormaDtoListByDate(date).size() > 0;
     }
 
+    //Проверка на наличие заполненных ячеек с численностью и нормативом финансирования в записях конкретного месяца
+    public boolean isEmptyFundingNormaByDate(LocalDate date){
+        logger.info("Проверяем наличие в записях за запрошенный период значимых данных." + date);
+        List<FundingNormaDto> dtoList = lpuDao.getFundingNormaDtoListByDate(date);
+        if (dtoList.stream()
+                .flatMap(d-> Stream.of(d.getQuantityInAstr(), d.getQuantityInKap(), d.getNorma()))
+                .filter(Objects::nonNull)
+                .toList().size() == 0) {
+            logger.info("Записи в базе есть, но ячейки значений пусты");
+            return true;
+        }
+        if (dtoList.stream()
+                .flatMap(d-> Stream.of(d.getQuantityInAstr(), d.getQuantityInKap(), d.getNorma()))
+                .filter(Objects::nonNull).map(Number::doubleValue).allMatch(e -> e == 0.0)){
+            logger.info("Записи в базе есть, но в ячейках только нули");
+            return true;
+        }
+        return false;
+    }
 
     public FundingNorma getFundingNormaById(int id) {
         return lpuDao.getFundingNormaById(id);
@@ -297,5 +322,31 @@ public class LpuService {
     }
     public Lpu getLpuByMcod(Integer mcod) {
         return lpuDao.getLpuByMcod(mcod);
+    }
+
+    // Метод заполняет указанный месяц в справочнике ПФ АПП данными из предыдущего месяца
+    @Transactional
+    public String fillNextMonthNormPd(Integer month, Integer year) {
+        LocalDate date = LocalDate.of(year, month, 01);
+        if(!isExistFundingNormaByDate(date.minusMonths(1))) {
+            return "Данных за предшествующий месяц нет, нечего копировать";
+        }
+        if(!isExistFundingNormaByDate(date)){
+            logger.info("Добавляем новые записи в спр. ПФ АПП за " + month + year);
+            addPeriodFundingNorma(month, year);
+        }
+        List<FundingNorma> newEntityList = lpuDao.getFundingNormaEntityList(date);
+        List<FundingNorma> oldEntityList = lpuDao.getFundingNormaEntityList(date.minusMonths(1));
+        Map<String, FundingNorma> oldMap = oldEntityList.stream().collect(Collectors.toMap(d -> d.getMoLpu(), d -> d));
+        for (FundingNorma fn:newEntityList) {
+            FundingNorma source = oldMap.get(fn.getMoLpu());
+            fn.setQuantityInAstr(source.getQuantityInAstr());
+            fn.setQuantityInKap(source.getQuantityInKap());
+            fn.setNorma(source.getNorma());
+            lpuDao.save(fn);
+        }
+        logger.info("Месяц " + Month.of(month) + " " + year + "г заполнен данными скопировннными из предыдущего периода." +
+                " Имя пользователья: " + SecurityContextHolder.getContext().getAuthentication().getName());
+        return "Месяц " + Month.of(month) + " " + year + "г заполнен данными скопировннными из предыдущего периода";
     }
 }

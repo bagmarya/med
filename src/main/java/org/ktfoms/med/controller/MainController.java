@@ -13,6 +13,7 @@ import org.ktfoms.med.form.EditFundingNormaForm;
 import org.ktfoms.med.form.MonthForm;
 import org.ktfoms.med.service.FapService;
 import org.ktfoms.med.service.LpuService;
+import org.ktfoms.med.enums.Month;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -237,11 +238,11 @@ public class MainController {
 
     //Справочник нормативов подушевого финансирования (СНПФ)
     @RequestMapping(value = "/funding_norma", method = RequestMethod.GET)
-    public String showFundingNormaPage(Model model) {
+    public String showFundingNormaPage(Model model,
+                                       @RequestParam(value = "message", required = false) String message) {
         List<FundingNorma> list = lpuService.getFundingNormaInfos();
         model.addAttribute("fundingNormaInfos", list);
-//        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("d.MM.uuuu");
-//        model.addAttribute("dateTimeFormatter", dateTimeFormatter);
+        model.addAttribute("message", message);
         return "funding_norma_page";
     }
 
@@ -291,6 +292,65 @@ public class MainController {
         return "redirect:/funding_norma";
     }
 
+    //Страница выбора месяца для процедуры заполнения справочника ПФ АПП по предыдущему месяцу
+    @RequestMapping(value = { "/fill_next_month_norm_pd" }, method = RequestMethod.GET)
+    public String fillNextMonthNormPd(Model model,
+                                      @RequestParam (value = "warned", required = false, defaultValue = "false") Boolean warned,
+                                      @RequestParam (value = "year", required = false) Integer year,
+                                      @RequestParam (value = "month", required = false) Integer month,
+                                      @RequestParam (value = "message", required = false) String message) {
+        MonthForm monthForm = new MonthForm();
+        monthForm.setYear(LocalDate.now().getYear());
+        logger.info("Собираемся в спр. ПФ АПП заполнть какой-то месяц в данными из предыдущего месяца.");
+        if (warned) {
+            monthForm.setMonthByNum(month);
+            monthForm.setYear(year);
+            logger.info("Собираемся в спр. ПФ АПП заполнть месяц " + Month.of(month) + " " + year + "г данными из предыдущего месяца." +
+                    " Предостережение о потере данных получено." +
+                    " Имя пользователья: " + SecurityContextHolder.getContext().getAuthentication().getName());
+        }
+        model.addAttribute("monthForm", monthForm);
+        model.addAttribute("warned", warned);
+        model.addAttribute("message", message);
+        return "fill_next_month_norm_pd";
+    }
+
+    //Заполнить указанный месяц в справочнике ПФ АПП данными из предыдущего месяца
+    // (если данные в базе уже есть: на первый раз предупреждает, на второй - заполняет)
+    @RequestMapping(value = {"/fill_next_month_norm_pd"}, method = RequestMethod.POST)
+    public String execFillNextMonthNormPdWarning (Model model,
+                                                  @RequestParam (value = "warned", required = false) boolean warned,
+                                                  @ModelAttribute("monthForm") MonthForm monthForm) {
+        Integer month = monthForm.getMonth();
+        Integer year = monthForm.getYear();
+        LocalDate date = LocalDate.of(year, month, 01);
+        logger.info("Хотим добавить записи с датой начала " + date);
+        // Если за запрошенный период нет записей, или значимые поля в них пусты,
+        // или пользователь предупрежден о последствиях процедуры, заполняем месяц по данным предыдущего.
+        if (warned || !lpuService.isExistFundingNormaByDate(date) || lpuService.isEmptyFundingNormaByDate(date)){
+            logger.info("Вызвана процедура заполнения спр. ПФ АПП за месяц " + Month.of(month) + " " + year + " данными из предыдущего месяца. " +
+                    "Данный период не был заполнен ранее, или пользователь запустил операцию, будучи предупрежден.");
+            //Добавляем записи
+            try {
+                logger.info("Пытаемся заполнить записи за требуемый месяц. " + Month.of(month));
+                String message = lpuService.fillNextMonthNormPd(month, year);
+                return "redirect:/funding_norma?message="
+                        + URLEncoder.encode(message, StandardCharsets.UTF_8);
+            } catch (Exception e) {
+                model.addAttribute("message", e.getMessage());
+                return "error_catch";
+            }
+        } else {
+            //если же за этот месяц есть заполненые поля в базе - предупредим пользователя о том,
+            // что они будут заменены другими данными,
+            // с этого момента пользователь предупрежден и может подтвердить свои намеренья
+            return "redirect:/fill_next_month_norm_pd?warned=true&year=" + year
+                    + "&month=" + month
+                    + "&message=" + URLEncoder.encode("За запрошенный период в базе уже есть данные, " +
+                    "продолжение этой операции приведет к их замене на данные скопированные с предыдущего периода. " +
+                    "Будте внимательны, чтобы не потерять информацию!", StandardCharsets.UTF_8);
+        }
+    }
 
 // Страница с выбором месяца для формирования справочника по подушевому финансированию АПП
     @RequestMapping(value = {"/get_norm_pd"}, method = RequestMethod.GET)
@@ -302,7 +362,7 @@ public class MainController {
         return "get_norm_pd";
     }
 
-    //Добавит записи справочника СНПФ для нового периода
+    //Скачать справочник ПФ АПП для выбранного периода
     @RequestMapping(value = {"/get_norm_pd"}, method = RequestMethod.POST)
     public String redirectNormPdByMonth (Model model,
                                             @ModelAttribute("monthForm") MonthForm monthForm) {

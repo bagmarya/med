@@ -2,11 +2,12 @@ package org.ktfoms.med.form;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.List;
 
 @Getter
-
+@ToString
 public class MonthForm {
     private Integer month;
 
@@ -20,4 +21,14 @@ public class MonthForm {
         this.month = monthnames.indexOf(month) + 1;
     }
 
+    public String getMonthAsString() {
+        if (this.month != null){return this.monthnames.get(this.month - 1);}
+        else {return null;}
+    }
+    public void setMonthByNum(Integer month) {
+        this.month = month;
+    }
+    public void setMonthAsString(String month) {
+        this.month = monthnames.indexOf(month) + 1;
+    }
 }
