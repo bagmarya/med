@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Справочник ПФ СМП перенос данных из предыдущего месяца</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:insert="~{menu :: copy}">...</div>
+<h1>Перенос данных справочника ПФ СМП из предыдущего месяца</h1>
+
+<div  th:if="${message != null}" role="alert" class="alert-message">
+    [[${message}]]
+</div>
+
+<form th:action="${warned}? @{/fill_next_month_norma_smp?warned=true} : @{/fill_next_month_norma_smp?warned=false}" th:object="${monthForm}" method="POST">
+    Заполняемый месяц
+    <!--  форма изначально не предназначалась для повторного показа,
+    поэтому есть сложности с конвертацией числового и строкового представления месяца.
+    Для обхода проблемы, показываем предупрежденному и непредупрежденному пользователям
+    разные элементы для выбора месяца-->
+    <select th:field="*{month}"  th:if="!${warned}">
+        <option th:each="monthname : ${monthForm.monthnames}"
+                th:value="${monthname}"
+                th:utext="${monthname}">
+        </option>
+    </select>
+    <select th:field="*{monthAsString}" th:if="${warned}">
+        <option th:each="monthname : ${monthForm.monthnames}"
+                th:value="${monthname}"
+                th:utext="${monthname}">
+        </option>
+    </select>
+    <br/>
+    Год
+    <input type="text" th:field="*{year}" />
+    <br/>
+    <input type="submit" value="Заполнить" th:if="!${warned}"/>
+    <input type="submit" value="Все равно заполнить" th:if="${warned}"/>
+    <input type="button" value="Отмена" onClick='location.href="/funding_norma_smp"'>
+</form>
+</body>
+</html>

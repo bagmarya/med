@@ -421,6 +421,67 @@ public class MainController {
         return "message";
     }
 
+    //Страница выбора месяца для процедуры заполнения справочника ПФ СМП по предыдущему месяцу
+    @RequestMapping(value = { "/fill_next_month_norma_smp" }, method = RequestMethod.GET)
+    public String fillNextMonthNormaSmp(Model model,
+                                      @RequestParam (value = "warned", required = false, defaultValue = "false") Boolean warned,
+                                      @RequestParam (value = "year", required = false) Integer year,
+                                      @RequestParam (value = "month", required = false) Integer month,
+                                      @RequestParam (value = "message", required = false) String message) {
+        MonthForm monthForm = new MonthForm();
+        monthForm.setYear(LocalDate.now().getYear());
+        logger.info("Собираемся в спр. ПФ СМП заполнть какой-то месяц в данными из предыдущего месяца.");
+        if (warned) {
+            monthForm.setMonthByNum(month);
+            monthForm.setYear(year);
+            logger.info("Собираемся в спр. ПФ СМП заполнть месяц " + Month.of(month) + " " + year + "г данными из предыдущего месяца." +
+                    " Предостережение о потере данных получено." +
+                    " Имя пользователья: " + SecurityContextHolder.getContext().getAuthentication().getName());
+        }
+        model.addAttribute("monthForm", monthForm);
+        model.addAttribute("warned", warned);
+        model.addAttribute("message", message);
+        return "fill_next_month_norma_smp";
+    }
+
+    //Заполнить указанный месяц в справочнике ПФ СМП данными из предыдущего месяца
+    // (если данные в базе уже есть: на первый раз предупреждает, на второй - заполняет)
+    @RequestMapping(value = {"/fill_next_month_norma_smp"}, method = RequestMethod.POST)
+    public String execFillNextMonthNormaSmpWarning (Model model,
+                                                  @RequestParam (value = "warned", required = false) boolean warned,
+                                                  @ModelAttribute("monthForm") MonthForm monthForm) {
+        Integer month = monthForm.getMonth();
+        Integer year = monthForm.getYear();
+        LocalDate date = LocalDate.of(year, month, 01);
+        logger.info("Хотим добавить записи с датой начала " + date);
+        // Если за запрошенный период нет записей, или значимые поля в них пусты,
+        // или пользователь предупрежден о последствиях процедуры, заполняем месяц по данным предыдущего.
+        if (warned || !lpuService.isExistFundingNormaSmpByDate(date)){
+            logger.info("Вызвана процедура заполнения спр. ПФ АПП за месяц " + Month.of(month) + " " + year + " данными из предыдущего месяца. " +
+                    "Данный период не был заполнен ранее, или пользователь запустил операцию, будучи предупрежден.");
+            //Добавляем записи
+            try {
+                logger.info("Пытаемся заполнить записи за требуемый месяц. " + Month.of(month));
+                String message = lpuService.fillNextMonthNormaSmp(month, year);
+                return "redirect:/funding_norma_smp?message="
+                        + URLEncoder.encode(message, StandardCharsets.UTF_8);
+            } catch (Exception e) {
+                model.addAttribute("message", e.getMessage());
+                return "error_catch";
+            }
+        } else {
+            //если же за этот месяц есть заполненые поля в базе - предупредим пользователя о том,
+            // что они будут заменены другими данными,
+            // с этого момента пользователь предупрежден и может подтвердить свои намеренья
+            return "redirect:/fill_next_month_norma_smp?warned=true&year=" + year
+                    + "&month=" + month
+                    + "&message=" + URLEncoder.encode("За запрошенный период в базе уже есть данные, " +
+                    "продолжение этой операции приведет к их замене на данные скопированные с предыдущего периода. " +
+                    "Будте внимательны, чтобы не потерять информацию!", StandardCharsets.UTF_8);
+        }
+    }
+
+
     @RequestMapping("/login")
     public String login() {
         return "login";

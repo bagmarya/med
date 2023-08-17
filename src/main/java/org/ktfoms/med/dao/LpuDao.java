@@ -92,10 +92,25 @@ public class LpuDao {
                 .getResultList();
     }
 
+    public List<FundingNormaSmp> getFundingNormaSmpEntityList(LocalDate date) {
+        return sessionFactory.getCurrentSession().createQuery("select fns from FundingNormaSmp fns " +
+                        "where fns.datebeg = :date " +
+                        "order by fns.mcod, fns.smo ", FundingNormaSmp.class)
+                .setParameter("date", date)
+                .getResultList();
+    }
+
     public List<FundingNormaSmp> getFundingNormaSmpEntityList() {
         return sessionFactory.getCurrentSession().createQuery("select fns from FundingNormaSmp fns " +
                         "order by fns.datebeg, fns.mcod, fns.smo ", FundingNormaSmp.class)
                 .getResultList();
+    }
+
+    public void clearFundingNormaSmp(LocalDate date) {
+        sessionFactory.getCurrentSession().createQuery("delete from FundingNormaSmp fns " +
+                "where fns.datebeg = :date ")
+                .setParameter("date", date)
+                .executeUpdate();
     }
 
     public List<Integer> getMcodeList() {

@@ -345,7 +345,36 @@ public class LpuService {
             fn.setNorma(source.getNorma());
             lpuDao.save(fn);
         }
-        logger.info("Месяц " + Month.of(month) + " " + year + "г заполнен данными скопировннными из предыдущего периода." +
+        logger.info("Месяц " + Month.of(month) + " " + year + "г справочника ПФ АПП заполнен данными скопировннными из предыдущего периода." +
+                " Имя пользователья: " + SecurityContextHolder.getContext().getAuthentication().getName());
+        return "Месяц " + Month.of(month) + " " + year + "г заполнен данными скопировннными из предыдущего периода";
+    }
+
+    public boolean isExistFundingNormaSmpByDate(LocalDate date) {
+        logger.info("Проверяем наличие в базе записей за " +date);
+        return lpuDao.getFundingNormaSmpEntityList(date).size() > 0;
+    }
+
+    @Transactional
+    public String fillNextMonthNormaSmp(Integer month, Integer year) {
+        LocalDate date = LocalDate.of(year, month, 01);
+        if(!isExistFundingNormaSmpByDate(date.minusMonths(1))) {
+            return "Данных за предшествующий месяц нет, нечего копировать";
+        }
+        if (isExistFundingNormaSmpByDate(date)) {lpuDao.clearFundingNormaSmp(date);}
+        List<FundingNormaSmp> oldEntityList = lpuDao.getFundingNormaSmpEntityList(date.minusMonths(1));
+        for (FundingNormaSmp fns:oldEntityList) {
+            FundingNormaSmp newFundingNormaSmp = new FundingNormaSmp();
+            newFundingNormaSmp.setMcod(fns.getMcod());
+            newFundingNormaSmp.setSmo(fns.getSmo());
+            newFundingNormaSmp.setUslOk(fns.getUslOk());
+            newFundingNormaSmp.setKolZl(fns.getKolZl());
+            newFundingNormaSmp.setTarif(fns.getTarif());
+            newFundingNormaSmp.setDatebeg(fns.getDatebeg().plusMonths(1));
+            newFundingNormaSmp.setDateend(fns.getDateend().plusMonths(1));
+            lpuDao.save(newFundingNormaSmp);
+        }
+        logger.info("Месяц " + Month.of(month) + " " + year + "г справочника ПФ СМП заполнен данными скопировннными из предыдущего периода." +
                 " Имя пользователья: " + SecurityContextHolder.getContext().getAuthentication().getName());
         return "Месяц " + Month.of(month) + " " + year + "г заполнен данными скопировннными из предыдущего периода";
     }
