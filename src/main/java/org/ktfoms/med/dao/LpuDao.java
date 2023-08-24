@@ -106,6 +106,15 @@ public class LpuDao {
                 .getResultList();
     }
 
+    public List<FundingNormaSmp> getFundingNormaSmpEntityList(int mcod, LocalDate datebeg, LocalDate dateend) {
+        return sessionFactory.getCurrentSession().createQuery("select fns from FundingNormaSmp fns " +
+                        "where fns.datebeg = :datebeg and fns.dateend = :dateend and fns.mcod = :mcod ", FundingNormaSmp.class)
+                .setParameter("datebeg", datebeg)
+                .setParameter("dateend", dateend)
+                .setParameter("mcod", mcod)
+                .getResultList();
+    }
+
     public void clearFundingNormaSmp(LocalDate date) {
         sessionFactory.getCurrentSession().createQuery("delete from FundingNormaSmp fns " +
                 "where fns.datebeg = :date ")

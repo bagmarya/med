@@ -378,4 +378,53 @@ public class LpuService {
                 " Имя пользователья: " + SecurityContextHolder.getContext().getAuthentication().getName());
         return "Месяц " + Month.of(month) + " " + year + "г заполнен данными скопировннными из предыдущего периода";
     }
+    @Transactional
+    public EditFundingNormaForm getFundingNormaForm(int mcod, LocalDate datebeg, LocalDate dateend) {
+        logger.info("Собираемся отредактировать запись справочника ПФ СМП для " + mcod + " за период с " + datebeg + " по " + dateend);
+        EditFundingNormaForm editFundingNormaForm = new EditFundingNormaForm();
+        List<FundingNormaSmp> entityList = lpuDao.getFundingNormaSmpEntityList(mcod, datebeg, dateend);
+        for (FundingNormaSmp entity: entityList) {
+            if (!Objects.isNull(entity.getKolZl())) {
+                if (entity.getSmo() == 45001) {
+                    editFundingNormaForm.setQuantityInAstr(entity.getKolZl().toString());
+                }
+                if (entity.getSmo() == 45002) {
+                    editFundingNormaForm.setQuantityInKap(entity.getKolZl().toString());
+                }
+            }
+            if (!Objects.isNull(entity.getTarif())) {
+                editFundingNormaForm.setNorma(String.valueOf(entity.getTarif()));
+            }
+        }
+        logger.info("Исходные данные: " + editFundingNormaForm);
+        return editFundingNormaForm;
+    }
+
+    @Transactional
+    public String saveFundingNormaSmp(int mcod, LocalDate datebeg, LocalDate dateend, EditFundingNormaForm form) {
+        logger.info("Данные для редактирования: " + form + " MCOD = " + mcod + " период с " + datebeg + " по " + dateend);
+
+        try {
+            List<FundingNormaSmp> entityList = lpuDao.getFundingNormaSmpEntityList(mcod, datebeg, dateend);
+            for (FundingNormaSmp entity : entityList) {
+                if (!Objects.isNull(form.getQuantityInAstr()) && entity.getSmo() == 45001) {
+                    entity.setKolZl(Integer.parseInt(form.getQuantityInAstr()));
+                }
+                if (!Objects.isNull(form.getQuantityInKap()) && entity.getSmo() == 45002) {
+                    entity.setKolZl(Integer.parseInt(form.getQuantityInKap()));
+                }
+                if (!Objects.isNull(entity.getTarif())) {
+                    entity.setTarif(Double.parseDouble(form.getNorma().replace(',', '.')));
+                }
+                lpuDao.save(entity);
+            }
+        } catch (NumberFormatException nfe) {
+            logger.info("При вводе данных допущена ошибка. Запись оставлена без изменений");
+            return "При вводе данных допущена ошибка. Запись оставлена без изменений";
+        }
+        logger.info("Отредактирована запись справочника ПФ СМП для " + mcod + " за период с " + datebeg + " по " + dateend
+                + ". Имя пользователья: " + SecurityContextHolder.getContext().getAuthentication().getName());
+        return "Запись для " + mcod + " отредактирована.";
+    }
+
 }

@@ -3,17 +3,18 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Редактировать норматив ПФ АПП</title>
+  <title>Редактировать норматив ПФ СМП</title>
   <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
 </head>
 <body>
 <div th:insert="~{menu :: copy}">...</div>
-<h1>Редактировать норматив ПФ АПП</h1>
+<h1>Редактировать норматив ПФ СМП</h1>
 
-<form th:action="@{/edit_funding_norma/{id}(id=${id})}" th:object="${editFundingNormaForm}" method="POST">
+<form th:action="@{/edit_funding_norma_smp/{mcod}/{datebeg}/{dateend}(mcod=${mcod},datebeg=${datebeg},dateend=${dateend})}" th:object="${editFundingNormaForm}" method="POST">
 
-  <p th:utext="${lpu.mNameF}"></p>
-  <p th:utext="'Дата начала: ' + ${lpu.FormatedFundingDate}"></p>
+  <p th:utext="${lpuName}"></p>
+  <p th:utext="'Дата начала: ' + ${datebeg}"></p>
+  <p th:utext="'Дата конца: ' + ${dateend}"></p>
 
   Численность прикрепленных по Астрамед:
   <input type="text" th:field="*{quantityInAstr}" />
@@ -25,7 +26,7 @@
   <input type="text" th:field="*{norma}" />
   <br/>
   <input type="submit" value="Сохранить" />
-  <input type="button" value="Отмена" onClick='location.href="/funding_norma"'>
+  <input type="button" value="Отмена" onClick='location.href="/funding_norma_smp"'>
 </form>
 </body>
 </html>

@@ -41,15 +41,17 @@ $('.input-file input[type=file]').on('change', function(){
 
 <div  class="scroll-table">
 <table>
-  <col style="width:40%">
   <col style="width:10%">
-  <col style="width:10%">
-  <col style="width:10%">
+  <col style="width:36%">
+  <col style="width:8%">
+  <col style="width:8%">
+  <col style="width:8%">
   <col style="width:10%">
   <col style="width:10%">
   <col style="width:10%">
   <thead>
     <tr>
+      <th></th>
       <th>ЛПУ</th>
       <th>Код</th>
       <th>Дата начала</th>
@@ -62,15 +64,18 @@ $('.input-file input[type=file]').on('change', function(){
 </table>
   <div class="scroll-table-body">
     <table>
-      <col style="width:40%">
       <col style="width:10%">
-      <col style="width:10%">
-      <col style="width:10%">
+      <col style="width:36%">
+      <col style="width:8%">
+      <col style="width:8%">
+      <col style="width:8%">
       <col style="width:10%">
       <col style="width:10%">
       <col style="width:10%">
       <tbody>
         <tr th:each="fundingNormaInfo:${fundingNormaInfos}">
+          <td><a th:href=@{edit_funding_norma_smp/{mcod}/{datebeg}/{dateend}(mcod=${fundingNormaInfo.mcod},datebeg=${fundingNormaInfo.datebeg},dateend=${fundingNormaInfo.dateend})}>
+            Редактировать</a></td>
           <td th:utext="${fundingNormaInfo.lpuName}">..</td>
           <td th:utext="${fundingNormaInfo.mcod}">..</td>
           <td th:utext="${fundingNormaInfo.datebeg}">..</td>

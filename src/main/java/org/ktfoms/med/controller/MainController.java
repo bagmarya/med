@@ -7,6 +7,7 @@ import org.ktfoms.med.dto.FapFinDto;
 import org.ktfoms.med.dto.FundingNormaSmpInfo;
 import org.ktfoms.med.entity.Fap;
 import org.ktfoms.med.entity.FundingNorma;
+import org.ktfoms.med.entity.FundingNormaSmp;
 import org.ktfoms.med.form.EditFapForm;
 import org.ktfoms.med.form.EditFundingFapForm;
 import org.ktfoms.med.form.EditFundingNormaForm;
@@ -481,6 +482,30 @@ public class MainController {
         }
     }
 
+    //Страница редактирования записи справочника ПФ СМП
+    @RequestMapping(value = { "/edit_funding_norma_smp/{mcod}/{datebeg}/{dateend}" }, method = RequestMethod.GET)
+    public String editFundingNormaSmp(Model model,
+                                      @PathVariable("mcod") int mcod,
+                                      @PathVariable("datebeg") LocalDate datebeg,
+                                      @PathVariable("dateend") LocalDate dateend) {
+        model.addAttribute("editFundingNormaForm", lpuService.getFundingNormaForm(mcod, datebeg, dateend));
+        model.addAttribute("mcod", mcod);
+            model.addAttribute("datebeg", datebeg);
+            model.addAttribute("dateend", dateend);
+            model.addAttribute("lpuName", lpuService.getLpuByMcod(mcod).getMNameS());
+        return "edit_funding_norma_smp";
+    }
+
+    //Сохранение записи справочника  ПФ СМП
+    @RequestMapping(value = { "/edit_funding_norma_smp/{mcod}/{datebeg}/{dateend}" }, method = RequestMethod.POST)
+    public String saveFundingNormaSmp(@PathVariable("mcod") int mcod,
+                                      @PathVariable("datebeg") LocalDate datebeg,
+                                      @PathVariable("dateend") LocalDate dateend,
+                                      EditFundingNormaForm editFundingNormaForm) {
+
+        String message = lpuService.saveFundingNormaSmp(mcod, datebeg, dateend, editFundingNormaForm);
+        return "redirect:/funding_norma_smp?message=" + URLEncoder.encode(message, StandardCharsets.UTF_8);
+    }
 
     @RequestMapping("/login")
     public String login() {
