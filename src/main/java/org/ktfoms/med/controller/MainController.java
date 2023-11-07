@@ -13,6 +13,7 @@ import org.ktfoms.med.form.EditFapForm;
 import org.ktfoms.med.form.EditFundingFapForm;
 import org.ktfoms.med.form.EditFundingNormaForm;
 import org.ktfoms.med.form.MonthForm;
+import org.ktfoms.med.form.ShowPeriodForm;
 import org.ktfoms.med.service.FapService;
 import org.ktfoms.med.service.LpuService;
 import org.ktfoms.med.enums.Month;
@@ -37,6 +38,7 @@ import java.io.InputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
@@ -241,11 +243,23 @@ public class MainController {
     //Справочник нормативов подушевого финансирования (СНПФ)
     @RequestMapping(value = "/funding_norma", method = RequestMethod.GET)
     public String showFundingNormaPage(Model model,
-                                       @RequestParam(value = "message", required = false) String message) {
-        List<FundingNorma> list = lpuService.getFundingNormaInfos();
-        model.addAttribute("fundingNormaInfos", list);
+                                       @RequestParam(value = "message", required = false) String message,
+                                       @RequestParam(value = "from", required = false) String from,
+                                       @RequestParam(value = "to", required = false) String to
+    ) {
+        model.addAttribute("showPeriodForm", new ShowPeriodForm(from, to));
+        model.addAttribute("fundingNormaInfos", lpuService.getFundingNormaInfos(from, to));
         model.addAttribute("message", message);
         return "funding_norma_page";
+    }
+
+    //Справочник нормативов подушевого финансирования (СНПФ) - формачка выбора периода - покажет запрошенный период
+    @RequestMapping(value = "/funding_norma/show_period", method = RequestMethod.POST)
+    public String showFundingNormaShowPeriod(ShowPeriodForm showPeriodForm) {
+        if(Objects.equals(showPeriodForm.getDateFrom(), "") || Objects.equals(showPeriodForm.getDateTo(), "")) {
+            return "redirect:/funding_norma";
+        }
+        return "redirect:/funding_norma?from=" + showPeriodForm.getDateFrom() + "&to=" + showPeriodForm.getDateTo() ;
     }
 
     //Страница редактирования записи справочника СНПФ
@@ -276,9 +290,13 @@ public class MainController {
         try {
             lpuService.saveFundingNorma(id, editFundingNormaForm);
         } catch (NumberFormatException e) {
-            return "redirect:/edit_funding_norma/" + id + "?message=" + URLEncoder.encode("Введены некорректные данные, запись не изменена.", StandardCharsets.UTF_8);
+            return "redirect:/edit_funding_norma/" + id + "?message=" + URLEncoder.encode("Введены некорректные данные, запись не изменена.", StandardCharsets.UTF_8)
+                    + "&from=" + lpuService.getFundingNormaById(id).getFundingDate()
+                    + "&to=" + lpuService.getFundingNormaById(id).getFundingDate();
         }
-        return "redirect:/funding_norma?message=" + URLEncoder.encode("Изменения сохранены.", StandardCharsets.UTF_8);
+        return "redirect:/funding_norma?message=" + URLEncoder.encode("Изменения сохранены.", StandardCharsets.UTF_8)
+                + "&from=" + lpuService.getFundingNormaById(id).getFundingDate()
+                + "&to=" + lpuService.getFundingNormaById(id).getFundingDate();
     }
 
     //Страница формы для добавления записей справочника СНПФ для нового периода
@@ -297,7 +315,9 @@ public class MainController {
         Integer month = monthForm.getMonth();
         Integer year = monthForm.getYear();
         lpuService.addPeriodFundingNorma(month, year);
-        return "redirect:/funding_norma";
+        return "redirect:/funding_norma?message=" + URLEncoder.encode("Записи добавлены.", StandardCharsets.UTF_8)
+                + "&from=" +  LocalDate.of(year, month, 01)
+                + "&to=" +  LocalDate.of(year, month, 01);
     }
 
     //Страница выбора месяца для процедуры заполнения справочника ПФ АПП по предыдущему месяцу
@@ -343,7 +363,9 @@ public class MainController {
                 logger.info("Пытаемся заполнить записи за требуемый месяц. " + Month.of(month));
                 String message = lpuService.fillNextMonthNormPd(month, year);
                 return "redirect:/funding_norma?message="
-                        + URLEncoder.encode(message, StandardCharsets.UTF_8);
+                        + URLEncoder.encode(message, StandardCharsets.UTF_8)
+                        + "&from=" +  LocalDate.of(year, month, 01)
+                        + "&to=" +  LocalDate.of(year, month, 01);
             } catch (Exception e) {
                 model.addAttribute("message", e.getMessage());
                 return "error_catch";

@@ -18,6 +18,14 @@
 <p><a href="/fill_next_month_norm_pd">Перенос данных из предыдущего месяца</a></p>
 <p><a href="/get_norm_pd">Скачать справочник нормативов по подушевому финансированию амбулаторно-поликлинической помощи</a></p>
 
+<form th:action="@{/funding_norma/show_period}" th:object="${showPeriodForm}" method="POST">
+  <input type="submit" value="Показать за период" />
+  Дата начала:
+  <input type="date" th:field="*{dateFrom}" />
+  Дата конца:
+  <input type="date" th:field="*{dateTo}" />
+</form>
+
 <div  class="scroll-table">
   <table>
     <col style="width:10%">

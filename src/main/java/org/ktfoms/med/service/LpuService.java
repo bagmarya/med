@@ -60,12 +60,16 @@ public class LpuService {
         return lpuDao.getById(id);
     }
 
-    public List<FundingNorma> getFundingNormaInfos(){
-        Integer month = LocalDate.now().getMonthValue();
-        Integer year = LocalDate.now().getYear();
-        LocalDate thisMonthDate = LocalDate.of(year, month, 01);
-        LocalDate nextMonthDate = LocalDate.of(year+(month+1)/12, (month%12+1), 01);
-        return lpuDao.getFundingNormaEntityList(thisMonthDate, nextMonthDate);
+    public List<FundingNorma> getFundingNormaInfos(String from, String to){
+        if(Objects.isNull(from) || Objects.isNull(to)) {
+            Integer year = LocalDate.now().getYear();
+            LocalDate firstMonthDate = LocalDate.of(year, 01, 01);
+            LocalDate endMonthDate = LocalDate.of(year, 12, 01);
+            return lpuDao.getFundingNormaEntityList(firstMonthDate, endMonthDate);
+        }
+        LocalDate firstMonthDate = LocalDate.of(LocalDate.parse(from).getYear(),LocalDate.parse(from).getMonth(),01);
+        LocalDate endMonthDate = LocalDate.parse(to);
+        return lpuDao.getFundingNormaEntityList(firstMonthDate, endMonthDate);
     }
 
     //Есть ли в базе записи за такой-то месяц (дата - первое число месяца)
