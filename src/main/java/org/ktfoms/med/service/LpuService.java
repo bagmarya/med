@@ -64,7 +64,7 @@ public class LpuService {
         Integer month = LocalDate.now().getMonthValue();
         Integer year = LocalDate.now().getYear();
         LocalDate thisMonthDate = LocalDate.of(year, month, 01);
-        LocalDate nextMonthDate = LocalDate.of(year+(month+1)/12, (month+1)%12, 01);
+        LocalDate nextMonthDate = LocalDate.of(year+(month+1)/12, (month%12+1), 01);
         return lpuDao.getFundingNormaEntityList(thisMonthDate, nextMonthDate);
     }
 
@@ -103,13 +103,17 @@ public class LpuService {
         FundingNorma fn = lpuDao.getFundingNormaById(id);
         if (editFundingNormaForm.getQuantityInAstr() != "") {
             fn.setQuantityInAstr(Integer.parseInt(editFundingNormaForm.getQuantityInAstr()));
+        } else {
+            fn.setQuantityInAstr(null);
         }
         if (editFundingNormaForm.getQuantityInKap() != "") {
             fn.setQuantityInKap(Integer.parseInt(editFundingNormaForm.getQuantityInKap()));
-        }
+        } else {
+            fn.setQuantityInKap(null);}
         if (editFundingNormaForm.getNorma() != "") {
             fn.setNorma(Double.parseDouble(editFundingNormaForm.getNorma().replace(',', '.')));
-        }
+        } else {
+            fn.setNorma(null);}
         System.out.println(fn);
         lpuDao.save(fn);
     }

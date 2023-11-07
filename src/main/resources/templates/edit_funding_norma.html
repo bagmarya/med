@@ -10,6 +10,10 @@
 <div th:insert="~{menu :: copy}">...</div>
 <h1>Редактировать норматив ПФ АПП</h1>
 
+<div class="alert-message" th:if="${message != null}" role="alert">
+  [[${message}]]
+</div>
+
 <form th:action="@{/edit_funding_norma/{id}(id=${id})}" th:object="${editFundingNormaForm}" method="POST">
 
   <p th:utext="${lpu.mNameF}"></p>

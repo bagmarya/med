@@ -1,6 +1,7 @@
 package org.ktfoms.med.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.hibernate.Internal;
 import org.hibernate.exception.ConstraintViolationException;
 import org.ktfoms.med.MedApplication;
 import org.ktfoms.med.dto.FapFinDto;
@@ -249,7 +250,9 @@ public class MainController {
 
     //Страница редактирования записи справочника СНПФ
     @RequestMapping(value = { "/edit_funding_norma/{id}" }, method = RequestMethod.GET)
-    public String editFundingNorma(Model model, @PathVariable("id") int id) {
+    public String editFundingNorma(Model model,
+                                   @PathVariable("id") int id,
+                                   @RequestParam (value = "message", required = false) String message) {
         EditFundingNormaForm editFundingNormaForm = new EditFundingNormaForm();
         FundingNorma entity = lpuService.getFundingNormaById(id);
         if (!Objects.isNull(entity.getQuantityInAstr())){
@@ -262,16 +265,20 @@ public class MainController {
         model.addAttribute("editFundingNormaForm", editFundingNormaForm);
         model.addAttribute("id", id);
         model.addAttribute("lpu", entity);
+        model.addAttribute("message", message);
         return "edit_funding_norma";
     }
 
     //Сохранение записи справочника СНПФ
     @RequestMapping(value = { "/edit_funding_norma/{id}" }, method = RequestMethod.POST)
-    public String saveFundingNorma(@PathVariable("id") int id,
+    public String saveFundingNorma(                                   @PathVariable("id") Integer id,
                                    EditFundingNormaForm editFundingNormaForm) {
-
-        lpuService.saveFundingNorma(id, editFundingNormaForm);
-        return "redirect:/funding_norma";
+        try {
+            lpuService.saveFundingNorma(id, editFundingNormaForm);
+        } catch (NumberFormatException e) {
+            return "redirect:/edit_funding_norma/" + id + "?message=" + URLEncoder.encode("Введены некорректные данные, запись не изменена.", StandardCharsets.UTF_8);
+        }
+        return "redirect:/funding_norma?message=" + URLEncoder.encode("Изменения сохранены.", StandardCharsets.UTF_8);
     }
 
     //Страница формы для добавления записей справочника СНПФ для нового периода
