@@ -241,10 +241,15 @@ public class LpuService {
         }
     }
 
-    public List<FundingNormaSmpInfo> getFundingNormaSmpInfos() {
+    public List<FundingNormaSmpInfo> getFundingNormaSmpInfos(String from, String to) {
         Map<Integer, String> lpuMap = lpuDao.getLpuEntityList().stream().collect(toMap(Lpu::getMkod, Lpu::getMNameF));
         List<FundingNormaSmpInfo> infosList = new ArrayList<>();
-        List<FundingNormaSmp> entityList = lpuDao.getFundingNormaSmpEntityList();
+        List<FundingNormaSmp> entityList;
+        if (Objects.isNull(from) || Objects.isNull(to)){
+            entityList = lpuDao.getFundingNormaSmpEntityList();
+        } else {
+            entityList = lpuDao.getFundingNormaSmpEntityList(LocalDate.parse(from), LocalDate.parse(to));
+        }
         Map<String, FundingNormaSmpInfo> infosMap = new TreeMap<>();
         for (FundingNormaSmp entity: entityList){
             String key = entity.getDatebeg().toString()+entity.getMcod().toString();

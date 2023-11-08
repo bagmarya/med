@@ -1,14 +1,11 @@
 package org.ktfoms.med.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.hibernate.Internal;
 import org.hibernate.exception.ConstraintViolationException;
-import org.ktfoms.med.MedApplication;
 import org.ktfoms.med.dto.FapFinDto;
 import org.ktfoms.med.dto.FundingNormaSmpInfo;
 import org.ktfoms.med.entity.Fap;
 import org.ktfoms.med.entity.FundingNorma;
-import org.ktfoms.med.entity.FundingNormaSmp;
 import org.ktfoms.med.form.EditFapForm;
 import org.ktfoms.med.form.EditFundingFapForm;
 import org.ktfoms.med.form.EditFundingNormaForm;
@@ -38,7 +35,6 @@ import java.io.InputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
@@ -425,11 +421,22 @@ public class MainController {
     }
 
     @RequestMapping(value = { "/funding_norma_smp" },  method = RequestMethod.GET)
-    public String fundingNormaSmp(Model model, @Param("message") String message) {
-        List<FundingNormaSmpInfo> list = lpuService.getFundingNormaSmpInfos();
+    public String fundingNormaSmp(Model model, @Param("message") String message,
+                                  @RequestParam(value = "from", required = false) String from,
+                                  @RequestParam(value = "to", required = false) String to) {
+        List<FundingNormaSmpInfo> list = lpuService.getFundingNormaSmpInfos(from, to);
         model.addAttribute("fundingNormaInfos", list);
         model.addAttribute("message", message);
+        model.addAttribute("showPeriodForm", new ShowPeriodForm(from, to));
         return "funding_norma_smp";
+    }
+
+    @RequestMapping(value = "/funding_norma_smp/show_period", method = RequestMethod.POST)
+    public String fundingNormaSmpShowPeriod(ShowPeriodForm showPeriodForm) {
+        if(Objects.equals(showPeriodForm.getDateFrom(), "") || Objects.equals(showPeriodForm.getDateTo(), "")) {
+            return "redirect:/funding_norma_smp";
+        }
+        return "redirect:/funding_norma_smp?from=" + showPeriodForm.getDateFrom() + "&to=" + showPeriodForm.getDateTo() ;
     }
 
     @PostMapping("/upload_funding_norma_smp_xml")
@@ -494,7 +501,9 @@ public class MainController {
                 logger.info("Пытаемся заполнить записи за требуемый месяц. " + Month.of(month));
                 String message = lpuService.fillNextMonthNormaSmp(month, year);
                 return "redirect:/funding_norma_smp?message="
-                        + URLEncoder.encode(message, StandardCharsets.UTF_8);
+                        + URLEncoder.encode(message, StandardCharsets.UTF_8)
+                        + "&from=" +  LocalDate.of(year, month, 01)
+                        + "&to=" +  LocalDate.of(year, month, 01);
             } catch (Exception e) {
                 model.addAttribute("message", e.getMessage());
                 return "error_catch";
@@ -533,7 +542,9 @@ public class MainController {
                                       EditFundingNormaForm editFundingNormaForm) {
 
         String message = lpuService.saveFundingNormaSmp(mcod, datebeg, dateend, editFundingNormaForm);
-        return "redirect:/funding_norma_smp?message=" + URLEncoder.encode(message, StandardCharsets.UTF_8);
+        return "redirect:/funding_norma_smp?message=" + URLEncoder.encode(message, StandardCharsets.UTF_8)
+                + "&from=" +  datebeg
+                + "&to=" +  dateend;
     }
 
     @RequestMapping("/login")
