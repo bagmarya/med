@@ -73,7 +73,8 @@ public class FapDao {
                         "ff.gFin10, ff.kYkomp10, ff.summAstra10, ff.summKapit10," +
                         "ff.gFin11, ff.kYkomp11, ff.summAstra11, ff.summKapit11," +
                         "ff.gFin12, ff.kYkomp12, ff.summAstra12, ff.summKapit12) " +
-                        "from Fap f join Lpu l on f.moLpu = l.kodSp join FapFin ff on f.podr = ff.podr where ff.year = :year", FapFinDto.class)
+                        "from Fap f join Lpu l on f.moLpu = l.kodSp join FapFin ff on f.podr = ff.podr " +
+                        "where ff.year = :year order by f.namePodr", FapFinDto.class)
                 .setParameter("year", year).getResultList();
     }
 
@@ -94,7 +95,7 @@ public class FapDao {
                         "ff.gFin11, ff.kYkomp11, ff.summAstra11, ff.summKapit11," +
                         "ff.gFin12, ff.kYkomp12, ff.summAstra12, ff.summKapit12) " +
                         "from Fap f join Lpu l on f.moLpu = l.kodSp join FapFin ff on f.podr = ff.podr " +
-                        "where ff.year = :year and f.moLpu = :lpu", FapFinDto.class)
+                        "where ff.year = :year and f.moLpu = :lpu order by f.namePodr", FapFinDto.class)
                 .setParameter("year", year)
                 .setParameter("lpu", lpu)
                 .getResultList();

@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.apache.poi.EmptyFileException;
@@ -79,7 +80,7 @@ public class ExcelHelper {
 
         Map<Integer, Lpu> lpuByMkod = lpuEntityList.stream().collect(Collectors.toMap(Lpu::getMkod, l -> l));
 
-        HashMap<Integer, List<FapFinDto>> fapFinDtosByMkod = new HashMap<Integer, List<FapFinDto>>();
+        TreeMap<Integer, List<FapFinDto>> fapFinDtosByMkod = new TreeMap<Integer, List<FapFinDto>>();
         fapFinDtoList.forEach(ffd -> {
                     if (fapFinDtosByMkod.containsKey(ffd.getMkod())){
                         fapFinDtosByMkod.get(ffd.getMkod()).add(ffd);
