@@ -384,7 +384,7 @@ public class LpuService {
             newFundingNormaSmp.setKolZl(fns.getKolZl());
             newFundingNormaSmp.setTarif(fns.getTarif());
             newFundingNormaSmp.setDatebeg(fns.getDatebeg().plusMonths(1));
-            newFundingNormaSmp.setDateend(fns.getDateend().plusMonths(1));
+            newFundingNormaSmp.setDateend(fns.getDatebeg().plusMonths(2).minusDays(1));
             lpuDao.save(newFundingNormaSmp);
         }
         logger.info("Месяц " + Month.of(month) + " " + year + "г справочника ПФ СМП заполнен данными скопировннными из предыдущего периода." +
