@@ -24,8 +24,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
@@ -36,6 +38,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 @Service
 public class LicenseService {
@@ -323,14 +327,34 @@ public class LicenseService {
         return "Лицензия удалена";
     }
 
+    //Публикация справочника лицензий на сайт предполагает помещение файла справочника
+    // и архива zip со справочником по пути заданному в конфигурационном файле:
     public String publishLicences() throws IOException {
         String fileName = "Licences.xml";
+        String zipName = "Licences.zip";
+        //Берем путь для сохранения их конфигов
         String path = env.getProperty("puths.publication_path");
         String encoding = "windows-1251";
+        //Создаем файл
         Writer output = new OutputStreamWriter(new FileOutputStream(path + fileName), encoding);
+        //Получаем справочник в виде строки и пишем ее в файл
         output.write(getFileLicences());
         output.flush();
         output.close();
+        // Теперь добавим архив:
+        try(ZipOutputStream zout = new ZipOutputStream(new FileOutputStream(path + zipName));
+            FileInputStream fis= new FileInputStream(path + fileName);)
+        {
+            ZipEntry entry1=new ZipEntry(fileName);
+            zout.putNextEntry(entry1);
+            // считываем содержимое файла в массив byte
+            byte[] buffer = new byte[fis.available()];
+            fis.read(buffer);
+            // добавляем содержимое к архиву
+            zout.write(buffer);
+            // закрываем
+            zout.closeEntry();
+        }
         logger.info("Справочник лицензий опубликован на сайте. Имя пользователья: " + SecurityContextHolder.getContext().getAuthentication().getName());
         return "Опубликовано по пути " + path;
     }
