@@ -84,6 +84,20 @@ public class MainController {
         return "fap";
     }
 
+    //Кнопка обновления полей справочника ФАП по справочнику подразделений
+    @RequestMapping(value = { "/update_fap" }, method = RequestMethod.POST)
+    public String updateFap(Model model) {
+        try {
+            String message = fapService.updateFapNamesByDepartments();
+            model.addAttribute("message", message);
+            return "message";
+        }
+        catch (Exception e) {
+            model.addAttribute("message", e.getMessage());
+            return "error_catch";
+        }
+    }
+
     //Страница по ЛПУ (вложенная) для справочника ФАП
     @RequestMapping(value = { "/fap_by_lpu/{lpu}" }, method = RequestMethod.GET)
     public String fapByLpu(Model model, @PathVariable("lpu") String lpu) {
@@ -119,7 +133,7 @@ public class MainController {
         return "add_fap_lic";
     }
 
-    //Страница добавления ФАП
+    //Кнопка добавления ФАП
     @RequestMapping(value = { "/add_fap" }, method = RequestMethod.POST)
     public String addFap(Model model, EditFapForm editFapForm) {
         try {

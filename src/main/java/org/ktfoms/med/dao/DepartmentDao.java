@@ -2,7 +2,6 @@ package org.ktfoms.med.dao;
 
 import org.hibernate.SessionFactory;
 import org.ktfoms.med.entity.Department;
-import org.ktfoms.med.entity.Fap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -37,9 +36,13 @@ public class DepartmentDao {
         sessionFactory.getCurrentSession().createQuery("DELETE FROM Department").executeUpdate();
     }
 
-    public List<Department> getFapDepartmentListByLpu(String lpu) {
+    public List<Department> getDepartmentListByLpu(String lpu) {
         return sessionFactory.getCurrentSession().createQuery("select d from Department d where d.moLpu =:lpu order by d.podr", Department.class)
                 .setParameter("lpu", lpu).getResultList();
     }
 
+    public List<Department> getDepartmentList() {
+        return sessionFactory.getCurrentSession().createQuery("select d from Department d order by d.podr", Department.class)
+                .getResultList();
+    }
 }

@@ -395,4 +395,18 @@ public class FapService {
         fap.setNameVidPodr(dep.getNameVidPodr());
         return fap;
     }
+
+    @Transactional
+    public String updateFapNamesByDepartments(){
+        List<Fap> faps = getFapEntityList();
+        List<Department> departments = departmentDao.getDepartmentList();
+        Map<String, String> depNamesMap = departments
+                .stream().collect(Collectors.toMap(d -> d.getPodr(), d -> d.getNamePodr()));
+        for (Fap f: faps) {
+            if (depNamesMap.containsKey(f.getPodr()))
+            {f.setNamePodr(depNamesMap.get(f.getPodr()));
+            fapDao.save(f);}
+        }
+            return "Названия фап успешно обновлены в соответствии со справочником подразделений";
+    }
 }

@@ -6,12 +6,10 @@ import org.ktfoms.med.dao.DepartmentDao;
 import org.ktfoms.med.dto.DepartmentDto;
 import org.ktfoms.med.dto.SpDepartment;
 import org.ktfoms.med.entity.Department;
-import org.ktfoms.med.entity.Fap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -29,7 +27,7 @@ public class DepartmentService {
     }
 
     public List<Department> getFapDepartmentListByLpu(String lpu) {
-        return departmentDao.getFapDepartmentListByLpu(lpu).stream()
+        return departmentDao.getDepartmentListByLpu(lpu).stream()
                 .filter(f -> f.getKodVidPodr() == 1166 || f.getKodVidPodr() == 1167)
                 .filter(f -> f.getDateLiq() == null)
                 .collect(Collectors.toList());
