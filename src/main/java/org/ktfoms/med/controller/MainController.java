@@ -11,6 +11,7 @@ import org.ktfoms.med.form.EditFundingFapForm;
 import org.ktfoms.med.form.EditFundingNormaForm;
 import org.ktfoms.med.form.MonthForm;
 import org.ktfoms.med.form.ShowPeriodForm;
+import org.ktfoms.med.service.DepartmentService;
 import org.ktfoms.med.service.FapService;
 import org.ktfoms.med.service.LpuService;
 import org.ktfoms.med.enums.Month;
@@ -46,6 +47,8 @@ public class MainController {
     private LpuService lpuService;
     @Autowired
     private FapService fapService;
+    @Autowired
+    private DepartmentService departmentService;
 
     @RequestMapping(value = { "/", "/index" }, method = RequestMethod.GET)
     public String index(Model model, HttpServletRequest request) {
@@ -100,6 +103,33 @@ public class MainController {
         model.addAttribute("id", id);
         model.addAttribute("fap", entity);
         return "edit_fap";
+    }
+
+    //Страница добавления лицензии для ранее не лицензированного подразделения  ФАП
+    //В переменную пути передается id записи из справочника подразделений
+    @RequestMapping(value = { "/add_fap_lic/{id}" }, method = RequestMethod.GET)
+    public String addFapLic(Model model, @PathVariable("id") int id) {
+
+        Fap entity = fapService.getFapByDepartmentId(id);
+        EditFapForm editFapForm = new EditFapForm(entity);
+
+        model.addAttribute("editFapForm", editFapForm);
+//        model.addAttribute("id", id);
+//        model.addAttribute("fap", entity);
+        return "add_fap_lic";
+    }
+
+    //Страница добавления ФАП
+    @RequestMapping(value = { "/add_fap" }, method = RequestMethod.POST)
+    public String addFap(Model model, EditFapForm editFapForm) {
+        try {
+            fapService.saveFap(editFapForm);
+            return "redirect:/department/fap_dep_by_lpu/" + editFapForm.getMoLpu();
+        }
+        catch (Exception e) {
+            model.addAttribute("message", e.getMessage());
+            return "error_catch";
+        }
     }
 
     //Сохранение записи ФАП

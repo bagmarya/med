@@ -2,12 +2,14 @@ package org.ktfoms.med.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import org.ktfoms.med.dao.DepartmentDao;
 import org.ktfoms.med.dao.FapDao;
 import org.ktfoms.med.dao.LpuDao;
 import org.ktfoms.med.dto.FapDto;
 import org.ktfoms.med.dto.FapFinDto;
 import org.ktfoms.med.dto.LpuFapCountDto;
 import org.ktfoms.med.dto.Spfinfap;
+import org.ktfoms.med.entity.Department;
 import org.ktfoms.med.entity.Fap;
 import org.ktfoms.med.entity.FapFin;
 import org.ktfoms.med.entity.FundingNorma;
@@ -34,12 +36,14 @@ import java.util.stream.Collectors;
 public class FapService {
     private final FapDao fapDao;
     private final LpuDao lpuDao;
+    private final DepartmentDao departmentDao;
     @Autowired
     private ResourceLoader resourceLoader;
 
-    public FapService(FapDao fapDao, LpuDao lpuDao){
+    public FapService(FapDao fapDao, LpuDao lpuDao, DepartmentDao departmentDao){
         this.fapDao = fapDao;
         this.lpuDao = lpuDao;
+        this.departmentDao = departmentDao;
     }
 
     public Fap getFapById(Integer id){
@@ -329,7 +333,7 @@ public class FapService {
 //Метод, предположительно, одноразовый, для того,
 // чтобы загнать актуальные данные на момент начала использования программы,
 // поэтому код закоментирован
-    public void parseSpfinfap() throws IOException {
+//    public void parseSpfinfap() throws IOException {
 //        ObjectMapper objectMapper = new XmlMapper();
 //        Spfinfap spfinfap = objectMapper.readValue(
 //                resourceLoader.getResource("file:sp_fin_fap.xml").getContentAsString(Charset.forName("windows-1251")),
@@ -345,11 +349,7 @@ public class FapService {
 //            ff.editByDto(ffd);
 //            fapDao.save(ff);
 //        }
-
-
-
-
-    }
+//    }
 
 
     public List<Fap> getFapEntityList() {
@@ -365,8 +365,34 @@ public class FapService {
         fapDao.save(fap);
     }
 
+    public void saveFap(EditFapForm editFapForm) throws Exception {
+        System.out.println(editFapForm);
+        Fap fap = new Fap();
+        fap.editByForm(editFapForm);
+        fapDao.save(fap);
+    }
+
 
     public List<Fap> getFapEntityListByLpu(String lpu) {
         return fapDao.getFapEntityListByLpu(lpu);
+    }
+
+    public List<String> getFapLicensiesByLpu(String lpu) {
+        return getFapEntityListByLpu(lpu).stream().map(Fap::getPodr).collect(Collectors.toList());
+    }
+
+    public Fap getFapByDepartmentId(int id) {
+        Department dep = departmentDao.getById(id);
+        Fap fap = new Fap();
+        fap.setMoLpu(dep.getMoLpu());
+        fap.setPodr(dep.getPodr());
+        fap.setDateN(dep.getDateN());
+        fap.setDateLik(dep.getDateLiq());
+        fap.setNamePodr(dep.getNamePodr());
+        fap.setKodTipePodr(dep.getKodTipePodr());
+        fap.setNameTipePodr(dep.getNameTipePodr());
+        fap.setKodVidPodr(dep.getKodVidPodr());
+        fap.setNameVidPodr(dep.getNameVidPodr());
+        return fap;
     }
 }

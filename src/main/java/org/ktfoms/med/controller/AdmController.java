@@ -53,6 +53,7 @@ public class AdmController {
         return "message";
     }
 
+    // Загрузка Справочника лицензий с сайта
     @PostMapping("/upload_sp_license_xml")
     public String uploadSpLicenseXml(Model model, @RequestParam("file") MultipartFile file) {
         String message = "";

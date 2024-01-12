@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Справочник структурных подразделений</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:insert="~{menu :: copy}">...</div>
+<h1>Все структурные подразделения, являющиеся ФАП</h1>
+<h2 th:utext="${lpu.mNameF}"></h2>
+<p th:utext="'Код МО:  ' + ${lpu.mkod}"></p>
+
+<input type="button" value="Назад" onClick='location.href="/fap"'>
+</br></br>
+
+<table>
+  <tr>
+    <th></th>
+    <th>OID подразделения</th>
+    <th>Наименование ФАП</th>
+    <th>Дата создания записи</th>
+    <th>Дата изменения записи</th>
+    <th>Дата ликвидации</th>
+    <th>Тип подразделения</th>
+    <th>Вид подразделения</th>
+    <th>Адрес</th>
+
+
+  </tr>
+  <tr th:each="dep:${fapDepList}">
+    <td><a th:href=@{/add_fap_lic/{id}(id=${dep.id})} th:if="${!fapLicensesList.contains(dep.podr)}">Добавить лицензию</a></td>
+    <td th:utext="${dep.podr}">..</td>
+    <td th:utext="${dep.namePodr}">..</td>
+    <td th:utext="${dep.dateN}">..</td>
+    <td th:utext="${dep.dateModify}">..</td>
+    <td th:utext="${dep.dateLiq}">..</td>
+    <td th:utext="${dep.nameTipePodr}">..</td>
+    <td th:utext="${dep.nameVidPodr}">..</td>
+    <td th:utext="${dep.address}">..</td>
+  </tr>
+</table>
+
+
+</tr>
+</table>
+
+<!--<a href="/add_lpu">Добавить</a>-->
+</body>
+</html>
