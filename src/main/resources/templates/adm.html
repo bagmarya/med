@@ -154,23 +154,11 @@
 <div>
     <h4>Загрузка справочника структурных подразделений</h4>
     <p>(Заменит все подразделения (ФАП) в списке подразделений из справочика с https://nsi.rosminzdrav.ru/!)</p>
-    <form method="post" th:action="@{/department/upload_departments_xml}" enctype="multipart/form-data">
-
-        <label class="input-file">
-            <span class="input-file-text" type="text"></span>
-            <input type="file" name="file" accept=".xml">
-            <span class="input-file-btn">Выберите файл</span>
-        </label>
-
+    <p>Справочник в формате XML должен быть помещен в рабочую директорию программы на сервере и назван dep.xml</p>
+    <form method="post" th:action="@{/department/upload_departments_xml}">
         <input class="input-file-submit" type="submit" value="Загрузить" />
-
     </form>
-    <script>
-        $('.input-file input[type=file]').on('change', function(){
-            let file = this.files[0];
-            $(this).closest('.input-file').find('.input-file-text').html(file.name);
-        });
-    </script>
+
 </div>
 
 </body>

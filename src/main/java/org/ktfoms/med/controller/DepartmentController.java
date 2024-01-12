@@ -27,21 +27,21 @@ public class DepartmentController {
     private FapService fapService;
     @Autowired
     private LpuService lpuService;
+
     // Загрузка "справочника  структурных подразделений" с сайта минздрава - грузим только ФАП
     @PostMapping("/upload_departments_xml")
-    public String uploadSpDepartmentXml(Model model, @RequestParam("file") MultipartFile file) {
+    public String uploadSpDepartmentXml(Model model) {
         String message = "";
 
         try {
-            InputStream in = new ByteArrayInputStream(file.getBytes());
-            message = departmentService.parseSpDepartment(file);
+            message = departmentService.parseSpDepartment();
             model.addAttribute("message", message);
         } catch (ConstraintViolationException e) {
             message = "Ограничения целостности не позволяют загрузить справочник, см. подробности в логах";
             model.addAttribute("message", message);
         } catch (Exception e) {
             e.printStackTrace();
-            message = "Не удается загрузить файл: " + file.getOriginalFilename() + "Неверный формат. Error: " + e.getMessage();
+            message = "Не удается загрузить файл: Неверный формат. Error: " + e.getMessage();
             model.addAttribute("message", message);
         }
         return "message";

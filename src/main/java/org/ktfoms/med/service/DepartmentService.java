@@ -37,7 +37,7 @@ public class DepartmentService {
 
     //Метод загружает справочник подразделений по Курганской области из общего минздравовского справочника подразделений
     @Transactional
-    public String parseSpDepartment(MultipartFile file) throws IOException {
+    public String parseSpDepartment() throws IOException {
         ObjectMapper objectMapper = new XmlMapper();
 //        System.out.println(Runtime.getRuntime().totalMemory());
 //        System.out.println(Runtime.getRuntime().maxMemory());
