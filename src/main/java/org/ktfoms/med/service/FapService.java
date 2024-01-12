@@ -27,6 +27,7 @@ import java.io.Writer;
 import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -156,17 +157,53 @@ public class FapService {
             throw new NoSuchFieldException("The month number should be between 1 and 12");
         }
         if (month == 1){
-            throw new NoSuchFieldException("метод для переноса данных с предыдущего года" +
-                    " не был реализован");
-        }
+            List<FapFin> newFapFinEntityList = new ArrayList<>();
+            //Берем список тех ФАП, которые открыты и имеют лицензии на начало года
+            List<Fap> actualFapList = getFapEntityList().stream()
+                    .filter(f -> ((f.getDateLik() == null || f.getDateLik().isAfter(LocalDate.of(year, 1, 1)))
+                            && (f.getDkLicen() == null || f.getDkLicen().isAfter(LocalDate.of(year, 1, 1)) ) ))
+                    .collect(Collectors.toList());
+            if (actualFapList.isEmpty()){
+                throw  new NoSuchFieldException("Для финансирования ФАП нет данных за этот год");
+            }
+            //Чистим данные за этот год, ведь мы предупреждали.
+            fapDao.deleteFinFapForYear(year);
+            //Для каждого ФАП из списка актуальных мы создаем строку справочника финансирования и сохраняем в списке новых записей
+            for(Fap f : actualFapList) {
+                FapFin ff = new FapFin();
+                ff.setPodr(f.getPodr());
+                ff.setYear(year);
+                newFapFinEntityList.add(ff);}
+            //Теперь достаем из базы справочник за прошлый год
+            List<FapFin> fapFinEntityList = fapDao.getFapFinEntityList(year - 1);
+            //И если в нем есть данные, заполняем первый месяц в новых записях по декабрю предыдущего года
+            if (!fapFinEntityList.isEmpty()){
+                Map<String, FapFin> oldYearDataMap = fapFinEntityList
+                        .stream().collect(Collectors.toMap(FapFin::getPodr, ff -> ff));
+                System.out.println(oldYearDataMap);
+                for(FapFin ff : newFapFinEntityList) {
+                    System.out.println(ff.getPodr());
+                    if (oldYearDataMap.containsKey(ff.getPodr())){
+                        System.out.println(ff.getPodr() +" !!!!!!!!!!!");
+                    ff.setGFin1(oldYearDataMap.get(ff.getPodr()).getGFin12());
+                    ff.setKYkomp1(oldYearDataMap.get(ff.getPodr()).getKYkomp12());
+                    ff.setSummAstra1(oldYearDataMap.get(ff.getPodr()).getSummAstra12());
+                    ff.setSummKapit1(oldYearDataMap.get(ff.getPodr()).getSummKapit12());
+                    }
+                }
+            }
+            //Когда все что можно заполнено, сохраняем в базу
+            for(FapFin ff : newFapFinEntityList) {
+                fapDao.save(ff);
+            }
 
-        List<FapFin> fapFinEntityList = fapDao.getFapFinEntityList(year);
-        if (fapFinEntityList.isEmpty()){
-            throw  new NoSuchFieldException("Для финансирования ФАП нет данных за этот год");
-        }
-//        fapFinEntityList.stream().map(FapFin::getPodr).forEach(System.out::println);//todo: убрать принты
-        fapFinEntityList.stream().forEach(s -> s.fillMonth(month));
-        fapFinEntityList.stream().forEach(fapDao::save);
+        } else {
+            List<FapFin> fapFinEntityList = fapDao.getFapFinEntityList(year);
+            if (fapFinEntityList.isEmpty()){
+                throw  new NoSuchFieldException("Для финансирования ФАП нет данных за этот год");
+            }
+            fapFinEntityList.stream().forEach(s -> s.fillMonth(month));
+            fapFinEntityList.stream().forEach(fapDao::save);}
     }
 
 

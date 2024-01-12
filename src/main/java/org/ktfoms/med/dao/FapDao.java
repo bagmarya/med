@@ -159,4 +159,9 @@ public class FapDao {
     }
 
 
+    public void deleteFinFapForYear(Integer year) {
+        sessionFactory.getCurrentSession().createQuery("DELETE FROM FapFin ff where ff.year = :year")
+                .setParameter("year", year)
+                .executeUpdate();
+    }
 }
