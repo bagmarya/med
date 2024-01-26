@@ -7,6 +7,7 @@ import org.ktfoms.med.entity.Fap;
 import org.ktfoms.med.entity.FapFin;
 import org.ktfoms.med.entity.Lpu;
 import org.ktfoms.med.service.FapService;
+import org.ktfoms.med.service.FysService;
 import org.ktfoms.med.service.LicenseService;
 import org.ktfoms.med.service.LpuService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,8 @@ public class ApiController {
 
     @Autowired
     private LicenseService licenseService;
+    @Autowired
+    private FysService fysService;
 
     @GetMapping("/lpu/{id}")
     public Lpu  getLpuById(@PathVariable("id") int id) {
@@ -128,6 +131,13 @@ public class ApiController {
         HttpHeaders h = new HttpHeaders();
         h.set("Content-Disposition", "attachment; filename=\"Licences.xml\"");
         return new ResponseEntity<>(licenseService.getFileLicences(),h, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = { "/fys_xml" }, method = RequestMethod.GET, produces = "application/xml;charset=utf-8")
+    public ResponseEntity<String> getFysXml() {
+        HttpHeaders h = new HttpHeaders();
+        h.set("Content-Disposition", "attachment; filename=\"fys.xml\"");
+        return new ResponseEntity<>(fysService.getFysXML(),h, HttpStatus.OK);
     }
 
     @RequestMapping(value = { "/publish_licences" }, method = RequestMethod.POST)

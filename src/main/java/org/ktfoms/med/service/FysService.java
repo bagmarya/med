@@ -2,6 +2,8 @@ package org.ktfoms.med.service;
 
 import org.ktfoms.med.dao.FysDao;
 import org.ktfoms.med.entity.Fys;
+import org.ktfoms.med.entity.LicensePol;
+import org.ktfoms.med.entity.LicenseStac;
 import org.ktfoms.med.entity.Price;
 import org.ktfoms.med.helper.DbfHelper;
 import org.ktfoms.med.helper.ExcelHelper;
@@ -10,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -141,6 +144,49 @@ public class FysService {
         ByteArrayInputStream in = DbfHelper.createObrcDbf(obrcPriceEntityList);
         return in;
     }
+
+    //Экспорт FYS из базы в xml (справочник медицинских услуг)
+    @Transactional
+    public String getFysXML() {
+        List<Fys> fysEntityList = fysDao.getFysEntityList();
+        StringBuilder builder = new StringBuilder("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<FYS>\n");//<?xml version="1.0" encoding="utf-8"?>
+        for(Fys fys : fysEntityList){
+            builder.append(
+                    "    <USL>\n" +
+                            "      <KOD_SP>" + fys.getKodSp() + "</KOD_SP>\n" +
+                            "      <NAME_YSL>" + fys.getNameYsl() + "</NAME_YSL>\n" +
+                            "      <KOD_USL_MZ>" + fys.getKodUslMz() + "</KOD_USL_MZ>\n" +
+                            "      <RZ>" + fys.getRz() + "</RZ>\n" +
+                            "      <TYP>" + fys.getTyp() + "</TYP>\n" +
+                            "      <KLAS>" + fys.getKlas() + "</KLAS>\n" +
+                            "      <VID>" + (fys.getVid() == null ? "" : fys.getVid()) + "</VID>\n" +
+                            "      <PVID>" + (fys.getPvid() == null ? "" : fys.getPvid()) + "</PVID>\n" +
+                            "      <OMS>" + (fys.isOms() ? "+" : "-") + "</OMS>\n" +
+                            "      <POS>" + (fys.isPos() ? "+" : "-") + "</POS>\n" +
+                            "      <MKR>" + fys.getMkr() + "</MKR>\n" +
+                            "      <V_uet>" + fys.getVUet() + "</V_uet>\n" +
+                            "      <D_uet>" + fys.getDUet() + "</D_uet>\n" +
+                            "      <D1>" + fys.getD1() + "</D1>\n" +
+                            "      <V1>" + fys.getV1() + "</V1>\n" +
+                            "      <D1_uet>" + fys.getD1Uet() + "</D1_uet>\n" +
+                            "      <V1_uet>" + fys.getV1Uet() + "</V1_uet>\n" +
+                            "      <D2>" + fys.getD2() + "</D2>\n" +
+                            "      <V2>" + fys.getV2() + "</V2>\n" +
+                            "      <D2_uet>" + fys.getD2Uet() + "</D2_uet>\n" +
+                            "      <V2_uet>" + fys.getV2Uet() + "</V2_uet>\n" +
+                            "      <V021_D>" + (fys.getV021D() == null ? "" : fys.getV021D()) + "</V021_D>\n" +//fys.getV021D()
+                            "      <V021_V>" + (fys.getV021V() == null ? "" : fys.getV021V()) + "</V021_V>\n" +//fys.getV021V()
+                            "      <DIAG_N>" + (fys.getDiagN() == null ? "" : fys.getDiagN()) + "</DIAG_N>\n" +//fys.getDiagN()
+                            "      <DIAG_K>" + (fys.getDiagK() == null ? "" : fys.getDiagK()) + "</DIAG_K>\n" +//fys.getDiagK()
+                            "      <DIAG_DN>" + "" + "</DIAG_DN>\n" +
+                            "      <DS_category>" + "" + "</DS_category>\n" +
+
+                            "    </USL>\n");
+        }
+        builder.append("</FYS>\n");
+        return builder.toString();
+    }
+
 
 }
 

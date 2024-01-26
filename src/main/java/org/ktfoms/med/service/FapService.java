@@ -433,12 +433,15 @@ public class FapService {
         return fap;
     }
 
+    //Обновить имена подразделений ФАП
     @Transactional
     public String updateFapNamesByDepartments(){
         List<Fap> faps = getFapEntityList();
         List<Department> departments = departmentDao.getDepartmentList();
         Map<String, String> depNamesMap = departments
-                .stream().collect(Collectors.toMap(d -> d.getPodr(), d -> d.getNamePodr()));
+                .stream()
+                .filter(d -> (d.getKodVidPodr() == 1166 || d.getKodVidPodr() == 1167))
+                .collect(Collectors.toMap(Department::getPodr, Department::getNamePodr));
         for (Fap f: faps) {
             if (depNamesMap.containsKey(f.getPodr()))
             {f.setNamePodr(depNamesMap.get(f.getPodr()));
