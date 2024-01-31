@@ -100,6 +100,11 @@ public class Fys {
     @Column(name = "diag_k")
     private String diagK;
 
+    @Column(name = "diag_dn")
+    private String diagDn;
+
+    @Column(name = "ds_category")
+    private String dsCategory;
 }
 
 

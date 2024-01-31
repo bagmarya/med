@@ -15,6 +15,9 @@ import java.nio.charset.Charset;
 import java.util.List;
 
 public class DbfHelper {
+
+    //метод для формирования справочника FYS в формате DBF
+    //todo: добавить две последние колонки
     public static ByteArrayInputStream createFysDbf(List<Fys> fysList)  {
         OutputStream fos = null;
         try (ByteArrayOutputStream out = new ByteArrayOutputStream();){

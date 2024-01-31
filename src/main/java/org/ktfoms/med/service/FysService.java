@@ -32,7 +32,6 @@ public class FysService {
             List<Fys> fysList = ExcelHelper.parseFysXls(in, parsePrice);
 
             if (fysList.size()==0) { return "Входной файл пуст";}
-            //TODO: узнать что делать с проверкой на дубликаты
             List<String> duplicates = fysList.stream().map(Fys::getKodUslMz)
                     //группируем в map (код -> количество вхождений)
                     .collect(Collectors.groupingBy(Function.identity()))
@@ -189,8 +188,8 @@ public class FysService {
                             "      <V021_V>" + (fys.getV021V() == null ? "" : fys.getV021V()) + "</V021_V>\n" +//fys.getV021V()
                             "      <DIAG_N>" + (fys.getDiagN() == null ? "" : fys.getDiagN()) + "</DIAG_N>\n" +//fys.getDiagN()
                             "      <DIAG_K>" + (fys.getDiagK() == null ? "" : fys.getDiagK()) + "</DIAG_K>\n" +//fys.getDiagK()
-                            "      <DIAG_DN>" + "" + "</DIAG_DN>\n" +
-                            "      <DS_category>" + "" + "</DS_category>\n" +
+                            "      <DIAG_DN>" + (fys.getDiagDn() == null ? "" : fys.getDiagDn()) + "</DIAG_DN>\n" +
+                            "      <DS_category>" + (fys.getDsCategory() == null ? "" : fys.getDsCategory()) + "</DS_category>\n" +
 
                             "    </USL>\n");
         }

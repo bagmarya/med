@@ -724,7 +724,8 @@ public class ExcelHelper {
             fys.setV021V(ExcelHelper.valueAsString(row.getCell(22)));
             fys.setDiagN(ExcelHelper.valueAsString(row.getCell(23)));
             fys.setDiagK(ExcelHelper.valueAsString(row.getCell(24)));
-
+            fys.setDiagDn(ExcelHelper.valueAsString(row.getCell(25)));
+            fys.setDsCategory(ExcelHelper.valueAsString(row.getCell(26)));
             fysList.add(fys);
         }
         return fysList;
@@ -767,7 +768,8 @@ public class ExcelHelper {
             return priceList;
         }
 
-
+//Метод для конвертации справочника FYS в EXCEL
+    //todo: добавить в выгрузку последние две колонки
     public static ByteArrayInputStream fysEntityListToExcel(List<Fys> fysEntityList) {
         String[] headers = {"KOD_SP", "NAME_YSL", "KOD_USL_MZ", "RZ", "TYP", "KLAS",
                 "VID", "PVID", "OMS", "POS", "MKR", "V_uet", "D_uet", "D1", "V1", "D1_uet", "V1_uet",

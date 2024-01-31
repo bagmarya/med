@@ -81,11 +81,17 @@ $('.input-file input[type=file]').on('change', function(){
   </form>
 </div>
 <div>
-  <p>Скачать справочник FYS в формате DBF:</p>
-  <form method="get" th:action="@{/fys/get_fys_dbf}">
+  <p>Скачать справочник FYS в формате XML:</p>
+  <form method="get" th:action="@{/api/fys_xml}">
     <input type="submit" value="Скачать" />
   </form>
 </div>
+<!--<div>-->
+<!--  <p>Скачать справочник FYS в формате DBF:</p>-->
+<!--  <form method="get" th:action="@{/fys/get_fys_dbf}">-->
+<!--    <input type="submit" value="Скачать" />-->
+<!--  </form>-->
+<!--</div>-->
 <div>
   <p>Скачать справочник FYS в формате excel:</p>
   <form method="get" th:action="@{/api/excel/fys/get_fys_excel}">
