@@ -90,9 +90,10 @@ public class FysService {
             fys.setV2(0.0);
             fys.setD2Uet(0.0);
             fys.setV2Uet(0.0);
+            Price price = null;
             if (fys.isOms() & (fys.isPos() | fys.getVUet() > 0 | fys.getDUet() > 0)){
                 if(dentistryCodes.contains(fys.getKodSp())){    //При условии что код специальности принадлежит стоматологии
-                    Price price = priceMap.get("065П1");
+                    price = priceMap.get("065П1");
                     fys.setD1(Math.round(price.getD1()*fys.getDUet()*100) / 100.0);
                     fys.setV1(Math.round(price.getV1()*fys.getVUet()*100) / 100.0);
                     fys.setD1Uet(Math.round(price.getD1()*fys.getDUet()*100) / 100.0);
@@ -103,26 +104,36 @@ public class FysService {
                     fys.setV2Uet(Math.round(price.getV2()*fys.getVUet()*100) / 100.0);
                 } else {  //Если код специальности - не стамотология
                     if(urgentMkr.contains(fys.getMkr())){   //Если неотложка
-                        fys.setD1(800.12);
-                        fys.setV1(800.12);
-                        fys.setD2(800.12);
-                        fys.setV2(800.12);
-                    } else { //а если не неотложка
-                        Price price = null;
-                        if(priceMap.containsKey(fys.getKodSp() + "П2")){price = priceMap.get(fys.getKodSp() + "П2");}
-                        if(priceMap.containsKey(fys.getKodSp() + "П1")){price = priceMap.get(fys.getKodSp() + "П1");}
+                        if(priceMap.containsKey(fys.getKodSp() + "Д")){price = priceMap.get(fys.getKodSp() + "Д");}
+                        if(priceMap.containsKey(fys.getKodSp() + "ПН")){price = priceMap.get(fys.getKodSp() + "ПН");}
                         if(price!=null & fys.isPos()){
                             fys.setD1(price.getD1());
                             fys.setV1(price.getV1());
                             fys.setD2(price.getD2());
-                            fys.setV2(price.getV2());
+                            fys.setV2(price.getV2());}
+                    } else { //а если не неотложка
+                        if (fys.getMkr().equals("ПД") | (fys.getMkr().equals("ДПР") & fys.getNameYsl().contains("Диспансерный"))) {
+                            if(priceMap.containsKey(fys.getKodSp() + fys.getMkr())){price = priceMap.get(fys.getKodSp() + fys.getMkr());}
+                            if(price!=null & fys.isPos()){
+                                fys.setD1(price.getD1());
+                                fys.setV1(price.getV1());
+                                fys.setD2(price.getD2());
+                                fys.setV2(price.getV2());}
+                        } else {
+                            if(priceMap.containsKey(fys.getKodSp() + "П2")){price = priceMap.get(fys.getKodSp() + "П2");}
+                            if(priceMap.containsKey(fys.getKodSp() + "П1")){price = priceMap.get(fys.getKodSp() + "П1");}
+                            if(price!=null & fys.isPos()){
+                                fys.setD1(price.getD1());
+                                fys.setV1(price.getV1());
+                                fys.setD2(price.getD2());
+                                fys.setV2(price.getV2());}
+                            }
                         }
                     }
-
                 }
-            }
+
             if (!dentistryCodes.contains(fys.getKodSp()) & (fys.getVUet() > 0 | fys.getDUet() > 0)) {    //не стоматология с УЕТами
-                Price price = priceMap.get("065П1");
+                price = priceMap.get("065П1");
                 fys.setD1Uet(Math.round(price.getD1()*fys.getDUet()*100) / 100.0);
                 fys.setV1Uet(Math.round(price.getV1()*fys.getVUet()*100) / 100.0);
                 fys.setD2Uet(Math.round(price.getD2()*fys.getDUet()*100) / 100.0);

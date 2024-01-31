@@ -35,7 +35,7 @@ public class FysDao {
     }
 
     public List<Fys> getFysEntityList() {
-        return sessionFactory.getCurrentSession().createQuery("select fys from Fys fys order by fys.kodSp desc", Fys.class)
+        return sessionFactory.getCurrentSession().createQuery("select fys from Fys fys order by fys.kodSp,fys.kodUslMz", Fys.class)
                 .getResultList();
     }
 
