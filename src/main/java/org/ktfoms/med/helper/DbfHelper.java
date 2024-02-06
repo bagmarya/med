@@ -17,12 +17,11 @@ import java.util.List;
 public class DbfHelper {
 
     //метод для формирования справочника FYS в формате DBF
-    //todo: добавить две последние колонки
     public static ByteArrayInputStream createFysDbf(List<Fys> fysList)  {
         OutputStream fos = null;
         try (ByteArrayOutputStream out = new ByteArrayOutputStream();){
             // Определение полей файла DBF
-            DBFField[] fields = new DBFField[25];
+            DBFField[] fields = new DBFField[27];
             {fields[0] = new DBFField();
             fields[0].setName("KOD_SP");
             fields[0].setType(DBFDataType.CHARACTER);
@@ -164,7 +163,17 @@ public class DbfHelper {
             fields[24] = new DBFField();
             fields[24].setName("DIAG_K");
             fields[24].setType(DBFDataType.CHARACTER);
-            fields[24].setLength(7);}
+            fields[24].setLength(7);
+
+            fields[25] = new DBFField();
+            fields[25].setName("DIAG_DN");
+            fields[25].setType(DBFDataType.CHARACTER);
+            fields[25].setLength(254);
+
+            fields[26] = new DBFField();
+            fields[26].setName("DS_cat");
+            fields[26].setType(DBFDataType.CHARACTER);
+            fields[26].setLength(2);}
             DBFWriter writer = new DBFWriter(out);//экземпляр DBFWriter для записи DBF
             writer.setCharset(Charset.forName("Cp866")); // определим кодировку выходного файла
 
@@ -172,7 +181,7 @@ public class DbfHelper {
             writer.setFields(fields);
             // запись объектов:
             for(Fys fys:fysList){
-                Object[] rowData = new Object[25];
+                Object[] rowData = new Object[27];
                 rowData[0] = fys.getKodSp();
                 rowData[1] = fys.getNameYsl();
                 rowData[2] = fys.getKodUslMz();
@@ -200,7 +209,8 @@ public class DbfHelper {
                 rowData[22] = fys.getV021V();
                 rowData[23] = fys.getDiagN();
                 rowData[24] = fys.getDiagK();
-
+                rowData[25] = fys.getDiagDn();
+                rowData[26] = fys.getDsCategory();
                 writer.addRecord(rowData);
             }
             // вывод данных

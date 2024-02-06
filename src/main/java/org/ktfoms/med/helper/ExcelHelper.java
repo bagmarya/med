@@ -654,7 +654,7 @@ public class ExcelHelper {
         }
     }
 
-    //рабочая версия метода, исправленная для нового формата справочника
+    //рабочая версия метода, исправленная для нового (от янв 2024) формата справочника FYS
     public static List<Fys> parseFysXls(InputStream in, boolean parsePrice) throws Exception {
         List<String> cyrillicChars = List.of("А", "а", "В", "в","Б", "б");
         List<Fys> fysList = new ArrayList<>();
@@ -769,11 +769,11 @@ public class ExcelHelper {
         }
 
 //Метод для конвертации справочника FYS в EXCEL
-    //todo: добавить в выгрузку последние две колонки
     public static ByteArrayInputStream fysEntityListToExcel(List<Fys> fysEntityList) {
         String[] headers = {"KOD_SP", "NAME_YSL", "KOD_USL_MZ", "RZ", "TYP", "KLAS",
                 "VID", "PVID", "OMS", "POS", "MKR", "V_uet", "D_uet", "D1", "V1", "D1_uet", "V1_uet",
-                "D2", "V2", "D2_uet", "V2_uet", "V021_D", "V021_V", "DIAG_N", "DIAG_K"};
+                "D2", "V2", "D2_uet", "V2_uet", "V021_D", "V021_V", "DIAG_N", "DIAG_K", "DIAG_DN", "DS_category"
+        };
         try (Workbook workbook = new HSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream();) {
             //Создадим стиль ячейки со значением денежной суммы
             CellStyle numStyle = workbook.createCellStyle();
@@ -814,6 +814,8 @@ public class ExcelHelper {
                 row.createCell(22).setCellValue(fys.getV021V());
                 row.createCell(23).setCellValue(fys.getDiagN());
                 row.createCell(24).setCellValue(fys.getDiagK());
+                row.createCell(25).setCellValue(fys.getDiagDn());
+                row.createCell(26).setCellValue(fys.getDsCategory());
                 row.getCell(11).setCellStyle(numStyle);
                 row.getCell(12).setCellStyle(numStyle);
                 row.getCell(13).setCellStyle(numStyle);
