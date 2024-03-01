@@ -1,5 +1,6 @@
 package org.ktfoms.med.service;
 
+import org.ktfoms.med.controller.MainController;
 import org.ktfoms.med.dao.FysDao;
 import org.ktfoms.med.entity.Fys;
 import org.ktfoms.med.entity.LicensePol;
@@ -7,6 +8,8 @@ import org.ktfoms.med.entity.LicenseStac;
 import org.ktfoms.med.entity.Price;
 import org.ktfoms.med.helper.DbfHelper;
 import org.ktfoms.med.helper.ExcelHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +24,7 @@ import java.util.stream.Collectors;
 @Service
 public class FysService {
     private final FysDao fysDao;
-
+    private static final Logger logger = LoggerFactory.getLogger(FysService.class);
     public FysService(FysDao fysDao) {
         this.fysDao = fysDao;
     }
@@ -49,9 +52,15 @@ public class FysService {
                 duplicatesMessage = "Файл содержит одинаковые коды услуг " + duplicates;
             }
             fysDao.clearFys();
-            fysList.forEach(fysDao::save);
+            for(Fys f : fysList){
+                logger.info("Запись в базу строки услуги: " + f.toString() );
+                fysDao.save(f);
+            }
+            logger.info("Файл справочника успешно импортирован.");
+//            fysList.forEach(fysDao::save);
             return "Файл справочника успешно импортирован. " + (parsePrice ? "" : "Без стоимости. ") + duplicatesMessage;
         } catch (Exception e) {
+            logger.error(e.getMessage());
             return e.getMessage();
         }
     }
