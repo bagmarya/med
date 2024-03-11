@@ -73,6 +73,7 @@ public class AdmController {
         return "message";
     }
 
+    // Загрузка ЛПУ из справочника F003 (добавит записи отсутствующие в базе) - не используется - справочник устарел
     @PostMapping("/add_lpu_F003_xml")
     public String addLpuF003Xml(Model model, @RequestParam("file") MultipartFile file) {
         String message = "";
@@ -91,7 +92,48 @@ public class AdmController {
         }
         return "message";
     }
+    // Загрузка ЛПУ из справочника F032 (добавит записи отсутствующие в базе)
+    @PostMapping("/add_lpu_F032_xml")
+    public String addLpuF032Xml(Model model, @RequestParam("file") MultipartFile file) {
+        String message = "";
 
+        try {
+            InputStream in = new ByteArrayInputStream(file.getBytes());
+            message = lpuService.parseF032ForAddLpu(file);
+            model.addAttribute("message", message);
+        } catch (ConstraintViolationException e) {
+            message = "Ограничения целостности не позволяют загрузить данные справочника, см. подробности в логах";
+            model.addAttribute("message", message);
+        } catch (Exception e) {
+            e.printStackTrace();
+            message = "Не удается загрузить файл: " + file.getOriginalFilename() + "Неверный формат. Error: " + e.getMessage();
+            model.addAttribute("message", message);
+        }
+        return "message";
+    }
+
+    //ОБНОВЛЕНИЕ информации о ЛПУ из справочника F032 (обновит записи существующие в базе)
+    @PostMapping("/upd_lpu_F032_xml")
+    public String updateLpuF032Xml(Model model, @RequestParam("file") MultipartFile file) {
+        String message = "";
+
+        try {
+            InputStream in = new ByteArrayInputStream(file.getBytes());
+            message = lpuService.parseF032ForUpdLpu(file);
+            model.addAttribute("message", message);
+        } catch (ConstraintViolationException e) {
+            message = "Ограничения целостности не позволяют обновить данные справочника, см. подробности в логах";
+            model.addAttribute("message", message);
+        } catch (Exception e) {
+            e.printStackTrace();
+            message = "Не удается загрузить файл: " + file.getOriginalFilename() + "Неверный формат. Error: " + e.getMessage();
+            model.addAttribute("message", message);
+        }
+        return "message";
+    }
+
+    //ОБНОВЛЕНИЕ информации о ЛПУ из справочника F003 - не используется - справочник устарел
+    //    (обновит записи существующие в базе: контактные данные и дату открытия и закрытия записи по справочнику)
     @PostMapping("/upd_lpu_F003_xml")
     public String updateLpuF003Xml(Model model, @RequestParam("file") MultipartFile file) {
         String message = "";

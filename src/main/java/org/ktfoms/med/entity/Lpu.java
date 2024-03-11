@@ -12,7 +12,11 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import org.ktfoms.med.dto.LpuF003Dto;
+import org.ktfoms.med.dto.LpuF032Dto;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
@@ -160,5 +164,33 @@ public class Lpu {
         this.nSvod = nSvod;
         this.mkod = mkod;
         this.kodSp = kodSp;
+    }
+
+    public Lpu(LpuF032Dto dto) {
+        this.cogrn = dto.getOgrn();
+        this.tfokato = 37;
+        this.mNameS = dto.getMNameS();
+        this.mNameF = dto.getMNameF();
+        this.kpp = dto.getKpp();
+        this.postId = dto.getPostId();
+        this.tel = dto.getTel();
+        this.fax = dto.getFax();
+        this.eMail = dto.getEMail();
+        this.lpuinn = dto.getLpuinn();
+        this.mkod = dto.getMcod();
+        this.kodSp = dto.getOid();
+        this.dateBeg = LocalDate.parse(dto.getDateBeg(), DateTimeFormatter.ofPattern("dd.MM.uuuu"));
+        if (!Objects.equals(dto.getDateEnd(), "")){this.dateEnd = LocalDate.parse(dto.getDateEnd(), DateTimeFormatter.ofPattern("dd.MM.uuuu"));}
+        ArrayList<String> adr = new ArrayList<>(List.of(dto.getAddress().split(",")));
+        String str = adr.remove(adr.size()-1);
+        if(Objects.equals(str.trim(), "")){
+            this.dom = adr.remove(adr.size()-1);
+        } else {
+            this.dom = str;
+        }
+        this.ulName = adr.remove(adr.size()-1);
+        this.npName = adr.remove(adr.size()-1);
+        if(adr.get(adr.size()-1).contains("р-н")){this.rName = adr.remove(adr.size()-1);}
+        if(adr.get(adr.size()-1).length()>6){this.areaName = adr.remove(adr.size()-1);};
     }
 }

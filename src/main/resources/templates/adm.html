@@ -58,9 +58,9 @@
 </div>
 
 <div>
-    <h4>Загрузка ЛПУ из справочника F003 (добавит записи отсутствующие в базе)</h4>
+    <h4>Загрузка ЛПУ из справочника F032 </h4>
     <p>(добавит записи отсутствующие в базе)</p>
-    <form method="post" th:action="@{/adm/add_lpu_F003_xml}" enctype="multipart/form-data">
+    <form method="post" th:action="@{/adm/add_lpu_F032_xml}" enctype="multipart/form-data">
 
         <label class="input-file">
             <span class="input-file-text" type="text"></span>
@@ -80,9 +80,9 @@
 </div>
 
 <div>
-    <h4>ОБНОВЛЕНИЕ информации о ЛПУ из справочника F003</h4>
-    <p>(обновит записи существующие в базе: контактные данные и дату открытия и закрытия записи по справочнику)</p>
-    <form method="post" th:action="@{/adm/upd_lpu_F003_xml}" enctype="multipart/form-data">
+    <h4>ОБНОВЛЕНИЕ информации о ЛПУ из справочника F032</h4>
+    <p>(обновит записи существующие в базе)</p>
+    <form method="post" th:action="@{/adm/upd_lpu_F032_xml}" enctype="multipart/form-data">
 
         <label class="input-file">
             <span class="input-file-text" type="text"></span>
@@ -102,7 +102,8 @@
 </div>
 
 <div>
-    <h4>ОБНОВЛЕНИЕ информации о ЛПУ из реестра медицинских организаций в формате Excel</h4>
+    <h4>ОБНОВЛЕНИЕ информации о ЛПУ из <a href="http://192.168.12.200/downloads/doc/forall/2024/MO-2024.xlsx">реестра медицинских организаций</a> в формате Excel
+        </h4>
     <p>(обновит записи существующие в базе: ИНН, КПП, ОГРН и названия организации, используя код МО в качестве ключа.</p>
     <p>Перед использованием функции убедитесь, что данные находятся в нужных ячейках и сделайте резервную копию базы.</p>
     <p> Код МО - столбец E;

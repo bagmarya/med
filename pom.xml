@@ -15,7 +15,7 @@
 
     <groupId>org.ktfoms</groupId>
     <artifactId>med</artifactId>
-    <version>1.3</version>
+    <version>1.4-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>20</maven.compiler.source>

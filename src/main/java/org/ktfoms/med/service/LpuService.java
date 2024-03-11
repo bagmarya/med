@@ -7,7 +7,9 @@ import org.ktfoms.med.dto.FundingNormaDto;
 import org.ktfoms.med.dto.FundingNormaSmpDto;
 import org.ktfoms.med.dto.FundingNormaSmpInfo;
 import org.ktfoms.med.dto.LpuF003Dto;
+import org.ktfoms.med.dto.LpuF032Dto;
 import org.ktfoms.med.dto.SpF003Lpu;
+import org.ktfoms.med.dto.SpF032Lpu;
 import org.ktfoms.med.dto.SpFundingNormaSmp;
 import org.ktfoms.med.entity.FundingNorma;
 import org.ktfoms.med.entity.FundingNormaSmp;
@@ -32,6 +34,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -40,6 +43,7 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.stream.Collectors.toMap;
 
 @Service
@@ -274,6 +278,7 @@ public class LpuService {
         return infosList;
     }
 
+    //Справочник F003 больше не обновляется - метод устарел
     @Transactional
     public String parseF003ForAddLpu(MultipartFile file) throws IOException {
         List<Integer> mcodesInBase = lpuDao.getMcodeList();
@@ -288,6 +293,72 @@ public class LpuService {
         return "Список ЛПУ успешно загружен";
     }
 
+    @Transactional
+    public String parseF032ForAddLpu(MultipartFile file) throws IOException {
+        List<Integer> mcodesInBase = lpuDao.getMcodeList();
+        ObjectMapper objectMapper = new XmlMapper();
+        SpF032Lpu spLpu = objectMapper.readValue(
+                file.getResource().getContentAsString(Charset.forName("windows-1251")),
+                SpF032Lpu.class);
+        for (LpuF032Dto dto: spLpu.getLpuList()) {
+            if(mcodesInBase.contains(dto.getMcod())) {continue;}
+            lpuDao.save(new Lpu(dto));
+        }
+        return "Список ЛПУ успешно загружен";
+    }
+    @Transactional
+    public String parseF032ForUpdLpu(MultipartFile file) throws IOException {
+        List<Integer> mcodesInBase = lpuDao.getMcodeList();
+        ObjectMapper objectMapper = new XmlMapper();
+        SpF032Lpu spLpu = objectMapper.readValue(
+                file.getResource().getContentAsString(Charset.forName("windows-1251")),
+                SpF032Lpu.class);
+        HashMap<String, LpuF032Dto> lpuMap= new HashMap<>();
+        for (LpuF032Dto dto: spLpu.getLpuList()) {
+            String mcod = dto.getMcod().toString();
+            LocalDate dateBegZap = LocalDate.parse(dto.getDateBegZap(), DateTimeFormatter.ofPattern("dd.MM.uuuu"));
+            if(lpuMap.containsKey(mcod) &&
+                    LocalDate.parse(lpuMap.get(mcod).getDateBegZap(), DateTimeFormatter.ofPattern("dd.MM.uuuu")).isAfter(dateBegZap)) {
+                continue;
+            }
+            lpuMap.put(mcod, dto);
+        }
+        for (Map.Entry<String, LpuF032Dto> e: lpuMap.entrySet()) {
+            LpuF032Dto dto = e.getValue();
+            if(mcodesInBase.contains(dto.getMcod())) {
+                Lpu lpu = lpuDao.getLpuByMcod(dto.getMcod());
+                logger.info("Редактируемая запись:  " + lpu.toString());
+                logger.info("актуальная информация для записи:  " + dto);
+                lpu.setMNameS(dto.getMNameS());
+                lpu.setMNameF(dto.getMNameF());
+                lpu.setKpp(dto.getKpp());
+                lpu.setPostId(dto.getPostId());
+
+                ArrayList<String> adr = new ArrayList<>(List.of(dto.getAddress().split(",")));
+                String str = adr.remove(adr.size()-1);
+                if(Objects.equals(str.trim(), "")){
+                    lpu.setDom(adr.remove(adr.size()-1));
+                } else {
+                    lpu.setDom(str);
+                }
+                lpu.setUlName(adr.remove(adr.size()-1));
+                lpu.setNpName(adr.remove(adr.size()-1));
+                if(adr.get(adr.size()-1).contains("р-н")){lpu.setRName(adr.remove(adr.size()-1));}
+                if(adr.get(adr.size()-1).length()>6){lpu.setAreaName(adr.remove(adr.size()-1));};
+
+                lpu.setTel(dto.getTel());
+                lpu.setFax(dto.getFax());
+                lpu.setEMail(dto.getEMail());
+                lpu.setLpuinn(dto.getLpuinn());
+                if (dto.getDateEnd()!="" && lpu.getDateEnd() == null){lpu.setDateEnd(LocalDate.parse(dto.getDateEnd(), ofPattern("dd.MM.uuuu")));}
+                lpuDao.save(lpu);
+            }
+
+        }
+        return "Информация о ЛПУ успешно обновлена";
+    }
+
+    //Справочник F003 больше не обновляется - метод устарел
     @Transactional
     public String parseF003ForUpdLpu(MultipartFile file) throws IOException {
         List<Integer> mcodesInBase = lpuDao.getMcodeList();
@@ -305,8 +376,8 @@ public class LpuService {
                 lpu.setTel(dto.getTel());
                 lpu.setFax(dto.getFax());
                 lpu.setEMail(dto.getEMail());
-                if (dto.getDateBeg()!=""){lpu.setDateBeg(LocalDate.parse(dto.getDateBeg(), DateTimeFormatter.ofPattern("dd.MM.uuuu")));}
-                if (dto.getDateEnd()!=""){lpu.setDateEnd(LocalDate.parse(dto.getDateEnd(), DateTimeFormatter.ofPattern("dd.MM.uuuu")));}
+                if (dto.getDateBeg()!=""){lpu.setDateBeg(LocalDate.parse(dto.getDateBeg(), ofPattern("dd.MM.uuuu")));}
+                if (dto.getDateEnd()!=""){lpu.setDateEnd(LocalDate.parse(dto.getDateEnd(), ofPattern("dd.MM.uuuu")));}
                 lpuDao.save(lpu);
             }
 
