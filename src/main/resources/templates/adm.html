@@ -102,6 +102,27 @@
 </div>
 
 <div>
+    <h4>ОБНОВЛЕНИЕ информации о руководителях ЛПУ из справочника F036</h4>
+    <form method="post" th:action="@{/adm/upd_lpu_F036_xml}" enctype="multipart/form-data">
+
+        <label class="input-file">
+            <span class="input-file-text" type="text"></span>
+            <input type="file" name="file" accept=".xml">
+            <span class="input-file-btn">Выберите файл</span>
+        </label>
+
+        <input class="input-file-submit" type="submit" value="Загрузить" />
+
+    </form>
+    <script>
+        $('.input-file input[type=file]').on('change', function(){
+            let file = this.files[0];
+            $(this).closest('.input-file').find('.input-file-text').html(file.name);
+        });
+    </script>
+</div>
+
+<div>
     <h4>ОБНОВЛЕНИЕ информации о ЛПУ из <a href="http://192.168.12.200/downloads/doc/forall/2024/MO-2024.xlsx">реестра медицинских организаций</a> в формате Excel
         </h4>
     <p>(обновит записи существующие в базе: ИНН, КПП, ОГРН и названия организации, используя код МО в качестве ключа.</p>

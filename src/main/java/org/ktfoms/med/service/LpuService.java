@@ -3,6 +3,7 @@ package org.ktfoms.med.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.ktfoms.med.dao.LpuDao;
+import org.ktfoms.med.dto.DirectorF036Dto;
 import org.ktfoms.med.dto.FundingNormaDto;
 import org.ktfoms.med.dto.FundingNormaSmpDto;
 import org.ktfoms.med.dto.FundingNormaSmpInfo;
@@ -10,6 +11,7 @@ import org.ktfoms.med.dto.LpuF003Dto;
 import org.ktfoms.med.dto.LpuF032Dto;
 import org.ktfoms.med.dto.SpF003Lpu;
 import org.ktfoms.med.dto.SpF032Lpu;
+import org.ktfoms.med.dto.SpF036Director;
 import org.ktfoms.med.dto.SpFundingNormaSmp;
 import org.ktfoms.med.entity.FundingNorma;
 import org.ktfoms.med.entity.FundingNormaSmp;
@@ -383,6 +385,37 @@ public class LpuService {
 
         }
         return "Информация о ЛПУ успешно обновлена";
+    }
+
+    //Обновление информации о руководителях ЛПУ по справочнику F036
+    @Transactional
+    public String parseF036ForUpdLpu(MultipartFile file) throws IOException {
+        List<String> oidsInBase = lpuDao.getOidList();
+        ObjectMapper objectMapper = new XmlMapper();
+        SpF036Director spDirector = objectMapper.readValue(
+                file.getResource().getContentAsString(Charset.forName("windows-1251")),
+                SpF036Director.class);
+        HashMap<String, DirectorF036Dto> directorMap= new HashMap<>();
+        for (DirectorF036Dto dto: spDirector.getDirectorList()) {
+            String oid = dto.getOid();
+            LocalDate dateBegZap = LocalDate.parse(dto.getDatebeg(), DateTimeFormatter.ofPattern("dd.MM.uuuu"));
+            if(directorMap.containsKey(oid) &&
+                    LocalDate.parse(directorMap.get(oid).getDatebeg(), DateTimeFormatter.ofPattern("dd.MM.uuuu")).isAfter(dateBegZap)) {
+                continue;
+            }
+            directorMap.put(oid, dto);
+        }
+        for (Map.Entry<String, DirectorF036Dto> e: directorMap.entrySet()) {
+            DirectorF036Dto dto = e.getValue();
+            if(oidsInBase.contains(dto.getOid())) {
+                Lpu lpu = lpuDao.getLpuByOid(dto.getOid());
+                logger.info("Редактируемая запись:  " + lpu.toString());
+                logger.info("актуальная информация для записи:  " + dto);
+                lpu.setGvfio(dto.getFamRuk() + " " + dto.getImRuk() + " " + dto.getOtRuk());
+                lpuDao.save(lpu);
+            }
+        }
+        return "Информация о руководителях МО успешно обновлена";
     }
 
     @Transactional

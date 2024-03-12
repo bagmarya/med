@@ -23,7 +23,7 @@
         (${lpu.npName} ? ${lpu.npName} + ', ' : '') +
         (${lpu.ulName} ? ${lpu.ulName} + ', ' : '') +
         (${lpu.dom} ? ${lpu.dom} : '') ">..</span></p>
-<p>Главный врач: <span th:utext="${lpu.gvfio}">..</span></p>
+<p>Руководитель: <span th:utext="${lpu.gvfio}">..</span></p>
 
 <p><a th:href="@{/license/stac/{mcod}(mcod=${lpu.mkod})}">Лицензии стационара</a></p>
 <p><a th:href="@{/license/pol/{mcod}(mcod=${lpu.mkod})}">Лицензии поликлиники</a></p>

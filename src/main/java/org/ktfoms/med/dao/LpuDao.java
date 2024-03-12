@@ -140,4 +140,9 @@ public class LpuDao {
                 .setParameter("mcod", mcod)
                 .getSingleResult();
     }
+
+    public List<String> getOidList() {
+        return sessionFactory.getCurrentSession().createQuery("select l.kodSp from Lpu l", String.class)
+                .getResultList();
+    }
 }

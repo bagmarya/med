@@ -132,6 +132,26 @@ public class AdmController {
         return "message";
     }
 
+    //Обновление информации о руководителях ЛПУ по справочнику F036
+    @PostMapping("/upd_lpu_F036_xml")
+    public String updateLpuF036Xml(Model model, @RequestParam("file") MultipartFile file) {
+        String message = "";
+
+        try {
+            InputStream in = new ByteArrayInputStream(file.getBytes());
+            message = lpuService.parseF036ForUpdLpu(file);
+            model.addAttribute("message", message);
+        } catch (ConstraintViolationException e) {
+            message = "Ограничения целостности не позволяют обновить данные справочника, см. подробности в логах";
+            model.addAttribute("message", message);
+        } catch (Exception e) {
+            e.printStackTrace();
+            message = "Не удается загрузить файл: " + file.getOriginalFilename() + "Неверный формат. Error: " + e.getMessage();
+            model.addAttribute("message", message);
+        }
+        return "message";
+    }
+
     //ОБНОВЛЕНИЕ информации о ЛПУ из справочника F003 - не используется - справочник устарел
     //    (обновит записи существующие в базе: контактные данные и дату открытия и закрытия записи по справочнику)
     @PostMapping("/upd_lpu_F003_xml")
