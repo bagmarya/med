@@ -41,17 +41,11 @@ public class DepartmentService {
 //        System.out.println(Runtime.getRuntime().maxMemory());
 //        System.out.println(Runtime.getRuntime().freeMemory());
         String s = resourceLoader.getResource("file:dep.xml").getContentAsString(StandardCharsets.UTF_8);
-//        System.out.println("222");
         SpDepartment spDepartment = objectMapper.readValue(s, SpDepartment.class);
-//        List<DepartmentDto> ourRegionFaps = new ArrayList<>();
         departmentDao.clearDepartment();
         for (DepartmentDto dto: spDepartment.getDepartments()) {
-            if ( dto.getRegion() != null && dto.getRegion() == 45
-//                    && dto.getDepartKindCode() != null && (dto.getDepartKindCode() == 1166 || dto.getDepartKindCode() == 1167) // выбрать только ФАП
-            ) {
-                System.out.println(dto);
+            if ( dto.getRegion() != null && dto.getRegion() == 45 || dto.getDepartOid() != null && dto.getDepartOid().contains("1.2.643.5.1.13.13.12.2.45")) {
                 departmentDao.save(new Department(dto));
-                //ourRegionFaps.add(dto);
             }
         }
         spDepartment=null;
