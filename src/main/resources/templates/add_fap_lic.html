@@ -54,7 +54,6 @@
   <br/>
   <p><input type="submit" value="Сохранить" />
     <input type="button" value="Отмена" th:onClick="'location.href = \'' + @{/department/fap_dep_by_lpu/{lpu}(lpu=${editFapForm.moLpu})} + '\''"></p>
-  th:onClick="'location.href = \'' + @{/lpu/{mcod}(mcod=${lpu.mkod})} + '\''"
 </form>
 </body>
 </html>

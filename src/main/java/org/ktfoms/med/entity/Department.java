@@ -68,21 +68,21 @@ public class Department {
     public Department(DepartmentDto dto) {
         this.moLpu = dto.getMoOid();
         this.podr = dto.getDepartOid();
-        this.dateN = LocalDate.parse(dto.getDateBeg().substring(0, 10));
+        if (dto.getDateBeg() != null && !dto.getDateBeg().isBlank()) {this.dateN = LocalDate.parse(dto.getDateBeg().substring(0, 10));}
         this.dateModify = LocalDate.parse(dto.getDateMod().substring(0, 10));
-        if (dto.getDateLiq() != null) {this.dateLiq = LocalDate.parse(dto.getDateLiq(), DateTimeFormatter.ofPattern("dd.MM.uuuu"));}
+        if (dto.getDateLiq() != null && !dto.getDateLiq().isBlank()) {this.dateLiq = LocalDate.parse(dto.getDateLiq(), DateTimeFormatter.ofPattern("dd.MM.uuuu"));}
         this.namePodr = dto.getDepartName();
         this.kodTipePodr = dto.getDepartTypeCode();
         this.nameTipePodr = dto.getDepartTypeName();
         this.kodVidPodr = dto.getDepartKindCode();
         this.nameVidPodr = dto.getDepartKindName();
         this.address =
-                ((dto.getPrefixArea() == null) ? "" : dto.getPrefixArea() + ". ") +
-                ((dto.getAreaName() == null) ? "" : dto.getAreaName()+  ", ")  +
-                ((dto.getPrefixStreet() == null) ? "" : dto.getPrefixStreet()+  ". ")  +
-                        ((dto.getStreetName() == null) ? "" : dto.getStreetName()+  ", ")  +
-                        ((dto.getAddressHouse() == null) ? "" : "д." + dto.getAddressHouse()+  " ")  +
-                        ((dto.getAddressBuilding() == null) ? "" : "стр." + dto.getAddressBuilding()+  " ")  +
-                        ((dto.getAddressStruct() == null) ? "" : "корп." + dto.getAddressStruct()+  " ");
+                ((dto.getPrefixArea() == null || dto.getPrefixArea().isBlank()) ? "" : dto.getPrefixArea() + ". ") +
+                ((dto.getAreaName() == null || dto.getAreaName().isBlank()) ? "" : dto.getAreaName()+  ", ")  +
+                ((dto.getPrefixStreet() == null || dto.getPrefixStreet().isBlank()) ? "" : dto.getPrefixStreet()+  ". ")  +
+                        ((dto.getStreetName() == null || dto.getStreetName().isBlank()) ? "" : dto.getStreetName()+  ", ")  +
+                        ((dto.getAddressHouse() == null || dto.getAddressHouse().isBlank()) ? "" : "д." + dto.getAddressHouse()+  " ")  +
+                        ((dto.getAddressBuilding() == null || dto.getAddressBuilding().isBlank()) ? "" : "стр." + dto.getAddressBuilding()+  " ")  +
+                        ((dto.getAddressStruct() == null || dto.getAddressStruct().isBlank()) ? "" : "корп." + dto.getAddressStruct()+  " ");
     }
 }
