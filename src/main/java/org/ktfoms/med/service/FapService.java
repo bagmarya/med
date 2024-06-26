@@ -203,7 +203,29 @@ public class FapService {
                 throw  new NoSuchFieldException("Для финансирования ФАП нет данных за этот год");
             }
             fapFinEntityList.stream().forEach(s -> s.fillMonth(month));
-            fapFinEntityList.stream().forEach(fapDao::save);}
+            fapFinEntityList.stream().forEach(fapDao::save);
+
+            //Берем список тех ФАП, которые открыты и имеют лицензии на начало месяца
+            List<Fap> actualFapList = getFapEntityList().stream()
+                    .filter(f -> ((f.getDateLik() == null || f.getDateLik().isAfter(LocalDate.of(year, month, 1)))
+                            && (f.getDkLicen() == null || f.getDkLicen().isAfter(LocalDate.of(year, month, 1)) ) ))
+                    .collect(Collectors.toList());
+            if (actualFapList.isEmpty()){
+                throw  new NoSuchFieldException("Для финансирования ФАП нет данных за этот год");
+            }
+            //Для каждого ФАП из списка актуальных , если его нет в списке финансирования на этот год, мы создаем строку справочника финансирования и сохраняем в списке новых записей
+            List<String> already_funded =
+                    fapFinEntityList.stream().map(FapFin::getPodr).collect(Collectors.toList());
+            for(Fap f : actualFapList) {
+                if (!already_funded.contains(f.getPodr())) {
+                    FapFin ff = new FapFin();
+                    ff.setPodr(f.getPodr());
+                    ff.setYear(year);
+                    fapDao.save(ff);
+                }
+            }
+
+        }
     }
 
 
