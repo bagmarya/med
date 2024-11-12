@@ -7,17 +7,21 @@ import org.ktfoms.med.dto.LicensePolDto;
 import org.ktfoms.med.dto.LicensePolInfo;
 import org.ktfoms.med.dto.LicenseStacDto;
 import org.ktfoms.med.dto.LicenseStacInfo;
+import org.ktfoms.med.dto.MedSpecV021Dto;
 import org.ktfoms.med.dto.ProfilDto;
 import org.ktfoms.med.dto.SpLicense;
 import org.ktfoms.med.dto.SpV002Profil;
+import org.ktfoms.med.dto.SpV021MedSpec;
 import org.ktfoms.med.entity.LicensePol;
 import org.ktfoms.med.entity.LicenseStac;
+import org.ktfoms.med.entity.MedSpecV021;
 import org.ktfoms.med.entity.Profil;
 import org.ktfoms.med.form.LicensePolForm;
 import org.ktfoms.med.form.LicenseStacForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.source.ConfigurationPropertyName;
 import org.springframework.core.env.Environment;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -109,7 +113,8 @@ public class LicenseService {
             builder.append(
                     "    <License>\n" +
                             "      <MCOD>" + licensePol.getMcod() + "</MCOD>\n" +
-                            "      <SPEZ_CODE>" + licensePol.getSpez() + "</SPEZ_CODE>\n" +
+                            "      <SPEZ_CODE>" + (licensePol.getSpez() == null ? "" : licensePol.getSpez()) + "</SPEZ_CODE>\n" +
+                            "      <MED_SPEC_V021>" + (licensePol.getMedSpecV021() == null ? "" : licensePol.getMedSpecV021()) + "</MED_SPEC_V021>\n" +
                             "      <KATEGOR>" + licensePol.getCategory() + "</KATEGOR>\n" +
                             "      <VOZRAST>" + licensePol.getAge() + "</VOZRAST>\n" +
                             "      <DATE_BEG>" + licensePol.getDateBeg() + "</DATE_BEG>\n" +
@@ -232,6 +237,7 @@ public class LicenseService {
         Map<String, String> ageMap = licenseDao.getAgeMap();
         Map<String, String> spezMap = licenseDao.getSpezMap();
         Map<String, String> categoryMap = licenseDao.getCategoryMap();
+        Map<Integer, String> medSpecMap = licenseDao.getMedSpecMap();
         for (LicensePol entity : licensePolList){
             LicensePolInfo lpi = new LicensePolInfo();
             lpi.setId(entity.getId());
@@ -241,6 +247,7 @@ public class LicenseService {
             lpi.setCategory(categoryMap.get(entity.getCategory()));
             lpi.setDateBeg(entity.getDateBeg().format(DateTimeFormatter.ofPattern("dd.MM.uuuu")));
             lpi.setDateEnd(entity.getDateEnd().format(DateTimeFormatter.ofPattern("dd.MM.uuuu")));
+            lpi.setMedSpecV021(medSpecMap.get(entity.getMedSpecV021()));
             licensePolInfos.add(lpi);
         }
 
@@ -253,7 +260,9 @@ public class LicenseService {
         LicensePolForm form = new LicensePolForm();
         //Для формы нужен словарь специальностей отсортированный по значениям,
         // чтобы проще было найти нужную специальность в выпадающем списке
-        form.setSpezNames(licenseDao.getSpezMap()
+        Map<String, String> spezNames = licenseDao.getSpezMap();
+        spezNames.put("", " Нет");
+        form.setSpezNames(spezNames
                 .entrySet()
                 .stream()
                 .sorted(Map.Entry.comparingByValue())
@@ -264,11 +273,28 @@ public class LicenseService {
                                 LinkedHashMap::new)));
         form.setAgeNames(licenseDao.getAgeMap());
         form.setCategoryNames(licenseDao.getCategoryMap());
+        Map<Integer, String> medSpecV021Names = licenseDao.getMedSpecMap();
+        medSpecV021Names.put(0, " Нет");
+        form.setMedSpecV021Names(medSpecV021Names
+                .entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByValue())
+                .collect(Collectors
+                        .toMap(Map.Entry::getKey,
+                                Map.Entry::getValue,
+                                (e1, e2) -> e1,
+                                LinkedHashMap::new)));
         return form;
     }
 
     //Сохранение новой лицензии поликлиники
     public String saveNewLicensePol (LicensePolForm licensePolForm) {
+        if(licensePolForm.getMedSpecV021() == 0 && licensePolForm.getSpez().isBlank()) {
+            return "Лицензия не добавлена. Необходимо указать хотя бы одну медицинскую специальность";
+        }
+        if(licensePolForm.getDateBeg().isBlank()){
+            return "Лицензия не добавлена. Необходимо указать дату начала действия лицензии";
+        }
         licenseDao.save(new LicensePol(licensePolForm));
         logger.info("Добавлена лицензия поликлиники. Имя пользователья: " + SecurityContextHolder.getContext().getAuthentication().getName());
         logger.info(licensePolForm.toString());
@@ -281,7 +307,9 @@ public class LicenseService {
         LicensePolForm form = new LicensePolForm();
         //Для формы нужен словарь специальностей отсортированный по значениям,
         // чтобы проще было найти нужную специальность в выпадающем списке
-        form.setSpezNames(licenseDao.getSpezMap()
+        Map<String, String> spezNames = licenseDao.getSpezMap();
+        spezNames.put("", " Нет");
+        form.setSpezNames(spezNames
                 .entrySet()
                 .stream()
                 .sorted(Map.Entry.comparingByValue())
@@ -292,8 +320,20 @@ public class LicenseService {
                                 LinkedHashMap::new)));
         form.setAgeNames(licenseDao.getAgeMap());
         form.setCategoryNames(licenseDao.getCategoryMap());
+        Map<Integer, String> medSpecV021Names = licenseDao.getMedSpecMap();
+        medSpecV021Names.put(0, " Нет");
+        form.setMedSpecV021Names(medSpecV021Names
+                .entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByValue())
+                .collect(Collectors
+                        .toMap(Map.Entry::getKey,
+                                Map.Entry::getValue,
+                                (e1, e2) -> e1,
+                                LinkedHashMap::new)));
         LicensePol entity = licenseDao.getLicensePolById(id);
         form.setMcod(entity.getMcod());
+        form.setMedSpecV021(entity.getMedSpecV021());
         form.setCategory(entity.getCategory());
         form.setSpez(entity.getSpez());
         form.setAge(entity.getAge());
@@ -304,11 +344,18 @@ public class LicenseService {
 
     //Сохранение изменений лицензии поликлиники
     public String saveEditLicensePol(Integer id, LicensePolForm form) {
+        if(form.getMedSpecV021() == 0 && form.getSpez().isBlank()) {
+            return "Лицензия не изменена. Необходимо указать хотя бы одну медицинскую специальность";
+        }
+        if(form.getDateBeg().isBlank()){
+            return "Лицензия не изменена. Дата начала действия лицензии не должна быть пуста";
+        }
         LicensePol entity = licenseDao.getLicensePolById(id);
         logger.info("Изменение лицензии поликлиники. " + entity.toString());
         entity.setMcod(form.getMcod());
         entity.setCategory(form.getCategory());
-        entity.setSpez(form.getSpez());
+        entity.setSpez(form.getSpez().isBlank() ? null : form.getSpez());
+        entity.setMedSpecV021(form.getMedSpecV021() == 0 ? null : form.getMedSpecV021());
         entity.setAge(form.getAge());
         entity.setDateBeg(LocalDate.parse(form.getDateBeg()));
         entity.setDateEnd(LocalDate.parse(form.getDateEnd()));
@@ -358,4 +405,19 @@ public class LicenseService {
         logger.info("Справочник лицензий опубликован на сайте. Имя пользователья: " + SecurityContextHolder.getContext().getAuthentication().getName());
         return "Опубликовано по пути " + path;
     }
+
+    // V021 Классификатор медицинских специальностей (должностей) (MedSpec)
+    @Transactional
+    public String parseSpV021(MultipartFile file) throws IOException {
+        ObjectMapper objectMapper = new XmlMapper();
+        SpV021MedSpec spV021MedSpec = objectMapper.readValue(
+                file.getResource().getContentAsString(Charset.forName("windows-1251")),
+                SpV021MedSpec.class);
+        licenseDao.clearMedSpecV021();
+        for (MedSpecV021Dto dto: spV021MedSpec.getZap()) {
+            licenseDao.save(new MedSpecV021(dto));
+        }
+        return "Классификатор медицинских специальностей успешно обновлен";
+    }
+
 }

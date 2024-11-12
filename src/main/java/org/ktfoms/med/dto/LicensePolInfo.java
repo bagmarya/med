@@ -23,4 +23,6 @@ public class LicensePolInfo {
     private String dateBeg;
 
     private String dateEnd;
+
+    private String medSpecV021;
 }

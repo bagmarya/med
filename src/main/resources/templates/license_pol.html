@@ -18,7 +18,8 @@
 <table>
     <tr>
         <th></th>
-        <th>Специальность</th>
+        <th>Специальность по номенклатуре медицинских услуг</th>
+        <th>Медицинская специальность по V021</th>
         <th>Категория</th>
         <th>Возраст</th>
         <th>Дата начала</th>
@@ -27,6 +28,7 @@
     <tr th:each="lic:${licensePolList}">
         <td><a th:href=@{edit_license_pol/{id}(id=${lic.id})}>Редактировать</a></td>
         <td th:utext="${lic.spez}">..</td>
+        <td th:utext="${lic.medSpecV021}">..</td>
         <td th:utext="${lic.category}">..</td>
         <td th:utext="${lic.age}">..</td>
         <td th:utext="${lic.dateBeg}">..</td>

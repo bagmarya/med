@@ -58,6 +58,27 @@
 </div>
 
 <div>
+    <h4>Обновление классификатора медицинских специальностей (должностей) (MedSpec) v021:</h4>
+    <form method="post" th:action="@{/adm/update_v021_xml}" enctype="multipart/form-data">
+
+        <label class="input-file">
+            <span class="input-file-text" type="text"></span>
+            <input type="file" name="file" accept=".xml">
+            <span class="input-file-btn">Выберите файл</span>
+        </label>
+
+        <input class="input-file-submit" type="submit" value="Загрузить" />
+
+    </form>
+    <script>
+        $('.input-file input[type=file]').on('change', function(){
+            let file = this.files[0];
+            $(this).closest('.input-file').find('.input-file-text').html(file.name);
+        });
+    </script>
+</div>
+
+<div>
     <h4>Загрузка ЛПУ из справочника F032 </h4>
     <p>(добавит записи отсутствующие в базе)</p>
     <form method="post" th:action="@{/adm/add_lpu_F032_xml}" enctype="multipart/form-data">

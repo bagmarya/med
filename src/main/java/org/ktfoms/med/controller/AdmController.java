@@ -193,4 +193,25 @@ public class AdmController {
         }
         return "message";
     }
+
+    // Загрузка ЛПУ из справочника F032 (добавит записи отсутствующие в базе)
+    @PostMapping("/update_v021_xml")
+    public String updateV021Xml(Model model, @RequestParam("file") MultipartFile file) {
+        String message = "";
+
+        try {
+            InputStream in = new ByteArrayInputStream(file.getBytes());
+            message = licenseService.parseSpV021(file);
+            model.addAttribute("message", message);
+        } catch (ConstraintViolationException e) {
+            message = "Ограничения целостности не позволяют загрузить данные справочника, см. подробности в логах";
+            model.addAttribute("message", message);
+        } catch (Exception e) {
+            e.printStackTrace();
+            message = "Не удается загрузить файл: " + file.getOriginalFilename() + "Неверный формат. Error: " + e.getMessage();
+            model.addAttribute("message", message);
+        }
+        return "message";
+    }
+
 }

@@ -39,6 +39,10 @@ public class LicenseDao {
         sessionFactory.getCurrentSession().createQuery("DELETE FROM Profil").executeUpdate();
     }
 
+    public void clearMedSpecV021() {
+        sessionFactory.getCurrentSession().createQuery("DELETE FROM MedSpecV021").executeUpdate();
+    }
+
     public List<LicenseStac> getLicenseStacList() {
         return sessionFactory.getCurrentSession()
                 .createQuery("select ls from LicenseStac ls order by ls.mcod, ls.stacType, ls.dateBeg", LicenseStac.class)
@@ -126,6 +130,17 @@ public class LicenseDao {
                         Collectors.toMap(
                                 tuple -> tuple.get("category_code").toString(),
                                 tuple -> tuple.get("category_name").toString()
+                        ));
+    }
+
+    public Map<Integer, String> getMedSpecMap() {
+        return sessionFactory.getCurrentSession()
+                .createNativeQuery("select idspec, specname from sp_v021_med_spec where dateend is null;", Tuple.class)
+                .getResultStream()
+                .collect(
+                        Collectors.toMap(
+                                tuple -> Integer.parseInt(tuple.get("idspec").toString()),
+                                tuple -> tuple.get("specname").toString()
                         ));
     }
 

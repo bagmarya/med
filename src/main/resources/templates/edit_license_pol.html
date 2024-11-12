@@ -17,11 +17,20 @@
     <input type="text" th:field="*{mcod}"  disabled />
     <input type="hidden" th:field="*{mcod}">
     <br/>
-    <p>Специальность:</p>
+    <p>Специальность по номенклатуре медицинских услуг:</p>
     <select th:field="*{spez}" th:disabled="!${#authorization.expression('hasRole(''ADMIN'')')}">
         <option th:each="spezName : *{spezNames}"
                 th:value="${spezName.key}"
                 th:utext="${spezName.value}">
+        </option>
+    </select>
+    <input type="hidden" th:field="*{spez}" th:if="!${#authorization.expression('hasRole(''ADMIN'')')}">
+    <br/>
+    <p>Медицинская специальность по V021:</p>
+    <select th:field="*{medSpecV021}" th:disabled="!${#authorization.expression('hasRole(''ADMIN'')')}">
+        <option th:each="medSpecV021Name : *{medSpecV021Names}"
+                th:value="${medSpecV021Name.key}"
+                th:utext="${medSpecV021Name.value}">
         </option>
     </select>
     <input type="hidden" th:field="*{spez}" th:if="!${#authorization.expression('hasRole(''ADMIN'')')}">

@@ -50,6 +50,10 @@ public class LicensePol {
     @Column(name = "date_end")
     private LocalDate dateEnd;
 
+    @Column(name = "med_spec_v021")
+    private Integer medSpecV021;
+
+
     public LicensePol (LicensePolDto dto){
         this.mcod = dto.getMcod();
         this.spez = dto.getSpez();
@@ -61,7 +65,8 @@ public class LicensePol {
 
     public LicensePol(LicensePolForm form) {
         this.mcod = form.getMcod();
-        this.spez = form.getSpez();
+        if(!form.getSpez().isBlank()) {this.spez = form.getSpez();}
+        if(form.getMedSpecV021() != 0){this.medSpecV021 = form.getMedSpecV021();}
         this.age = form.getAge();
         this.category = form.getCategory();
         this.dateBeg = LocalDate.parse(form.getDateBeg());

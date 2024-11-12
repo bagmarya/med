@@ -27,4 +27,6 @@ public class LicensePolDto {
     private String dateBeg;
     @JacksonXmlProperty(localName = "DATE_END")
     private String dateEnd;
+    @JacksonXmlProperty(localName = "MED_SPEC_V021")
+    private Integer medSpecV021;
 }

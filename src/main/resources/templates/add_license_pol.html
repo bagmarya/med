@@ -16,11 +16,19 @@
     <p>Код ЛПУ:</p>
     <input type="text" th:field="*{mcod}" disabled/>
     <br/>
-    <p>Специальность:</p>
+    <p>Специальность по номенклатуре медицинских услуг:</p>
     <select th:field="*{spez}">
         <option th:each="spezName : *{spezNames}"
                 th:value="${spezName.key}"
                 th:utext="${spezName.value}">
+        </option>
+    </select>
+    <br/>
+    <p>Медицинская специальность по V021:</p>
+    <select th:field="*{medSpecV021}">
+        <option th:each="medSpecV021Name : *{medSpecV021Names}"
+                th:value="${medSpecV021Name.key}"
+                th:utext="${medSpecV021Name.value}">
         </option>
     </select>
     <br/>
