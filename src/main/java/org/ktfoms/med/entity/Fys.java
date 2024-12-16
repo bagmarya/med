@@ -105,6 +105,9 @@ public class Fys {
 
     @Column(name = "ds_category")
     private String dsCategory;
+
+    @Column(name = "anest")
+    private Integer anest;
 }
 
 

@@ -167,8 +167,11 @@ public class FysService {
     //Экспорт FYS из базы в xml (справочник медицинских услуг)
     @Transactional
     public String getFysXML() {
+        //получаем записи справочника из базы
         List<Fys> fysEntityList = fysDao.getFysEntityList();
-        StringBuilder builder = new StringBuilder("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<FYS>\n");//<?xml version="1.0" encoding="utf-8"?>
+        //Выводим первую строку: <?xml version="1.0" encoding="utf-8"?>
+        StringBuilder builder = new StringBuilder("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<FYS>\n");
+        //Выводим строки с данными
         for(Fys fys : fysEntityList){
             builder.append(
                     "    <USL>\n" +
@@ -199,7 +202,7 @@ public class FysService {
                             "      <DIAG_K>" + (fys.getDiagK() == null ? "" : fys.getDiagK()) + "</DIAG_K>\n" +//fys.getDiagK()
                             "      <DIAG_DN>" + (fys.getDiagDn() == null ? "" : fys.getDiagDn()) + "</DIAG_DN>\n" +
                             "      <DS_category>" + (fys.getDsCategory() == null ? "" : fys.getDsCategory()) + "</DS_category>\n" +
-
+                            "      <ANEST>" + (fys.getAnest() == null ? "" : fys.getAnest()) + "</ANEST>\n" +
                             "    </USL>\n");
         }
         builder.append("</FYS>\n");

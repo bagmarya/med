@@ -726,6 +726,7 @@ public class ExcelHelper {
             fys.setDiagK(ExcelHelper.valueAsString(row.getCell(24)));
             fys.setDiagDn(ExcelHelper.valueAsString(row.getCell(25)));
             fys.setDsCategory(ExcelHelper.valueAsString(row.getCell(26)));
+            fys.setAnest(ExcelHelper.valueAsInteger(row.getCell(27)));
             fysList.add(fys);
         }
         return fysList;
@@ -772,7 +773,7 @@ public class ExcelHelper {
     public static ByteArrayInputStream fysEntityListToExcel(List<Fys> fysEntityList) {
         String[] headers = {"KOD_SP", "NAME_YSL", "KOD_USL_MZ", "RZ", "TYP", "KLAS",
                 "VID", "PVID", "OMS", "POS", "MKR", "V_uet", "D_uet", "D1", "V1", "D1_uet", "V1_uet",
-                "D2", "V2", "D2_uet", "V2_uet", "V021_D", "V021_V", "DIAG_N", "DIAG_K", "DIAG_DN", "DS_category"
+                "D2", "V2", "D2_uet", "V2_uet", "V021_D", "V021_V", "DIAG_N", "DIAG_K", "DIAG_DN", "DS_category", "ANEST"
         };
         try (Workbook workbook = new HSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream();) {
             //Создадим стиль ячейки со значением денежной суммы
@@ -816,6 +817,7 @@ public class ExcelHelper {
                 row.createCell(24).setCellValue(fys.getDiagK());
                 row.createCell(25).setCellValue(fys.getDiagDn());
                 row.createCell(26).setCellValue(fys.getDsCategory());
+                row.createCell(27).setCellValue((fys.getAnest() == null) ? "" : "1");
                 row.getCell(11).setCellStyle(numStyle);
                 row.getCell(12).setCellStyle(numStyle);
                 row.getCell(13).setCellStyle(numStyle);
