@@ -76,8 +76,7 @@ public class ApiController {
         return new ResponseEntity<>(lpuService.getFileSpFundingNormaSmp(),h, HttpStatus.OK);
     }
 
-    //TODO Шлет на фронт xml в cp1251 и сохраняет файл такой же xml в D:\data\javaprojects\med,
-// но нужно поменять чтобы сам файл никуда в ФС не сохранялся
+    //Шлет на фронт справочник подушевого финансирования ФАП в xml (cp1251)
     @RequestMapping(value = { "/sp_fin_fap/{year}" }, method = RequestMethod.GET, produces = "application/xml;charset=windows-1251")
     public ResponseEntity<String> sp(@PathVariable("year") int year) throws IOException {
         HttpHeaders h = new HttpHeaders();
@@ -85,21 +84,6 @@ public class ApiController {
         return new ResponseEntity<>(fapService.getFileSpfinfap(year),h, HttpStatus.OK);
     }
 
-
-
-
-
-
-
-    //todo: убрать заглушку на 2023г и сделать нормально
-    //TODO Шлет на фронт xml в utf-8; если будет не нужен, совсем убрать
-    @GetMapping(value = "/sp_fin_fap_utf-8", produces = "application/xml")
-    public Spfinfap getFapFById() throws IOException {
-        LocalDate d = LocalDate.now();
-        Spfinfap spr = new Spfinfap("1.0", LocalDate.now().format(DateTimeFormatter.ofPattern("d.MM.uuuu")), fapService.getFapFinDtoList(2023));
-//        fapService.getFileSpfinfap();
-        return spr;
-    }
 //метод заполнит указанный месяц в справочнике СФОФ по данным предыдущего, дублируется в главном контроллере /fill_next_month/{year}/{month}
     @PostMapping(value = "/fill_next_month/{year}/{month}")
     public ResponseEntity fillNextMonth(@PathVariable("year") int year, @PathVariable("month") int month) {
@@ -109,14 +93,6 @@ public class ApiController {
         } catch (RuntimeException | NoSuchFieldException e) {
             return ResponseEntity.status(400).build();
         }
-    }
-
-
-    //todo: убрать заглушку на 2023г и сделать нормально, но возможно придется убрать сам метод как неиспользуемый
-    @RequestMapping(value = { "/funding_calc/{month}" }, method = RequestMethod.GET)
-    public void fundingCalculate(@PathVariable("month") int month) throws NoSuchFieldException {
-        System.out.println("!!!!!!!!!!!!!!!execute!!!!!!!!!!!!!!!!");
-        fapService.fundingCalc(month, 2023);
     }
 
     @RequestMapping(value = { "/parse" }, method = RequestMethod.GET)

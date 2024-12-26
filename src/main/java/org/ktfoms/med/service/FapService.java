@@ -63,19 +63,15 @@ public class FapService {
         return fapDao.getFapFinDtoList(year);
     }
 
-
-    // todo: переписать без использования ФС.
     public String  getFileSpfinfap(Integer year) throws IOException {
-
-        String fileName = "sp_fin_fap.xml";
         String encoding = "windows-1251";
-        Writer output = new OutputStreamWriter(new FileOutputStream(fileName), encoding);
-        output.write("<?xml version=\"1.0\" encoding=\"" + encoding + "\" ?>\n");
-        output.write("<spfinfap>\n" +
+        //Выводим первую строку: <?xml version="1.0" encoding="windows-1251"?>
+        StringBuilder builder = new StringBuilder("<?xml version=\"1.0\" encoding=\"" + encoding + "\" ?>\n");
+        builder.append("<spfinfap>\n" +
                 "<version>1.0</version>\n" +
                 "<date>" + LocalDate.now().format(DateTimeFormatter.ofPattern("d.MM.uuuu")) + "</date>\n");
         for (FapFinDto rec : getFapFinDtoList(year)) {
-            output.write("<FAP>" +
+            builder.append("<FAP>" +
                     "<MKOD>" + rec.getMkod() + "</MKOD>" +
                     "<NAME_PODR>" + rec.getNamePodr() + "</NAME_PODR>" +
                     "<LPU>" + rec.getMoLpu() + "</LPU>" +
@@ -143,10 +139,8 @@ public class FapService {
                     "<SUMM_KAPIT12>" + rec.getSummKapit12() + "</SUMM_KAPIT12>" +
                     "</FAP>\n");
         }
-        output.write("</spfinfap>");
-        output.flush();
-        output.close();
-        return resourceLoader.getResource("file:sp_fin_fap.xml").getContentAsString(Charset.forName("windows-1251"));
+        builder.append("</spfinfap>");
+        return builder.toString();
 
     }
 
