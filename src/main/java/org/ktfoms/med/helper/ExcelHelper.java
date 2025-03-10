@@ -719,6 +719,9 @@ public class ExcelHelper {
                 fys.setD2Uet((double) 0);
                 fys.setV2Uet((double) 0);
             }
+            if(fys.getDUet() == 0 && fys.getVUet() == 0 && (fys.getD1() != 0 || fys.getD2() != 0 || fys.getV1() != 0 || fys.getV2() != 0)){
+                fys.setPos(true);
+            }
 
             fys.setV021D(ExcelHelper.valueAsString(row.getCell(21)));
             fys.setV021V(ExcelHelper.valueAsString(row.getCell(22)));
@@ -726,7 +729,7 @@ public class ExcelHelper {
             fys.setDiagK(ExcelHelper.valueAsString(row.getCell(24)));
             fys.setDiagDn(ExcelHelper.valueAsString(row.getCell(25)));
             fys.setDsCategory(ExcelHelper.valueAsString(row.getCell(26)));
-            fys.setAnest(ExcelHelper.valueAsInteger(row.getCell(27)));
+            if(!ExcelHelper.valueAsString(row.getCell(27)).equals("")){fys.setAnest(ExcelHelper.valueAsInteger(row.getCell(27)));}
             fysList.add(fys);
         }
         return fysList;
